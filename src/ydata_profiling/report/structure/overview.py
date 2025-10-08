@@ -21,24 +21,25 @@ from ydata_profiling.report.presentation.core import Image as ImageWidget
 from ydata_profiling.report.presentation.core import Table
 from ydata_profiling.report.presentation.core.renderable import Renderable
 from ydata_profiling.visualisation.plot import plot_overview_timeseries
+from ydata_profiling.i18n import _
 
 
 def get_dataset_overview(config: Settings, summary: BaseDescription) -> Renderable:
     table_metrics = [
         {
-            "name": "Number of variables",
+            "name": _("core.structure.overview.number_variables"),
             "value": fmt_number(summary.table["n_var"]),
         },
         {
-            "name": "Number of observations",
+            "name": _("core.structure.overview.number_observations"),
             "value": fmt_number(summary.table["n"]),
         },
         {
-            "name": "Missing cells",
+            "name": _("core.structure.overview.missing_cells"),
             "value": fmt_number(summary.table["n_cells_missing"]),
         },
         {
-            "name": "Missing cells (%)",
+            "name": _("core.structure.overview.missing_cells_percentage"),
             "value": fmt_percent(summary.table["p_cells_missing"]),
         },
     ]
@@ -46,11 +47,11 @@ def get_dataset_overview(config: Settings, summary: BaseDescription) -> Renderab
         table_metrics.extend(
             [
                 {
-                    "name": "Duplicate rows",
+                    "name": _("core.structure.overview.duplicate_rows"),
                     "value": fmt_number(summary.table["n_duplicates"]),
                 },
                 {
-                    "name": "Duplicate rows (%)",
+                    "name": _("core.structure.overview.duplicate_rows_percentage"),
                     "value": fmt_percent(summary.table["p_duplicates"]),
                 },
             ]
@@ -59,18 +60,18 @@ def get_dataset_overview(config: Settings, summary: BaseDescription) -> Renderab
         table_metrics.extend(
             [
                 {
-                    "name": "Total size in memory",
+                    "name":  _("core.structure.overview.total_size_memory"),
                     "value": fmt_bytesize(summary.table["memory_size"]),
                 },
                 {
-                    "name": "Average record size in memory",
+                    "name": _("core.structure.overview.average_record_memory"),
                     "value": fmt_bytesize(summary.table["record_size"]),
                 },
             ]
         )
 
     dataset_info = Table(
-        table_metrics, name="Dataset statistics", style=config.html.style
+        table_metrics, name=_("core.structure.overview.dataset_statistics"), style=config.html.style
     )
 
     dataset_types = Table(
@@ -81,14 +82,14 @@ def get_dataset_overview(config: Settings, summary: BaseDescription) -> Renderab
             }
             for type_name, count in summary.table["types"].items()
         ],
-        name="Variable types",
+        name=_("core.structure.overview.variable_types"),
         style=config.html.style,
     )
 
     return Container(
         [dataset_info, dataset_types],
         anchor_id="dataset_overview",
-        name="Overview",
+        name=_("core.structure.overview.overview"),
         sequence_type="grid",
     )
 
@@ -104,7 +105,7 @@ def get_dataset_schema(config: Settings, metadata: dict) -> Container:
     if "url" in metadata:
         about_dataset.append(
             {
-                "name": "URL",
+                "name": _("core.structure.overview.url"),
                 "value": f'<a href="{metadata["url"]}">{metadata["url"]}</a>',
             }
         )
@@ -113,14 +114,14 @@ def get_dataset_schema(config: Settings, metadata: dict) -> Container:
         if "copyright_year" not in metadata:
             about_dataset.append(
                 {
-                    "name": "Copyright",
+                    "name": _("core.structure.overview.copyright"),
                     "value": fmt(f"(c) {metadata['copyright_holder']}"),
                 }
             )
         else:
             about_dataset.append(
                 {
-                    "name": "Copyright",
+                    "name": _("core.structure.overview.copyright"),
                     "value": fmt(
                         f"(c) {metadata['copyright_holder']} {metadata['copyright_year']}"
                     ),
@@ -131,12 +132,12 @@ def get_dataset_schema(config: Settings, metadata: dict) -> Container:
         [
             Table(
                 about_dataset,
-                name="Dataset",
+                name=_("core.structure.overview.dataset"),
                 anchor_id="metadata_dataset",
                 style=config.html.style,
             )
         ],
-        name="Dataset",
+        name=_("core.structure.overview.dataset"),
         anchor_id="dataset",
         sequence_type="grid",
     )
@@ -169,20 +170,20 @@ def get_dataset_reproduction(config: Settings, summary: BaseDescription) -> Rend
 
     reproduction_table = Table(
         [
-            {"name": "Analysis started", "value": fmt(date_start)},
-            {"name": "Analysis finished", "value": fmt(date_end)},
-            {"name": "Duration", "value": fmt_timespan(duration)},
-            {"name": "Software version", "value": fmt_version(version)},
-            {"name": "Download configuration", "value": fmt_config(config_file)},
+            {"name": _("core.structure.overview.analysis_started"), "value": fmt(date_start)},
+            {"name": _("core.structure.overview.analysis_finished"), "value": fmt(date_end)},
+            {"name": _("core.structure.overview.duration"), "value": fmt_timespan(duration)},
+            {"name": _("core.structure.overview.software_version"), "value": fmt_version(version)},
+            {"name": _("core.structure.overview.download_configuration"), "value": fmt_config(config_file)},
         ],
-        name="Reproduction",
+        name=_("core.structure.overview.reproduction"),
         anchor_id="overview_reproduction",
         style=config.html.style,
     )
 
     return Container(
         [reproduction_table],
-        name="Reproduction",
+        name=_("core.structure.overview.reproduction"),
         anchor_id="reproduction",
         sequence_type="grid",
     )
@@ -205,7 +206,7 @@ def get_dataset_column_definitions(config: Settings, definitions: dict) -> Conta
                 {"name": column, "value": fmt(value)}
                 for column, value in definitions.items()
             ],
-            name="Variable descriptions",
+            name=_("core.structure.overview.variable_descriptions"),
             anchor_id="variable_definition_table",
             style=config.html.style,
         )
@@ -213,7 +214,7 @@ def get_dataset_column_definitions(config: Settings, definitions: dict) -> Conta
 
     return Container(
         variable_descriptions,
-        name="Variables",
+        name=_("core.structure.overview.variables"),
         anchor_id="variable_descriptions",
         sequence_type="grid",
     )
@@ -258,7 +259,7 @@ def get_dataset_alerts(config: Settings, alerts: list) -> Alerts:
 
         return Alerts(
             alerts=combined_alerts,
-            name=f"Alerts ({count})",
+            name=_("core.structure.overview.alerts_count", count=count),
             anchor_id="alerts",
             style=config.html.style,
         )
@@ -266,7 +267,7 @@ def get_dataset_alerts(config: Settings, alerts: list) -> Alerts:
     count = len([alert for alert in alerts if alert.alert_type != AlertType.REJECTED])
     return Alerts(
         alerts=alerts,
-        name=f"Alerts ({count})",
+        name=_("core.structure.overview.alerts_count", count=count),
         anchor_id="alerts",
         style=config.html.style,
     )
@@ -283,28 +284,28 @@ def get_timeseries_items(config: Settings, summary: BaseDescription) -> Containe
     assert isinstance(summary.time_index_analysis, TimeIndexAnalysis)
     table_stats = [
         {
-            "name": "Number of series",
+            "name": _("core.structure.overview.number_of_series"),
             "value": fmt_number(summary.time_index_analysis.n_series),
         },
         {
-            "name": "Time series length",
+            "name": _("core.structure.overview.timeseries_length"),
             "value": fmt_number(summary.time_index_analysis.length),
         },
         {
-            "name": "Starting point",
+            "name": _("core.structure.overview.starting_point"),
             "value": fmt_tsindex_limit(summary.time_index_analysis.start),
         },
         {
-            "name": "Ending point",
+            "name": _("core.structure.overview.ending_point"),
             "value": fmt_tsindex_limit(summary.time_index_analysis.end),
         },
         {
-            "name": "Period",
+            "name": _("core.structure.overview.period"),
             "value": fmt_timespan_timedelta(summary.time_index_analysis.period),
         },
     ]
 
-    ts_info = Table(table_stats, name="Timeseries statistics", style=config.html.style)
+    ts_info = Table(table_stats, name=_("core.structure.overview.timeseries_statistics"), style=config.html.style)
 
     dpi_bak = config.plot.dpi
     config.plot.dpi = 300
@@ -312,14 +313,14 @@ def get_timeseries_items(config: Settings, summary: BaseDescription) -> Containe
         plot_overview_timeseries(config, summary.variables),
         image_format=config.plot.image_format,
         alt="ts_plot",
-        name="Original",
+        name=_("core.structure.overview.original"),
         anchor_id="ts_plot_overview",
     )
     timeseries_scaled = ImageWidget(
         plot_overview_timeseries(config, summary.variables, scale=True),
         image_format=config.plot.image_format,
         alt="ts_plot_scaled",
-        name="Scaled",
+        name=_("core.structure.overview.scaled"),
         anchor_id="ts_plot_scaled_overview",
     )
     config.plot.dpi = dpi_bak
@@ -333,7 +334,7 @@ def get_timeseries_items(config: Settings, summary: BaseDescription) -> Containe
     return Container(
         [ts_info, ts_tab],
         anchor_id="timeseries_overview",
-        name="Time Series",
+        name=_("core.structure.overview.time_series"),
         sequence_type="grid",
     )
 

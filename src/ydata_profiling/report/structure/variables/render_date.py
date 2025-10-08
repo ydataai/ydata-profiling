@@ -9,6 +9,7 @@ from ydata_profiling.report.presentation.core import (
     VariableInfo,
 )
 from ydata_profiling.visualisation.plot import histogram, mini_histogram
+from ydata_profiling.i18n import _
 
 
 def render_date(config: Settings, summary: Dict[str, Any]) -> Dict[str, Any]:
@@ -30,27 +31,27 @@ def render_date(config: Settings, summary: Dict[str, Any]) -> Dict[str, Any]:
     table1 = Table(
         [
             {
-                "name": "Distinct",
+                "name": _("core.structure.overview.distinct"),
                 "value": fmt(summary["n_distinct"]),
                 "alert": False,
             },
             {
-                "name": "Distinct (%)",
+                "name": _("core.structure.overview.distinct_percentage"),
                 "value": fmt_percent(summary["p_distinct"]),
                 "alert": False,
             },
             {
-                "name": "Missing",
+                "name": _("core.structure.overview.missing"),
                 "value": fmt(summary["n_missing"]),
                 "alert": False,
             },
             {
-                "name": "Missing (%)",
+                "name": _("core.structure.overview.missing_percentage"),
                 "value": fmt_percent(summary["p_missing"]),
                 "alert": False,
             },
             {
-                "name": "Memory size",
+                "name": _("core.structure.overview.memory_size"),
                 "value": fmt_bytesize(summary["memory_size"]),
                 "alert": False,
             },
@@ -60,15 +61,15 @@ def render_date(config: Settings, summary: Dict[str, Any]) -> Dict[str, Any]:
 
     table2 = Table(
         [
-            {"name": "Minimum", "value": fmt(summary["min"]), "alert": False},
-            {"name": "Maximum", "value": fmt(summary["max"]), "alert": False},
+            {"name": _("core.structure.overview.min"), "value": fmt(summary["min"]), "alert": False},
+            {"name": _("core.structure.overview.max"), "value": fmt(summary["max"]), "alert": False},
             {
-                "name": "Invalid dates",
+                "name": _("core.structure.overview.invalid_dates"),
                 "value": fmt(summary["n_invalid_dates"]),
                 "alert": False,
             },
             {
-                "name": "Invalid dates (%)",
+                "name": _("core.structure.overview.invalid_dates_percentage"),
                 "value": fmt_percent(summary["p_invalid_dates"]),
                 "alert": False,
             },
@@ -85,7 +86,7 @@ def render_date(config: Settings, summary: Dict[str, Any]) -> Dict[str, Any]:
                 date=True,
             ),
             image_format=image_format,
-            alt="Mini histogram",
+            alt=_("core.structure.overview.mini_histogram"),
         )
     else:
         mini_histo = Image(
@@ -93,7 +94,7 @@ def render_date(config: Settings, summary: Dict[str, Any]) -> Dict[str, Any]:
                 config, summary["histogram"][0], summary["histogram"][1], date=True
             ),
             image_format=image_format,
-            alt="Mini histogram",
+            alt=_("core.structure.overview.mini_histogram"),
         )
 
     template_variables["top"] = Container(
@@ -119,9 +120,9 @@ def render_date(config: Settings, summary: Dict[str, Any]) -> Dict[str, Any]:
             Image(
                 hist_data,
                 image_format=image_format,
-                alt="Histogram",
-                caption=f"<strong>Histogram with fixed size bins</strong> (bins={n_bins})",
-                name="Histogram",
+                alt=_("core.structure.overview.histogram"),
+                caption=f"<strong>{_("core.structure.overview.histogram_caption")}</strong> (bins={n_bins})",
+                name=_("core.structure.overview.histogram"),
                 anchor_id=f"{varid}histogram",
             )
         ],

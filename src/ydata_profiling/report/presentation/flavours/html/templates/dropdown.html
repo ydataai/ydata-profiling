@@ -2,7 +2,7 @@
     <div class="row">
 {% endif %}
     <select name="{{ name }}" id="{{ id }}" class = "{{ classes }}">
-        <option value="">Select Columns</option>
+        <option value="">{{ _('html.dropdown') }}</option>
         {% for item in items %}
             <option value="{{ item }}">
                 {{ item }}

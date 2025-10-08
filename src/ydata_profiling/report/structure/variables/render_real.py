@@ -15,6 +15,7 @@ from ydata_profiling.report.presentation.core import (
 )
 from ydata_profiling.report.structure.variables.render_common import render_common
 from ydata_profiling.visualisation.plot import histogram, mini_histogram
+from ydata_profiling.i18n import _
 
 
 def render_real(config: Settings, summary: dict) -> dict:
@@ -37,37 +38,37 @@ def render_real(config: Settings, summary: dict) -> dict:
     table1 = Table(
         [
             {
-                "name": "Distinct",
+                "name": _("core.structure.overview.distinct"),
                 "value": fmt(summary["n_distinct"]),
                 "alert": "n_distinct" in summary["alert_fields"],
             },
             {
-                "name": "Distinct (%)",
+                "name": _("core.structure.overview.distinct_percentage"),
                 "value": fmt_percent(summary["p_distinct"]),
                 "alert": "p_distinct" in summary["alert_fields"],
             },
             {
-                "name": "Missing",
+                "name": _("core.structure.overview.missing"),
                 "value": fmt(summary["n_missing"]),
                 "alert": "n_missing" in summary["alert_fields"],
             },
             {
-                "name": "Missing (%)",
+                "name": _("core.structure.overview.missing_percentage"),
                 "value": fmt_percent(summary["p_missing"]),
                 "alert": "p_missing" in summary["alert_fields"],
             },
             {
-                "name": "Infinite",
+                "name": _("core.structure.overview.infinite"),
                 "value": fmt(summary["n_infinite"]),
                 "alert": "n_infinite" in summary["alert_fields"],
             },
             {
-                "name": "Infinite (%)",
+                "name": _("core.structure.overview.infinite_percentage"),
                 "value": fmt_percent(summary["p_infinite"]),
                 "alert": "p_infinite" in summary["alert_fields"],
             },
             {
-                "name": "Mean",
+                "name": _("core.structure.overview.mean"),
                 "value": fmt_numeric(
                     summary["mean"], precision=config.report.precision
                 ),
@@ -80,37 +81,37 @@ def render_real(config: Settings, summary: dict) -> dict:
     table2 = Table(
         [
             {
-                "name": "Minimum",
+                "name": _("core.structure.overview.min"),
                 "value": fmt_numeric(summary["min"], precision=config.report.precision),
                 "alert": False,
             },
             {
-                "name": "Maximum",
+                "name": _("core.structure.overview.max"),
                 "value": fmt_numeric(summary["max"], precision=config.report.precision),
                 "alert": False,
             },
             {
-                "name": "Zeros",
+                "name": _("core.structure.overview.zeros"),
                 "value": fmt(summary["n_zeros"]),
                 "alert": "n_zeros" in summary["alert_fields"],
             },
             {
-                "name": "Zeros (%)",
+                "name": _("core.structure.overview.zeros_percentage"),
                 "value": fmt_percent(summary["p_zeros"]),
                 "alert": "p_zeros" in summary["alert_fields"],
             },
             {
-                "name": "Negative",
+                "name": _("core.structure.overview.Negative"),
                 "value": fmt(summary["n_negative"]),
                 "alert": False,
             },
             {
-                "name": "Negative (%)",
+                "name": _("core.structure.overview.Negative_percentage"),
                 "value": fmt_percent(summary["p_negative"]),
                 "alert": False,
             },
             {
-                "name": "Memory size",
+                "name": _("core.structure.overview.memory_size"),
                 "value": fmt_bytesize(summary["memory_size"]),
                 "alert": False,
             },
@@ -126,13 +127,13 @@ def render_real(config: Settings, summary: dict) -> dict:
                 [x[1] for x in summary.get("histogram", [])],
             ),
             image_format=image_format,
-            alt="Mini histogram",
+            alt=_("core.structure.overview.mini_histogram"),
         )
     else:
         mini_histo = Image(
             mini_histogram(config, *summary["histogram"]),
             image_format=image_format,
-            alt="Mini histogram",
+            alt=_("core.structure.overview.mini_histogram"),
         )
 
     template_variables["top"] = Container(
@@ -142,104 +143,104 @@ def render_real(config: Settings, summary: dict) -> dict:
     quantile_statistics = Table(
         [
             {
-                "name": "Minimum",
+                "name": _("core.structure.overview.min"),
                 "value": fmt_numeric(summary["min"], precision=config.report.precision),
             },
             {
-                "name": "5-th percentile",
+                "name":  _("core.structure.overview.5_th_percentile"),#"5-th percentile",
                 "value": fmt_numeric(summary["5%"], precision=config.report.precision),
             },
             {
-                "name": "Q1",
+                "name":  _("core.structure.overview.q1"),
                 "value": fmt_numeric(summary["25%"], precision=config.report.precision),
             },
             {
-                "name": "median",
+                "name": _("core.structure.overview.median"),
                 "value": fmt_numeric(summary["50%"], precision=config.report.precision),
             },
             {
-                "name": "Q3",
+                "name": _("core.structure.overview.q3"),
                 "value": fmt_numeric(summary["75%"], precision=config.report.precision),
             },
             {
-                "name": "95-th percentile",
+                "name": _("core.structure.overview.95_th_percentile"),
                 "value": fmt_numeric(summary["95%"], precision=config.report.precision),
             },
             {
-                "name": "Maximum",
+                "name": _("core.structure.overview.max"),
                 "value": fmt_numeric(summary["max"], precision=config.report.precision),
             },
             {
-                "name": "Range",
+                "name": _("core.structure.overview.range"),
                 "value": fmt_numeric(
                     summary["range"], precision=config.report.precision
                 ),
             },
             {
-                "name": "Interquartile range (IQR)",
+                "name": _("core.structure.overview.iqr"),
                 "value": fmt_numeric(summary["iqr"], precision=config.report.precision),
             },
         ],
-        name="Quantile statistics",
+        name=_("core.structure.overview.quantile_statistics"),
         style=config.html.style,
     )
 
     descriptive_statistics = Table(
         [
             {
-                "name": "Standard deviation",
+                "name": _("core.structure.overview.standard_deviation"),
                 "value": fmt_numeric(summary["std"], precision=config.report.precision),
             },
             {
-                "name": "Coefficient of variation (CV)",
+                "name": _("core.structure.overview.cv"),
                 "value": fmt_numeric(summary["cv"], precision=config.report.precision),
             },
             {
-                "name": "Kurtosis",
+                "name": _("core.structure.overview.kurtosis"),
                 "value": fmt_numeric(
                     summary["kurtosis"], precision=config.report.precision
                 ),
             },
             {
-                "name": "Mean",
+                "name": _("core.structure.overview.mean"),
                 "value": fmt_numeric(
                     summary["mean"], precision=config.report.precision
                 ),
             },
             {
-                "name": "Median Absolute Deviation (MAD)",
+                "name": _("core.structure.overview.mad"),
                 "value": fmt_numeric(summary["mad"], precision=config.report.precision),
             },
             {
-                "name": "Skewness",
+                "name": _("core.structure.overview.skewness"),
                 "value": fmt_numeric(
                     summary["skewness"], precision=config.report.precision
                 ),
                 "class": "alert" if "skewness" in summary["alert_fields"] else "",
             },
             {
-                "name": "Sum",
+                "name": _("core.structure.overview.sum"),
                 "value": fmt_numeric(summary["sum"], precision=config.report.precision),
             },
             {
-                "name": "Variance",
+                "name": _("core.structure.overview.variance"),
                 "value": fmt_numeric(
                     summary["variance"], precision=config.report.precision
                 ),
             },
             {
-                "name": "Monotonicity",
+                "name": _("core.structure.overview.monotonicity"),
                 "value": fmt_monotonic(summary["monotonic"]),
             },
         ],
-        name="Descriptive statistics",
+        name=_("core.structure.overview.descriptive_statistics"),
         style=config.html.style,
     )
 
     statistics = Container(
         [quantile_statistics, descriptive_statistics],
         anchor_id=f"{varid}statistics",
-        name="Statistics",
+        name=_("core.structure.overview.statistics"),
         sequence_type="grid",
     )
 
@@ -250,23 +251,23 @@ def render_real(config: Settings, summary: dict) -> dict:
             [x[1] for x in summary.get("histogram", [])],
         )
         bins = len(summary["histogram"][0][1]) - 1 if "histogram" in summary else 0
-        hist_caption = f"<strong>Histogram with fixed size bins</strong> (bins={bins})"
+        hist_caption = f"<strong>{_("core.structure.overview.histogram_caption")}</strong> (bins={bins})"
     else:
         hist_data = histogram(config, *summary["histogram"])
-        hist_caption = f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][1]) - 1})"
+        hist_caption = f"<strong>{_("core.structure.overview.histogram_caption")}</strong> (bins={len(summary['histogram'][1]) - 1})"
 
     hist = Image(
         hist_data,
         image_format=image_format,
-        alt="Histogram",
+        alt=_("core.structure.overview.histogram"),
         caption=hist_caption,
-        name="Histogram",
+        name=_("core.structure.overview.histogram"),
         anchor_id=f"{varid}histogram",
     )
 
     fq = FrequencyTable(
         template_variables["freq_table_rows"],
-        name="Common values",
+        name=_("core.structure.overview.common_values"),
         anchor_id=f"{varid}common_values",
         redact=False,
     )
@@ -275,19 +276,19 @@ def render_real(config: Settings, summary: dict) -> dict:
         [
             FrequencyTable(
                 template_variables["firstn_expanded"],
-                name=f"Minimum {config.n_extreme_obs} values",
+                name=f"{_("core.structure.overview.min")} {config.n_extreme_obs} {_("core.structure.overview.values")}",
                 anchor_id=f"{varid}firstn",
                 redact=False,
             ),
             FrequencyTable(
                 template_variables["lastn_expanded"],
-                name=f"Maximum {config.n_extreme_obs} values",
+                name=f"{_("core.structure.overview.max")} {config.n_extreme_obs} {_("core.structure.overview.values")}",
                 anchor_id=f"{varid}lastn",
                 redact=False,
             ),
         ],
         sequence_type="tabs",
-        name="Extreme values",
+        name=_("core.structure.overview.extreme_values"),
         anchor_id=f"{varid}extreme_values",
     )
 

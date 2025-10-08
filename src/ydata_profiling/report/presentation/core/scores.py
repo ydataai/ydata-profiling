@@ -5,6 +5,7 @@ from typing import Any, Dict, List, Optional
 
 from ydata_profiling.config import Style
 from ydata_profiling.report.presentation.core.item_renderer import ItemRenderer
+from ydata_profiling.i18n import _
 
 
 class Scores(ItemRenderer):
@@ -26,7 +27,7 @@ class Scores(ItemRenderer):
         super().__init__("scores", content=content, **kwargs)
 
     def __repr__(self) -> str:
-        return "Scores"
+        return _("core.scores")
 
     def render(self) -> Any:
         raise NotImplementedError("Handled by flavour-specific class")

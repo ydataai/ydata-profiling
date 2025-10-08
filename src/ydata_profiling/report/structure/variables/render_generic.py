@@ -6,6 +6,7 @@ from ydata_profiling.report.presentation.core import (
     Table,
     VariableInfo,
 )
+from ydata_profiling.i18n import _
 
 
 def render_generic(config: Settings, summary: dict) -> dict:
@@ -21,17 +22,17 @@ def render_generic(config: Settings, summary: dict) -> dict:
     table = Table(
         [
             {
-                "name": "Missing",
+                "name": _("core.structure.overview.missing"),
                 "value": fmt(summary["n_missing"]),
                 "alert": "n_missing" in summary["alert_fields"],
             },
             {
-                "name": "Missing (%)",
+                "name": _("core.structure.overview.missing_percentage"),
                 "value": fmt_percent(summary["p_missing"]),
                 "alert": "p_missing" in summary["alert_fields"],
             },
             {
-                "name": "Memory size",
+                "name": _("core.structure.overview.memory_size"),
                 "value": fmt_bytesize(summary["memory_size"]),
                 "alert": False,
             },

@@ -2,6 +2,7 @@ from typing import Any, Dict, List, Union
 
 import numpy as np
 import pandas as pd
+from ydata_profiling.i18n import _
 
 
 def _frequency_table(
@@ -48,7 +49,7 @@ def _frequency_table(
         other_count = str(freqtable.count() - max_number_to_print)
         rows.append(
             {
-                "label": f"Other values ({other_count})",
+                "label": _("rendering.other_values_count",other_count=other_count),
                 "width": freq_other / max_freq,
                 "count": freq_other,
                 # Hack for tables with combined...
@@ -61,7 +62,7 @@ def _frequency_table(
     if freq_missing > min_freq:
         rows.append(
             {
-                "label": "(Missing)",
+                "label":  _("report.missing"),
                 "width": freq_missing / max_freq,
                 "count": freq_missing,
                 "percentage": float(freq_missing) / n,

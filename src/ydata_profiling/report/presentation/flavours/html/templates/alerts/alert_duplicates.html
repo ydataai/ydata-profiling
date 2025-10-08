@@ -1,1 +1,1 @@
-Dataset has {{ alert.values['n_duplicates'] }} ({{ alert.values['p_duplicates'] | fmt_percent }}) <a href="#duplicate">duplicate rows</a>
+{{ _('html.alerts.dataset_has')}} {{ alert.values['n_duplicates'] }} ({{ alert.values['p_duplicates'] | fmt_percent }}) <a href="#duplicate">{{ _('html.alerts.duplicate_rows')}}</a>

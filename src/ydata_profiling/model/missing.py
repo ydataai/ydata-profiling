@@ -5,6 +5,7 @@ from typing import Any, Callable, Dict, Optional, Sized
 import pandas as pd
 
 from ydata_profiling.config import Settings
+from ydata_profiling.i18n import _
 
 
 class MissingDataBackend:
@@ -70,20 +71,20 @@ def get_missing_active(config: Settings, table_stats: dict) -> Dict[str, Any]:
     missing_map = {
         "bar": {
             "min_missing": 0,
-            "name": "Count",
-            "caption": "A simple visualization of nullity by column.",
+            "name": _("core.model.bar_count"),
+            "caption": _("core.model.bar_caption"),
             "function": MissingBar(),
         },
         "matrix": {
             "min_missing": 0,
-            "name": "Matrix",
-            "caption": "Nullity matrix is a data-dense display which lets you quickly visually pick out patterns in data completion.",
+            "name": _("core.model.matrix"),
+            "caption":  _("core.model.matrix_caption"),
             "function": MissingMatrix(),
         },
         "heatmap": {
             "min_missing": 2,
-            "name": "Heatmap",
-            "caption": "The correlation heatmap measures nullity correlation: how strongly the presence or absence of one variable affects the presence of another.",
+            "name": _("core.model.heatmap"),
+            "caption": _("core.model.heatmap_caption"),
             "function": MissingHeatmap(),
         },
     }

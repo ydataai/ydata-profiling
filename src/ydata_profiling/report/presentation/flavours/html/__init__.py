@@ -25,6 +25,7 @@ from ydata_profiling.report.presentation.flavours.html.variable import HTMLVaria
 from ydata_profiling.report.presentation.flavours.html.variable_info import (
     HTMLVariableInfo,
 )
+from ydata_profiling.report.presentation.flavours.html.i18n_extension import I18nExtension
 
 __all__ = [
     "HTMLCollapse",
@@ -44,4 +45,5 @@ __all__ = [
     "HTMLAlerts",
     "HTMLCorrelationTable",
     "HTMLScores",
+    "I18nExtension",
 ]

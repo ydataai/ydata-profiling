@@ -3,6 +3,7 @@ from typing import Any, Callable
 from ydata_profiling.report.presentation.core.item_renderer import ItemRenderer
 from ydata_profiling.report.presentation.core.renderable import Renderable
 from ydata_profiling.report.presentation.core.toggle_button import ToggleButton
+from ydata_profiling.i18n import _
 
 
 class Collapse(ItemRenderer):
@@ -10,7 +11,7 @@ class Collapse(ItemRenderer):
         super().__init__("collapse", {"button": button, "item": item}, **kwargs)
 
     def __repr__(self) -> str:
-        return "Collapse"
+        return _("core.collapse")
 
     def render(self) -> Any:
         raise NotImplementedError()

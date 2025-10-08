@@ -6,6 +6,7 @@ from ydata_profiling.report.presentation.core.renderable import Renderable
 from ydata_profiling.report.presentation.frequency_table_utils import freq_table
 from ydata_profiling.report.structure.variables.render_path import render_path
 from ydata_profiling.visualisation.plot import histogram
+from ydata_profiling.i18n import _
 
 
 def render_file(config: Settings, summary: dict) -> dict:
@@ -25,17 +26,17 @@ def render_file(config: Settings, summary: dict) -> dict:
             Image(
                 histogram(config, *summary["histogram_file_size"]),
                 image_format=image_format,
-                alt="Size",
-                caption=f"<strong>Histogram with fixed size bins of file sizes (in bytes)</strong> (bins={len(summary['histogram_file_size'][1]) - 1})",
-                name="File size",
+                alt=_("core.structure.overview.size"),
+                caption=f"<strong>{_("core.structure.overview.file_size_caption")}</strong> (bins={len(summary['histogram_file_size'][1]) - 1})",
+                name=_("core.structure.overview.file_size"),
                 anchor_id=f"{varid}file_size_histogram",
             )
         )
 
     file_dates = {
-        "file_created_time": "Created",
-        "file_accessed_time": "Accessed",
-        "file_modified_time": "Modified",
+        "file_created_time": _("core.structure.overview.created"),
+        "file_accessed_time": _("core.structure.overview.accessed"),
+        "file_modified_time": _("core.structure.overview.modified"),
     }
 
     for file_date_id, description in file_dates.items():
@@ -55,7 +56,7 @@ def render_file(config: Settings, summary: dict) -> dict:
 
     file_tab = Container(
         file_tabs,
-        name="File",
+        name=_("core.structure.overview.file"),
         sequence_type="tabs",
         anchor_id=f"{varid}file",
     )

@@ -2,9 +2,9 @@
     <table class="freq table table-hover table-striped {% if idx is defined %}table-{{ idx }}{% endif %}">
         <thead>
             <tr>
-                <td>Value</td>
-                <td>Count</td>
-                <td>Frequency (%)</td>
+                <td>{{ _('html.frequency_table.value') }}</td>
+                <td>{{ _('html.frequency_table.count') }}</td>
+                <td>{{ _('html.frequency_table.frequency_percentage') }}</td>
             </tr>
         </thead>
         <tbody>
@@ -12,7 +12,7 @@
                 {% for row in rows %}
                     <tr class="{{ row['extra_class'] }}">
                         {% if row['extra_class'] | length == 0 and redact %}
-                            <td title="Redacted value">
+                            <td title="{{ _('html.frequency_table.redacted_value') }}">
                                 <div class="text-placeholder"></div>
                             </td>
                         {% else %}
@@ -37,7 +37,7 @@
                 {% endfor %}
             {% else %}
                 <tr>
-                    <td colspan="3">No values found.</td>
+                    <td colspan="3">{{ _('html.frequency_table.no_values_found') }}</td>
                 </tr>
             {% endif %}
         </tbody>

@@ -24,6 +24,7 @@ from ydata_profiling.report.presentation.core.renderable import Renderable
 from ydata_profiling.report.presentation.frequency_table_utils import freq_table
 from ydata_profiling.report.structure.variables.render_common import render_common
 from ydata_profiling.visualisation.plot import cat_frequency_plot, histogram
+from ydata_profiling.i18n import _
 
 
 def render_categorical_frequency(
@@ -32,20 +33,20 @@ def render_categorical_frequency(
     frequency_table = Table(
         [
             {
-                "name": "Unique",
+                "name": _("core.structure.overview.unique"),
                 "value": fmt_number(summary["n_unique"]),
                 "hint": help(
-                    "The number of unique values (all values that occur exactly once in the dataset)."
+                    _("core.structure.overview.unique_help"),
                 ),
                 "alert": "n_unique" in summary["alert_fields"],
             },
             {
-                "name": "Unique (%)",
+                "name": _("core.structure.overview.unique_percentage"),
                 "value": fmt_percent(summary["p_unique"]),
                 "alert": "p_unique" in summary["alert_fields"],
             },
         ],
-        name="Unique",
+        name=_("core.structure.overview.unique"),
         anchor_id=f"{varid}_unique_stats",
         style=config.html.style,
     )
@@ -59,29 +60,29 @@ def render_categorical_length(
     length_table = Table(
         [
             {
-                "name": "Max length",
+                "name": _("core.structure.overview.max_length"),
                 "value": fmt_number(summary["max_length"]),
                 "alert": False,
             },
             {
-                "name": "Median length",
+                "name": _("core.structure.overview.median_length"),
                 "value": fmt_number(summary["median_length"]),
                 "alert": False,
             },
             {
-                "name": "Mean length",
+                "name":  _("core.structure.overview.mean_length"),
                 "value": fmt_numeric(
                     summary["mean_length"], precision=config.report.precision
                 ),
                 "alert": False,
             },
             {
-                "name": "Min length",
+                "name": _("core.structure.overview.min_length"),
                 "value": fmt_number(summary["min_length"]),
                 "alert": False,
             },
         ],
-        name="Length",
+        name= _("core.structure.overview.length"),
         anchor_id=f"{varid}lengthstats",
         style=config.html.style,
     )
@@ -98,9 +99,9 @@ def render_categorical_length(
     length_histo = Image(
         hist_data,
         image_format=config.plot.image_format,
-        alt="length histogram",
-        name="Length",
-        caption="Histogram of lengths of the category",
+        alt= _("core.structure.overview.length_histogram"),
+        name=_("core.structure.overview.length"),
+        caption= _("core.structure.overview.histogram_lengths_category"),
         anchor_id=f"{varid}length",
     )
 
@@ -127,7 +128,7 @@ def render_categorical_unicode(
             n=_get_n(summary["category_alias_counts"]),
             max_number_to_print=n_freq_table_max,
         ),
-        name="Most occurring categories",
+        name=_("core.structure.overview.most_occurring_categories"),
         anchor_id=f"{varid}category_long_values",
         redact=False,
     )
@@ -154,7 +155,7 @@ def render_categorical_unicode(
         category_overview,
         Container(
             cats,
-            name="Most frequent character per category",
+            name=_("core.structure.overview.most_frequent_character_per_category"),
             sequence_type="batch_grid",
             anchor_id=f"{varid}categories",
             batch_size=1,
@@ -168,7 +169,7 @@ def render_categorical_unicode(
             n=_get_n(summary["script_counts"]),
             max_number_to_print=n_freq_table_max,
         ),
-        name="Most occurring scripts",
+        name=_("core.structure.overview.most_occurring_scripts"),
         anchor_id=f"{varid}script_values",
         redact=False,
     )
@@ -193,7 +194,7 @@ def render_categorical_unicode(
         script_overview,
         Container(
             scripts,
-            name="Most frequent character per script",
+            name=_("core.structure.overview.most_frequent_character_per_script"),
             sequence_type="batch_grid",
             anchor_id=f"{varid}scripts",
             batch_size=1,
@@ -207,7 +208,7 @@ def render_categorical_unicode(
             n=_get_n(summary["block_alias_counts"]),
             max_number_to_print=n_freq_table_max,
         ),
-        name="Most occurring blocks",
+        name=_("core.structure.overview.most_occurring_blocks"),
         anchor_id=f"{varid}block_alias_values",
         redact=False,
     )
@@ -230,7 +231,7 @@ def render_categorical_unicode(
         block_overview,
         Container(
             blocks,
-            name="Most frequent character per block",
+            name=_("core.structure.overview.most_frequent_character_per_block"),
             sequence_type="batch_grid",
             anchor_id=f"{varid}blocks",
             batch_size=1,
@@ -241,45 +242,45 @@ def render_categorical_unicode(
     overview_table = Table(
         [
             {
-                "name": "Total characters",
+                "name": _("core.structure.overview.total_characters"),
                 "value": fmt_number(summary["n_characters"]),
                 "alert": False,
             },
             {
-                "name": "Distinct characters",
+                "name": _("core.structure.overview.distinct_characters"),
                 "value": fmt_number(summary["n_characters_distinct"]),
                 "alert": False,
             },
             {
-                "name": "Distinct categories",
+                "name": _("core.structure.overview.distinct_categories"),
                 "value": fmt_number(summary["n_category"]),
                 "hint": help(
-                    title="Unicode categories (click for more information)",
+                    title=_("core.structure.overview.unicode_categories"),
                     url="https://en.wikipedia.org/wiki/Unicode_character_property#General_Category",
                 ),
                 "alert": False,
             },
             {
-                "name": "Distinct scripts",
+                "name": _("core.structure.overview.distinct_scripts"),
                 "value": fmt_number(summary["n_scripts"]),
                 "hint": help(
-                    title="Unicode scripts (click for more information)",
+                    title=_("core.structure.overview.unicode_scripts"),
                     url="https://en.wikipedia.org/wiki/Script_(Unicode)#List_of_scripts_in_Unicode",
                 ),
                 "alert": False,
             },
             {
-                "name": "Distinct blocks",
+                "name": _("core.structure.overview.distinct_blocks"),
                 "value": fmt_number(summary["n_block_alias"]),
                 "hint": help(
-                    title="Unicode blocks (click for more information)",
+                    title=_("core.structure.overview.unicode_blocks"),
                     url="https://en.wikipedia.org/wiki/Unicode_block",
                 ),
                 "alert": False,
             },
         ],
-        name="Characters and Unicode",
-        caption="The Unicode Standard assigns character properties to each code point, which can be used to analyse textual variables. ",
+        name=_("core.structure.overview.characters_unicode"),
+        caption=_("core.structure.overview.characters_unicode_caption"),
         style=config.html.style,
     )
 
@@ -292,30 +293,30 @@ def render_categorical_unicode(
                         n=summary["n_characters"],
                         max_number_to_print=n_freq_table_max,
                     ),
-                    name="Most occurring characters",
+                    name=_("core.structure.overview.characters_unicode"),
                     anchor_id=f"{varid}character_frequency",
                     redact=config.vars.cat.redact,
                 ),
             ],
-            name="Characters",
+            name=_("core.structure.overview.characters"),
             anchor_id=f"{varid}characters",
             sequence_type="named_list",
         ),
         Container(
             category_items,
-            name="Categories",
+            name=_("core.structure.overview.categories"),
             anchor_id=f"{varid}categories",
             sequence_type="named_list",
         ),
         Container(
             script_items,
-            name="Scripts",
+            name=_("core.structure.overview.scripts"),
             anchor_id=f"{varid}scripts",
             sequence_type="named_list",
         ),
         Container(
             block_items,
-            name="Blocks",
+            name=_("core.structure.overview.blocks"),
             anchor_id=f"{varid}blocks",
             sequence_type="named_list",
         ),
@@ -323,7 +324,7 @@ def render_categorical_unicode(
 
     return overview_table, Container(
         citems,
-        name="Unicode",
+        name=_("core.structure.overview.unicode"),
         sequence_type="tabs",
         anchor_id=f"{varid}unicode",
     )
@@ -355,27 +356,27 @@ def render_categorical(config: Settings, summary: dict) -> dict:
     table = Table(
         [
             {
-                "name": "Distinct",
+                "name": _("core.structure.overview.distinct"),
                 "value": fmt(summary["n_distinct"]),
                 "alert": "n_distinct" in summary["alert_fields"],
             },
             {
-                "name": "Distinct (%)",
+                "name": _("core.structure.overview.distinct_percentage"),
                 "value": fmt_percent(summary["p_distinct"]),
                 "alert": "p_distinct" in summary["alert_fields"],
             },
             {
-                "name": "Missing",
+                "name": _("core.structure.overview.missing"),
                 "value": fmt(summary["n_missing"]),
                 "alert": "n_missing" in summary["alert_fields"],
             },
             {
-                "name": "Missing (%)",
+                "name": _("core.structure.overview.missing_percentage"),
                 "value": fmt_percent(summary["p_missing"]),
                 "alert": "p_missing" in summary["alert_fields"],
             },
             {
-                "name": "Memory size",
+                "name": _("core.structure.overview.memory_size"),
                 "value": fmt_bytesize(summary["memory_size"]),
                 "alert": False,
             },
@@ -398,7 +399,7 @@ def render_categorical(config: Settings, summary: dict) -> dict:
 
     frequency_table = FrequencyTable(
         template_variables["freq_table_rows"],
-        name="Common Values",
+        name=_("core.structure.overview.common_values"),
         anchor_id=f"{varid}common_values",
         redact=config.vars.cat.redact,
     )
@@ -420,7 +421,13 @@ def render_categorical(config: Settings, summary: dict) -> dict:
     overview_items.append(unique_stats)
 
     if not config.vars.cat.redact:
-        rows = ("1st row", "2nd row", "3rd row", "4th row", "5th row")
+        rows = (
+            _("core.structure.overview.1st_row"),
+            _("core.structure.overview.2nd_row"),
+            _("core.structure.overview.3rd_row"),
+            _("core.structure.overview.4th_row"),
+            _("core.structure.overview.5th_row"),
+        )
 
         if isinstance(summary["first_rows"], list):
             sample = Table(
@@ -432,7 +439,7 @@ def render_categorical(config: Settings, summary: dict) -> dict:
                     }
                     for name, *value in zip(rows, *summary["first_rows"])
                 ],
-                name="Sample",
+                name=_("core.sample"),
                 style=config.html.style,
             )
         else:
@@ -445,7 +452,7 @@ def render_categorical(config: Settings, summary: dict) -> dict:
                     }
                     for name, value in zip(rows, summary["first_rows"])
                 ],
-                name="Sample",
+                name=_("core.sample"),
                 style=config.html.style,
             )
         overview_items.append(sample)
@@ -476,12 +483,12 @@ def render_categorical(config: Settings, summary: dict) -> dict:
                         if summary["n_distinct"][idx] <= max_unique
                         else HTML(
                             f"<h4 class='indent'>{config.html.style._labels[idx]}</h4><br />"
-                            f"<em>Number of variable categories passes threshold (<code>config.plot.cat_freq.max_unique</code>)</em>"
+                            f"<em>{_("core.structure.overview.categories_passes_threshold")}</em>"
                         )
                         for idx, s in enumerate(summary["value_counts_without_nan"])
                     ],
                     anchor_id=f"{varid}cat_frequency_plot",
-                    name="Common Values (Plot)",
+                    name=_("core.structure.overview.common_values_plot"),
                     sequence_type="batch_grid",
                     batch_size=len(config.html.style._labels),
                 )
@@ -496,8 +503,8 @@ def render_categorical(config: Settings, summary: dict) -> dict:
                         summary["value_counts_without_nan"],
                     ),
                     image_format=image_format,
-                    alt="Common Values (Plot)",
-                    name="Common Values (Plot)",
+                    alt=_("core.structure.overview.common_values_plot"),
+                    name=_("core.structure.overview.common_values_plot"),
                     anchor_id=f"{varid}cat_frequency_plot",
                 )
             )
@@ -505,7 +512,7 @@ def render_categorical(config: Settings, summary: dict) -> dict:
     bottom_items = [
         Container(
             overview_items,
-            name="Overview",
+            name=_("core.structure.overview.overview"),
             anchor_id=f"{varid}overview",
             sequence_type="batch_grid",
             batch_size=len(overview_items),
@@ -513,7 +520,7 @@ def render_categorical(config: Settings, summary: dict) -> dict:
         ),
         Container(
             string_items,
-            name="Categories",
+            name=_("core.structure.overview.categories"),
             anchor_id=f"{varid}string",
             sequence_type="named_list"
             if len(config.html.style._labels) > 1
@@ -532,7 +539,7 @@ def render_categorical(config: Settings, summary: dict) -> dict:
 
         fqwo = FrequencyTable(
             woc,
-            name="Common words",
+            name=_("core.structure.overview.common_words"),
             anchor_id=f"{varid}cwo",
             redact=config.vars.cat.redact,
         )
@@ -540,7 +547,7 @@ def render_categorical(config: Settings, summary: dict) -> dict:
         bottom_items.append(
             Container(
                 [fqwo],
-                name="Words",
+                name=_("core.structure.overview.words"),
                 anchor_id=f"{varid}word",
                 sequence_type="grid",
             )
@@ -551,7 +558,7 @@ def render_categorical(config: Settings, summary: dict) -> dict:
         bottom_items.append(
             Container(
                 [unitab],
-                name="Characters",
+                name=_("core.structure.overview.characters"),
                 anchor_id=f"{varid}characters",
                 sequence_type="grid",
             )

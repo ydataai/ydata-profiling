@@ -1,6 +1,7 @@
 from typing import Any, Callable, Optional, Sequence
 
 from ydata_profiling.report.presentation.core.renderable import Renderable
+from ydata_profiling.i18n import _
 
 
 class Container(Renderable):
@@ -25,7 +26,7 @@ class Container(Renderable):
         self.sequence_type = sequence_type
 
     def __str__(self) -> str:
-        text = "Container\n"
+        text = f"{_("core.container")}\n"
         if "items" in self.content:
             for id, item in enumerate(self.content["items"]):
                 name = str(item).replace("\n", "\n\t")
@@ -35,9 +36,9 @@ class Container(Renderable):
     def __repr__(self) -> str:
         if "name" in self.content:
             name = self.content["name"]
-            return f"Container(name={name})"
+            return f"{_("core.container")}(name={name})"
         else:
-            return "Container"
+            return _("core.container")
 
     def render(self) -> Any:
         raise NotImplementedError()
