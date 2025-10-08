@@ -1,6 +1,6 @@
 <div class="col-sm-12">
     <table class="table table-striped">
-        <p class="h4 item-header">Alerts</p>
+        <p class="h4 item-header">{{ _('html.alerts.title') }}</p>
         {% if alerts is mapping %}
             <thead>
                 <tr>
@@ -19,7 +19,7 @@
                                 {% if not alert._is_empty %}
                                     {% include 'alerts/alert_' + alert.alert_type.name | lower  + '.html'  %}
                                 {% else %}
-                                    <em>Alert not present in this dataset</em>
+                                    <em>{{ _('html.alerts.not_present') }}</em>
                                 {% endif %}
                             </td>
                         {% endfor %}

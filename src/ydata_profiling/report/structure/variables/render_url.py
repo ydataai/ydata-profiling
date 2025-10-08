@@ -9,6 +9,7 @@ from ydata_profiling.report.presentation.core import (
 )
 from ydata_profiling.report.presentation.frequency_table_utils import freq_table
 from ydata_profiling.report.structure.variables.render_common import render_common
+from ydata_profiling.i18n import _
 
 
 def render_url(config: Settings, summary: dict) -> dict:
@@ -30,37 +31,37 @@ def render_url(config: Settings, summary: dict) -> dict:
 
     full_frequency_table = FrequencyTable(
         template_variables["freq_table_rows"],
-        name="Full",
+        name=_("core.structure.overview.full"),
         anchor_id=f"{varid}full_frequency",
         redact=redact,
     )
     scheme_frequency_table = FrequencyTable(
         template_variables["freqtable_scheme"],
-        name="Scheme",
+        name=_("core.structure.overview.scheme"),
         anchor_id=f"{varid}scheme_frequency",
         redact=redact,
     )
     netloc_frequency_table = FrequencyTable(
         template_variables["freqtable_netloc"],
-        name="Netloc",
+        name=_("core.structure.overview.netloc"),
         anchor_id=f"{varid}netloc_frequency",
         redact=redact,
     )
     path_frequency_table = FrequencyTable(
         template_variables["freqtable_path"],
-        name="Path",
+        name=_("core.structure.overview.path"),
         anchor_id=f"{varid}path_frequency",
         redact=redact,
     )
     query_frequency_table = FrequencyTable(
         template_variables["freqtable_query"],
-        name="Query",
+        name=_("core.structure.overview.query"),
         anchor_id=f"{varid}query_frequency",
         redact=redact,
     )
     fragment_frequency_table = FrequencyTable(
         template_variables["freqtable_fragment"],
-        name="Fragment",
+        name=_("core.structure.overview.fragment"),
         anchor_id=f"{varid}fragment_frequency",
         redact=redact,
     )
@@ -90,27 +91,27 @@ def render_url(config: Settings, summary: dict) -> dict:
     table = Table(
         [
             {
-                "name": "Distinct",
+                "name": _("core.structure.overview.distinct"),
                 "value": fmt(summary["n_distinct"]),
                 "alert": "n_distinct" in summary["alert_fields"],
             },
             {
-                "name": "Distinct (%)",
+                "name": _("core.structure.overview.distinct_percentage"),
                 "value": fmt_percent(summary["p_distinct"]),
                 "alert": "p_distinct" in summary["alert_fields"],
             },
             {
-                "name": "Missing",
+                "name": _("core.structure.overview.missing"),
                 "value": fmt(summary["n_missing"]),
                 "alert": "n_missing" in summary["alert_fields"],
             },
             {
-                "name": "Missing (%)",
+                "name": _("core.structure.overview.missing_percentage"),
                 "value": fmt_percent(summary["p_missing"]),
                 "alert": "p_missing" in summary["alert_fields"],
             },
             {
-                "name": "Memory size",
+                "name": _("core.structure.overview.memory_size"),
                 "value": fmt_bytesize(summary["memory_size"]),
                 "alert": False,
             },

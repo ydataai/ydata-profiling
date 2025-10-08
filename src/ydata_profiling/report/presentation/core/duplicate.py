@@ -3,6 +3,7 @@ from typing import Any
 import pandas as pd
 
 from ydata_profiling.report.presentation.core.item_renderer import ItemRenderer
+from ydata_profiling.i18n import _
 
 
 class Duplicate(ItemRenderer):
@@ -10,7 +11,7 @@ class Duplicate(ItemRenderer):
         super().__init__("duplicate", {"duplicate": duplicate}, name=name, **kwargs)
 
     def __repr__(self) -> str:
-        return "Duplicate"
+        return  _("core.duplicate")
 
     def render(self) -> Any:
         raise NotImplementedError()

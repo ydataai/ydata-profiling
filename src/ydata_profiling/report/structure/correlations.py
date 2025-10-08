@@ -5,6 +5,7 @@ from ydata_profiling.model import BaseDescription
 from ydata_profiling.report.presentation.core import Container, CorrelationTable, Image
 from ydata_profiling.report.presentation.core.renderable import Renderable
 from ydata_profiling.visualisation import plot
+from ydata_profiling.i18n import _
 
 
 def get_correlation_items(
@@ -51,7 +52,7 @@ def get_correlation_items(
             diagrams_grid = Container(
                 diagrams,
                 anchor_id=f"{key}_diagram_with_desc",
-                name="Heatmap" if config.correlation_table else name,
+                name=_("core.structure.heatmap") if config.correlation_table else name,
                 sequence_type="batch_grid",
                 batch_size=len(config.html.style._labels),
             )
@@ -69,7 +70,7 @@ def get_correlation_items(
                 tables_tab = Container(
                     tables,
                     anchor_id=f"{key}_tables",
-                    name="Table",
+                    name=_("core.structure.table"),
                     sequence_type="batch_grid",
                     batch_size=len(config.html.style._labels),
                 )
@@ -90,13 +91,13 @@ def get_correlation_items(
                 image_format=image_format,
                 alt=name,
                 anchor_id=f"{key}_diagram",
-                name="Heatmap" if config.correlation_table else name,
+                name=_("core.structure.heatmap") if config.correlation_table else name,
                 classes="correlation-diagram",
             )
 
             if config.correlation_table:
                 table = CorrelationTable(
-                    name="Table", correlation_matrix=item, anchor_id=f"{key}_table"
+                    name=_("core.structure.table"), correlation_matrix=item, anchor_id=f"{key}_table"
                 )
 
                 diagram_table_tabs = Container(
@@ -113,7 +114,7 @@ def get_correlation_items(
     corr = Container(
         items,
         sequence_type="tabs",
-        name="Correlations",
+        name=_("core.structure.correlations"),
         anchor_id="correlations_tab",
     )
 

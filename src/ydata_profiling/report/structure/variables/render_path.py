@@ -5,6 +5,7 @@ from ydata_profiling.report.presentation.frequency_table_utils import freq_table
 from ydata_profiling.report.structure.variables.render_categorical import (
     render_categorical,
 )
+from ydata_profiling.i18n import _
 
 
 def render_path(config: Settings, summary: dict) -> dict:
@@ -31,26 +32,26 @@ def render_path(config: Settings, summary: dict) -> dict:
             Table(
                 [
                     {
-                        "name": "Common prefix",
+                        "name": _("core.structure.overview.common_prefix"),
                         "value": fmt(summary["common_prefix"]),
                         "alert": False,
                     },
                     {
-                        "name": "Unique stems",
+                        "name": _("core.structure.overview.unique_stems"),
                         "value": fmt_numeric(
                             summary["n_stem_unique"], precision=config.report.precision
                         ),
                         "alert": False,
                     },
                     {
-                        "name": "Unique names",
+                        "name": _("core.structure.overview.unique_names"),
                         "value": fmt_numeric(
                             summary["n_name_unique"], precision=config.report.precision
                         ),
                         "alert": False,
                     },
                     {
-                        "name": "Unique extensions",
+                        "name": _("core.structure.overview.unique_extensions"),
                         "value": fmt_numeric(
                             summary["n_suffix_unique"],
                             precision=config.report.precision,
@@ -58,7 +59,7 @@ def render_path(config: Settings, summary: dict) -> dict:
                         "alert": False,
                     },
                     {
-                        "name": "Unique directories",
+                        "name": _("core.structure.overview.unique_directories"),
                         "value": fmt_numeric(
                             summary["n_parent_unique"],
                             precision=config.report.precision,
@@ -66,7 +67,7 @@ def render_path(config: Settings, summary: dict) -> dict:
                         "alert": False,
                     },
                     {
-                        "name": "Unique anchors",
+                        "name": _("core.structure.overview.unique_anchors"),
                         "value": fmt_numeric(
                             summary["n_anchor_unique"],
                             precision=config.report.precision,
@@ -78,7 +79,7 @@ def render_path(config: Settings, summary: dict) -> dict:
             )
         ],
         anchor_id=f"{varid}tbl",
-        name="Overview",
+        name=_("core.structure.overview.overview"),
         sequence_type="list",
     )
 
@@ -86,37 +87,37 @@ def render_path(config: Settings, summary: dict) -> dict:
         path_overview_tab,
         FrequencyTable(
             template_variables["freq_table_rows"],
-            name="Full",
+            name=_("core.structure.overview.full"),
             anchor_id=f"{varid}full_frequency",
             redact=redact,
         ),
         FrequencyTable(
             template_variables["freqtable_stem"],
-            name="Stem",
+            name=_("core.structure.overview.stem"),
             anchor_id=f"{varid}stem_frequency",
             redact=redact,
         ),
         FrequencyTable(
             template_variables["freqtable_name"],
-            name="Name",
+            name=_("core.structure.overview.name"),
             anchor_id=f"{varid}name_frequency",
             redact=redact,
         ),
         FrequencyTable(
             template_variables["freqtable_suffix"],
-            name="Extension",
+            name=_("core.structure.overview.extension"),
             anchor_id=f"{varid}suffix_frequency",
             redact=redact,
         ),
         FrequencyTable(
             template_variables["freqtable_parent"],
-            name="Parent",
+            name=_("core.structure.overview.parent"),
             anchor_id=f"{varid}parent_frequency",
             redact=redact,
         ),
         FrequencyTable(
             template_variables["freqtable_anchor"],
-            name="Anchor",
+            name=_("core.structure.overview.anchor"),
             anchor_id=f"{varid}anchor_frequency",
             redact=redact,
         ),
@@ -124,7 +125,7 @@ def render_path(config: Settings, summary: dict) -> dict:
 
     path_tab = Container(
         path_items,
-        name="Path",
+        name=_("core.structure.overview.path"),
         sequence_type="tabs",
         anchor_id=f"{varid}path",
     )

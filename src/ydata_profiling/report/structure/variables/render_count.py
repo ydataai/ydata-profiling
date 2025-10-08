@@ -14,6 +14,7 @@ from ydata_profiling.report.presentation.core import (
 )
 from ydata_profiling.report.structure.variables.render_common import render_common
 from ydata_profiling.visualisation.plot import histogram, mini_histogram
+from ydata_profiling.i18n import _
 
 
 def render_count(config: Settings, summary: dict) -> dict:
@@ -33,22 +34,22 @@ def render_count(config: Settings, summary: dict) -> dict:
     table1 = Table(
         [
             {
-                "name": "Distinct",
+                "name": _("core.structure.overview.distinct"),
                 "value": fmt(summary["n_distinct"]),
                 "alert": False,
             },
             {
-                "name": "Distinct (%)",
+                "name": _("core.structure.overview.distinct_percentage"),
                 "value": fmt_percent(summary["p_distinct"]),
                 "alert": False,
             },
             {
-                "name": "Missing",
+                "name": _("core.structure.overview.missing"),
                 "value": fmt(summary["n_missing"]),
                 "alert": False,
             },
             {
-                "name": "Missing (%)",
+                "name": _("core.structure.overview.missing_percentage"),
                 "value": fmt_percent(summary["p_missing"]),
                 "alert": False,
             },
@@ -59,34 +60,34 @@ def render_count(config: Settings, summary: dict) -> dict:
     table2 = Table(
         [
             {
-                "name": "Mean",
+                "name": _("core.structure.overview.mean"),
                 "value": fmt_numeric(
                     summary["mean"], precision=config.report.precision
                 ),
                 "alert": False,
             },
             {
-                "name": "Minimum",
+                "name": _("core.structure.overview.min"),
                 "value": fmt_numeric(summary["min"], precision=config.report.precision),
                 "alert": False,
             },
             {
-                "name": "Maximum",
+                "name": _("core.structure.overview.max"),
                 "value": fmt_numeric(summary["max"], precision=config.report.precision),
                 "alert": False,
             },
             {
-                "name": "Zeros",
+                "name": _("core.structure.overview.zeros"),
                 "value": fmt(summary["n_zeros"]),
                 "alert": False,
             },
             {
-                "name": "Zeros (%)",
+                "name": _("core.structure.overview.zeros_percentage"),
                 "value": fmt_percent(summary["p_zeros"]),
                 "alert": False,
             },
             {
-                "name": "Memory size",
+                "name": _("core.structure.overview.memory_size"),
                 "value": fmt_bytesize(summary["memory_size"]),
                 "alert": False,
             },
@@ -97,7 +98,7 @@ def render_count(config: Settings, summary: dict) -> dict:
     mini_histo = Image(
         mini_histogram(config, *summary["histogram"]),
         image_format=image_format,
-        alt="Mini histogram",
+        alt=_("core.structure.overview.mini_histogram"),
     )
 
     template_variables["top"] = Container(
@@ -108,16 +109,16 @@ def render_count(config: Settings, summary: dict) -> dict:
         Image(
             histogram(config, *summary["histogram"]),
             image_format=image_format,
-            alt="Histogram",
-            caption=f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][1]) - 1})",
-            name="Histogram",
+            alt=_("core.structure.overview.histogram"),
+            caption=f"<strong>{_("core.structure.overview.histogram_caption")}</strong> (bins={len(summary['histogram'][1]) - 1})",
+            name=_("core.structure.overview.histogram"),
             anchor_id="histogram",
         )
     ]
 
     fq = FrequencyTable(
         template_variables["freq_table_rows"],
-        name="Common values",
+        name=_("core.structure.overview.common_values"),
         anchor_id="common_values",
         redact=False,
     )
@@ -126,26 +127,26 @@ def render_count(config: Settings, summary: dict) -> dict:
         [
             FrequencyTable(
                 template_variables["firstn_expanded"],
-                name=f"Minimum {config.n_extreme_obs} values",
+                name=f"{_("core.structure.overview.min")} {config.n_extreme_obs} {_("core.structure.overview.values")}",
                 anchor_id="firstn",
                 redact=False,
             ),
             FrequencyTable(
                 template_variables["lastn_expanded"],
-                name=f"Maximum {config.n_extreme_obs} values",
+                name=f"{_("core.structure.overview.max")} {config.n_extreme_obs} {_("core.structure.overview.values")}",
                 anchor_id="lastn",
                 redact=False,
             ),
         ],
         sequence_type="tabs",
-        name="Extreme values",
+        name=_("core.structure.overview.extreme_values"),
         anchor_id="extreme_values",
     )
 
     template_variables["bottom"] = Container(
         [
             Container(
-                seqs, sequence_type="tabs", name="Histogram(s)", anchor_id="histograms"
+                seqs, sequence_type="tabs", name=_("core.structure.overview.histogram_s"), anchor_id="histograms"
             ),
             fq,
             evs,

@@ -14,6 +14,7 @@ from ydata_profiling.report.presentation.core.renderable import Renderable
 from ydata_profiling.report.presentation.frequency_table_utils import freq_table
 from ydata_profiling.report.structure.variables.render_common import render_common
 from ydata_profiling.visualisation.plot import cat_frequency_plot
+from ydata_profiling.i18n import _
 
 
 def render_boolean(config: Settings, summary: dict) -> dict:
@@ -37,27 +38,27 @@ def render_boolean(config: Settings, summary: dict) -> dict:
     table = Table(
         [
             {
-                "name": "Distinct",
+                "name": _("core.structure.overview.distinct"),
                 "value": fmt(summary["n_distinct"]),
                 "alert": "n_distinct" in summary["alert_fields"],
             },
             {
-                "name": "Distinct (%)",
+                "name": _("core.structure.overview.distinct_percentage"),
                 "value": fmt_percent(summary["p_distinct"]),
                 "alert": "p_distinct" in summary["alert_fields"],
             },
             {
-                "name": "Missing",
+                "name":  _("core.structure.overview.missing"),
                 "value": fmt(summary["n_missing"]),
                 "alert": "n_missing" in summary["alert_fields"],
             },
             {
-                "name": "Missing (%)",
+                "name": _("core.structure.overview.missing_percentage"),
                 "value": fmt_percent(summary["p_missing"]),
                 "alert": "p_missing" in summary["alert_fields"],
             },
             {
-                "name": "Memory size",
+                "name": _("core.structure.overview.memory_size"),
                 "value": fmt_bytesize(summary["memory_size"]),
                 "alert": False,
             },
@@ -79,7 +80,7 @@ def render_boolean(config: Settings, summary: dict) -> dict:
     items: List[Renderable] = [
         FrequencyTable(
             template_variables["freq_table_rows"],
-            name="Common Values (Table)",
+            name= _("core.structure.overview.common_values_table"),
             anchor_id=f"{varid}frequency_table",
             redact=False,
         )
@@ -106,7 +107,7 @@ def render_boolean(config: Settings, summary: dict) -> dict:
                         for idx, s in enumerate(summary["value_counts_without_nan"])
                     ],
                     anchor_id=f"{varid}cat_frequency_plot",
-                    name="Common Values (Plot)",
+                    name=_("core.structure.overview.common_values_plot"),
                     sequence_type="batch_grid",
                     batch_size=len(config.html.style._labels),
                 )
@@ -119,8 +120,8 @@ def render_boolean(config: Settings, summary: dict) -> dict:
                         summary["value_counts_without_nan"],
                     ),
                     image_format=image_format,
-                    alt="Common Values (Plot)",
-                    name="Common Values (Plot)",
+                    alt=_("core.structure.overview.common_values_plot"),
+                    name=_("core.structure.overview.common_values_plot"),
                     anchor_id=f"{varid}cat_frequency_plot",
                 )
             )

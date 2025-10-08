@@ -21,6 +21,7 @@ from ydata_profiling.visualisation.plot import (
     plot_acf_pacf,
     plot_timeseries_gap_analysis,
 )
+from ydata_profiling.i18n import _
 
 
 def _render_gap_tab(config: Settings, summary: dict) -> Container:
@@ -100,22 +101,22 @@ def render_timeseries(config: Settings, summary: dict) -> dict:
     table1 = Table(
         [
             {
-                "name": "Distinct",
+                "name": _("core.structure.overview.distinct"),
                 "value": fmt(summary["n_distinct"]),
                 "alert": "n_distinct" in summary["alert_fields"],
             },
             {
-                "name": "Distinct (%)",
+                "name": _("core.structure.overview.distinct_percentage"),
                 "value": fmt_percent(summary["p_distinct"]),
                 "alert": "p_distinct" in summary["alert_fields"],
             },
             {
-                "name": "Missing",
+                "name": _("core.structure.overview.missing"),
                 "value": fmt(summary["n_missing"]),
                 "alert": "n_missing" in summary["alert_fields"],
             },
             {
-                "name": "Missing (%)",
+                "name": _("core.structure.overview.missing_percentage"),
                 "value": fmt_percent(summary["p_missing"]),
                 "alert": "p_missing" in summary["alert_fields"],
             },
@@ -136,14 +137,14 @@ def render_timeseries(config: Settings, summary: dict) -> dict:
     table2 = Table(
         [
             {
-                "name": "Mean",
+                "name": _("core.structure.overview.mean"),
                 "value": fmt_numeric(
                     summary["mean"], precision=config.report.precision
                 ),
                 "alert": False,
             },
             {
-                "name": "Minimum",
+                "name": _("core.structure.overview.min"),
                 "value": fmt_numeric(summary["min"], precision=config.report.precision),
                 "alert": False,
             },
@@ -163,7 +164,7 @@ def render_timeseries(config: Settings, summary: dict) -> dict:
                 "alert": "p_zeros" in summary["alert_fields"],
             },
             {
-                "name": "Memory size",
+                "name": _("core.structure.overview.memory_size"),
                 "value": fmt_bytesize(summary["memory_size"]),
                 "alert": False,
             },
@@ -184,7 +185,7 @@ def render_timeseries(config: Settings, summary: dict) -> dict:
     quantile_statistics = Table(
         [
             {
-                "name": "Minimum",
+                "name": _("core.structure.overview.min"),
                 "value": fmt_numeric(summary["min"], precision=config.report.precision),
             },
             {
@@ -243,7 +244,7 @@ def render_timeseries(config: Settings, summary: dict) -> dict:
                 ),
             },
             {
-                "name": "Mean",
+                "name": _("core.structure.overview.mean"),
                 "value": fmt_numeric(
                     summary["mean"], precision=config.report.precision
                 ),
@@ -260,32 +261,32 @@ def render_timeseries(config: Settings, summary: dict) -> dict:
                 "class": "alert" if "skewness" in summary["alert_fields"] else "",
             },
             {
-                "name": "Sum",
+                "name": _("core.structure.overview.sum"),
                 "value": fmt_numeric(summary["sum"], precision=config.report.precision),
             },
             {
-                "name": "Variance",
+                "name": _("core.structure.overview.variance"),
                 "value": fmt_numeric(
                     summary["variance"], precision=config.report.precision
                 ),
             },
             {
-                "name": "Monotonicity",
+                "name": _("core.structure.overview.monotonicity"),
                 "value": fmt_monotonic(summary["monotonic"]),
             },
             {
-                "name": "Augmented Dickey-Fuller test p-value",
+                "name": _("core.structure.overview.augmented_dickey_fuller_test_value"),
                 "value": fmt_numeric(summary["addfuller"]),
             },
         ],
-        name="Descriptive statistics",
+        name=_("core.structure.overview.descriptive_statistics"),
         style=config.html.style,
     )
 
     statistics = Container(
         [quantile_statistics, descriptive_statistics],
         anchor_id=f"{varid}statistics",
-        name="Statistics",
+        name=_("core.structure.overview.statistics"),
         sequence_type="grid",
     )
 
@@ -295,23 +296,23 @@ def render_timeseries(config: Settings, summary: dict) -> dict:
             [x[0] for x in summary["histogram"]],
             [x[1] for x in summary["histogram"]],
         )
-        hist_caption = f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][0][1]) - 1})"
+        hist_caption = f"<strong>{_("core.structure.overview.histogram_caption")}</strong> (bins={len(summary['histogram'][0][1]) - 1})"
     else:
         hist_data = histogram(config, *summary["histogram"])
-        hist_caption = f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][1]) - 1})"
+        hist_caption = f"<strong>{_("core.structure.overview.histogram_caption")}</strong> (bins={len(summary['histogram'][1]) - 1})"
 
     hist = Image(
         hist_data,
         image_format=image_format,
-        alt="Histogram",
+        alt=_("core.structure.overview.histogram"),
         caption=hist_caption,
-        name="Histogram",
+        name=_("core.structure.overview.histogram"),
         anchor_id=f"{varid}histogram",
     )
 
     fq = FrequencyTable(
         template_variables["freq_table_rows"],
-        name="Common values",
+        name=_("core.structure.overview.common_values"),
         anchor_id=f"{varid}common_values",
         redact=False,
     )
@@ -320,36 +321,36 @@ def render_timeseries(config: Settings, summary: dict) -> dict:
         [
             FrequencyTable(
                 template_variables["firstn_expanded"],
-                name=f"Minimum {config.n_extreme_obs} values",
+                name=f"{_("core.structure.overview.min")} {config.n_extreme_obs} {_("core.structure.overview.values")}",
                 anchor_id=f"{varid}firstn",
                 redact=False,
             ),
             FrequencyTable(
                 template_variables["lastn_expanded"],
-                name=f"Maximum {config.n_extreme_obs} values",
+                name=f"{_("core.structure.overview.max")} {config.n_extreme_obs} {_("core.structure.overview.values")}",
                 anchor_id=f"{varid}lastn",
                 redact=False,
             ),
         ],
         sequence_type="tabs",
-        name="Extreme values",
+        name=_("core.structure.overview.extreme_values"),
         anchor_id=f"{varid}extreme_values",
     )
 
     acf_pacf = Image(
         plot_acf_pacf(config, summary["series"]),
         image_format=image_format,
-        alt="Autocorrelation",
-        caption="<strong>ACF and PACF</strong>",
-        name="Autocorrelation",
+        alt=_("core.structure.overview.autocorrelation"),
+        caption=f"<strong>{_("core.structure.overview.autocorrelation_caption")}</strong>",
+        name=_("core.structure.overview.autocorrelation"),
         anchor_id=f"{varid}acf_pacf",
     )
 
     ts_plot = Image(
         mini_ts_plot(config, summary["series"], figsize=(7, 3)),
         image_format=image_format,
-        alt="Time-series plot",
-        name="Time-series",
+        alt=_("core.structure.overview.timeseries_plot"),
+        name=_("core.structure.overview.timeseries"),
         anchor_id=f"{varid}_ts_plot",
     )
 

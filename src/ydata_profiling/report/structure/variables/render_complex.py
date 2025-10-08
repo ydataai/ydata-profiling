@@ -13,6 +13,7 @@ from ydata_profiling.report.presentation.core import (
     VariableInfo,
 )
 from ydata_profiling.visualisation.plot import scatter_complex
+from ydata_profiling.i18n import _
 
 
 def render_complex(config: Settings, summary: dict) -> dict:
@@ -32,18 +33,18 @@ def render_complex(config: Settings, summary: dict) -> dict:
 
     table1 = Table(
         [
-            {"name": "Distinct", "value": fmt(summary["n_distinct"])},
+            {"name": _("core.structure.overview.distinct"), "value": fmt(summary["n_distinct"])},
             {
-                "name": "Distinct (%)",
+                "name": _("core.structure.overview.distinct_percentage"),
                 "value": fmt_percent(summary["p_distinct"]),
             },
-            {"name": "Missing", "value": fmt(summary["n_missing"])},
+            {"name": _("core.structure.overview.missing"), "value": fmt(summary["n_missing"])},
             {
-                "name": "Missing (%)",
+                "name": _("core.structure.overview.missing_percentage"),
                 "value": fmt_percent(summary["p_missing"]),
             },
             {
-                "name": "Memory size",
+                "name": _("core.structure.overview.memory_size"),
                 "value": fmt_bytesize(summary["memory_size"]),
             },
         ],
@@ -53,26 +54,29 @@ def render_complex(config: Settings, summary: dict) -> dict:
     table2 = Table(
         [
             {
-                "name": "Mean",
+                "name": _("core.structure.overview.mean"),
                 "value": fmt_numeric(
                     summary["mean"], precision=config.report.precision
                 ),
             },
             {
-                "name": "Minimum",
+                "name": _("core.structure.overview.min"),
                 "value": fmt_numeric(summary["min"], precision=config.report.precision),
             },
             {
-                "name": "Maximum",
+                "name": _("core.structure.overview.max"),
                 "value": fmt_numeric(summary["max"], precision=config.report.precision),
             },
             {
-                "name": "Zeros",
+                "name": _("core.structure.overview.zeros"),
                 "value": fmt_numeric(
                     summary["n_zeros"], precision=config.report.precision
                 ),
             },
-            {"name": "Zeros (%)", "value": fmt_percent(summary["p_zeros"])},
+            {
+                "name": _("core.structure.overview.zeros_percentage"),
+                "value": fmt_percent(summary["p_zeros"])
+            },
         ],
         style=config.html.style,
     )
@@ -88,9 +92,9 @@ def render_complex(config: Settings, summary: dict) -> dict:
         Image(
             scatter_complex(config, summary["scatter_data"]),
             image_format=image_format,
-            alt="Scatterplot",
-            caption="Scatterplot in the complex plane",
-            name="Scatter",
+            alt= _("core.structure.overview.scatterplot"),
+            caption=_("core.structure.overview.scatterplot_caption"),
+            name=_("core.structure.overview.scatter"),
             anchor_id=f"{varid}scatter",
         )
     ]

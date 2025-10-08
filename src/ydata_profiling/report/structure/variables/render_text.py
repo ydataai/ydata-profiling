@@ -19,6 +19,7 @@ from ydata_profiling.report.structure.variables.render_categorical import (
 )
 from ydata_profiling.report.structure.variables.render_common import render_common
 from ydata_profiling.visualisation.plot import plot_word_cloud
+from ydata_profiling.i18n import _
 
 
 def render_text(config: Settings, summary: Dict[str, Any]) -> Dict[str, Any]:
@@ -47,27 +48,27 @@ def render_text(config: Settings, summary: Dict[str, Any]) -> Dict[str, Any]:
     table = Table(
         [
             {
-                "name": "Distinct",
+                "name": _("core.structure.overview.distinct"),
                 "value": fmt(summary["n_distinct"]),
                 "alert": "n_distinct" in summary["alert_fields"],
             },
             {
-                "name": "Distinct (%)",
+                "name": _("core.structure.overview.distinct_percentage"),
                 "value": fmt_percent(summary["p_distinct"]),
                 "alert": "p_distinct" in summary["alert_fields"],
             },
             {
-                "name": "Missing",
+                "name": _("core.structure.overview.missing"),
                 "value": fmt(summary["n_missing"]),
                 "alert": "n_missing" in summary["alert_fields"],
             },
             {
-                "name": "Missing (%)",
+                "name": _("core.structure.overview.missing_percentage"),
                 "value": fmt_percent(summary["p_missing"]),
                 "alert": "p_missing" in summary["alert_fields"],
             },
             {
-                "name": "Memory size",
+                "name": _("core.structure.overview.memory_size"),
                 "value": fmt_bytesize(summary["memory_size"]),
                 "alert": False,
             },
@@ -104,7 +105,13 @@ def render_text(config: Settings, summary: Dict[str, Any]) -> Dict[str, Any]:
     overview_items.append(unique_stats)
 
     if not config.vars.text.redact:
-        rows = ("1st row", "2nd row", "3rd row", "4th row", "5th row")
+        rows = (
+            _("core.structure.overview.1st_row"),
+            _("core.structure.overview.2nd_row"),
+            _("core.structure.overview.3rd_row"),
+            _("core.structure.overview.4th_row"),
+            _("core.structure.overview.5th_row"),
+        )
 
         if isinstance(summary["first_rows"], list):
             sample = Table(
@@ -116,7 +123,7 @@ def render_text(config: Settings, summary: Dict[str, Any]) -> Dict[str, Any]:
                     }
                     for name, *value in zip(rows, *summary["first_rows"])
                 ],
-                name="Sample",
+                name=_("core.sample"),
                 style=config.html.style,
             )
         else:
@@ -129,13 +136,13 @@ def render_text(config: Settings, summary: Dict[str, Any]) -> Dict[str, Any]:
                     }
                     for name, value in zip(rows, summary["first_rows"])
                 ],
-                name="Sample",
+                name=_("core.sample"),
                 style=config.html.style,
             )
         overview_items.append(sample)
     overview = Container(
         overview_items,
-        name="Overview",
+        name=_("core.structure.overview.overview"),
         anchor_id=f"{varid}overview",
         sequence_type="batch_grid",
         batch_size=len(overview_items),
@@ -152,7 +159,7 @@ def render_text(config: Settings, summary: Dict[str, Any]) -> Dict[str, Any]:
 
         fqwo = FrequencyTable(
             woc,
-            name="Common words",
+            name=_("core.structure.overview.common_words"),
             anchor_id=f"{varid}cwo",
             redact=config.vars.text.redact,
         )
@@ -160,13 +167,13 @@ def render_text(config: Settings, summary: Dict[str, Any]) -> Dict[str, Any]:
         image = Image(
             plot_word_cloud(config, summary["word_counts"]),
             image_format=config.plot.image_format,
-            alt="Wordcloud",
+            alt=_("core.structure.overview.wordcloud"),
         )
 
         bottom_items.append(
             Container(
                 [fqwo, image],
-                name="Words",
+                name=_("core.structure.overview.words"),
                 anchor_id=f"{varid}word",
                 sequence_type="grid",
             )
@@ -176,7 +183,7 @@ def render_text(config: Settings, summary: Dict[str, Any]) -> Dict[str, Any]:
         bottom_items.append(
             Container(
                 [unitab],
-                name="Characters",
+                name=_("core.structure.overview.characters"),
                 anchor_id=f"{varid}characters",
                 sequence_type="grid",
             )

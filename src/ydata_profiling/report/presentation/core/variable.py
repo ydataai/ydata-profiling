@@ -2,6 +2,7 @@ from typing import Any, Callable, Optional
 
 from ydata_profiling.report.presentation.core.item_renderer import ItemRenderer
 from ydata_profiling.report.presentation.core.renderable import Renderable
+from ydata_profiling.i18n import _
 
 
 class Variable(ItemRenderer):
@@ -20,13 +21,13 @@ class Variable(ItemRenderer):
         top_text = str(self.content["top"]).replace("\n", "\n\t")
         bottom_text = str(self.content["bottom"]).replace("\n", "\n\t")
 
-        text = "Variable\n"
+        text = f"{_("core.variable")}\n"
         text += f"- top: {top_text}"
         text += f"- bottom: {bottom_text}"
         return text
 
     def __repr__(self):
-        return "Variable"
+        return _("core.variable")
 
     def render(self) -> Any:
         raise NotImplementedError()

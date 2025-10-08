@@ -3,6 +3,7 @@ from typing import Any, List
 from ydata_profiling.config import Style
 from ydata_profiling.model.alerts import Alert
 from ydata_profiling.report.presentation.core.item_renderer import ItemRenderer
+from ydata_profiling.i18n import _
 
 
 class VariableInfo(ItemRenderer):
@@ -30,7 +31,7 @@ class VariableInfo(ItemRenderer):
         )
 
     def __repr__(self) -> str:
-        return "VariableInfo"
+        return _("core.variable_info")
 
     def render(self) -> Any:
         raise NotImplementedError()

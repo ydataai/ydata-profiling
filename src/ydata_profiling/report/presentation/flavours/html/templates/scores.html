@@ -36,7 +36,7 @@
   <div class="row justify-content-center text-center mb-sm-3">
     <div class="col-12">
         <div class="card shadow-sm p-4">
-          <h5 class="text-muted mb-3">Overall Data Quality Score</h5>
+          <h5 class="text-muted mb-3">{{ _('html.scores.overall_data_quality') }}</h5>
           <div class="dual-metric">
             {% for i in range(overall_score | length) %}
               <div class="metric">

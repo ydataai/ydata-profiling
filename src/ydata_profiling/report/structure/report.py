@@ -169,7 +169,7 @@ def render_variables_section(
 
         bottom = None
         if "bottom" in template_variables and template_variables["bottom"] is not None:
-            btn = ToggleButton("More details", anchor_id=template_variables["varid"])
+            btn = ToggleButton(_("report.more_details"), anchor_id=template_variables["varid"])
             bottom = Collapse(btn, template_variables["bottom"])
 
         var = Variable(
@@ -216,7 +216,7 @@ def get_duplicates_items(
             items.append(
                 Duplicate(
                     duplicate=duplicates,
-                    name="Most frequently occurring",
+                    name=_("report.most_frequently_occurring"),
                     anchor_id="duplicates",
                 )
             )
@@ -237,7 +237,7 @@ def get_definition_items(definitions: pd.DataFrame) -> Sequence[Renderable]:
         items.append(
             Duplicate(
                 duplicate=definitions,
-                name="Columns",
+                name=_("report.columns"),
                 anchor_id="definitions",
             )
         )

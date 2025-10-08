@@ -17,6 +17,7 @@ from ydata_profiling.model.summary_algorithms import (
     series_hashable,
 )
 from ydata_profiling.utils.information import DisplayInfo
+from ydata_profiling.i18n import _
 
 
 def get_character_counts_vc(vc: pd.Series) -> pd.Series:
@@ -67,7 +68,7 @@ def unicode_summary_vc(vc: pd.Series) -> dict:
         from unicodedata import category as _category  # pylint: disable=import-error
 
         category = _category  # type: ignore
-        char_handler = lambda char: "(unknown)"  # noqa: E731
+        char_handler = lambda char: f"{_("core.unknown")}"  # noqa: E731
         block = char_handler
         block_abbr = char_handler
         category_long = char_handler

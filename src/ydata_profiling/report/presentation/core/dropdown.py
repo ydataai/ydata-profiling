@@ -3,6 +3,7 @@ from typing import Any, Callable
 from ydata_profiling.report.presentation.core.container import Container
 from ydata_profiling.report.presentation.core.item_renderer import ItemRenderer
 from ydata_profiling.report.presentation.core.renderable import Renderable
+from ydata_profiling.i18n import _
 
 
 class Dropdown(ItemRenderer):
@@ -32,7 +33,7 @@ class Dropdown(ItemRenderer):
         )
 
     def __repr__(self) -> str:
-        return "Dropdown"
+        return _("core.dropdown")
 
     def render(self) -> Any:
         raise NotImplementedError()
