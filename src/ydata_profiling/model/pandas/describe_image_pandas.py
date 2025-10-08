@@ -1,8 +1,8 @@
-import imghdr
 from functools import partial
 from pathlib import Path
 from typing import Optional, Tuple, Union
 
+import filetype
 import imagehash
 import pandas as pd
 from PIL import ExifTags, Image
@@ -12,7 +12,6 @@ from ydata_profiling.model.summary_algorithms import (
     describe_image_1d,
     named_aggregate_summary,
 )
-from ydata_profiling.utils.imghdr_patch import *  # noqa: F401,F403
 
 
 def open_image(path: Path) -> Optional[Image.Image]:
@@ -119,7 +118,8 @@ def extract_exif(image: Image) -> dict:
 
 
 def path_is_image(p: Path) -> bool:
-    return imghdr.what(p) is not None
+    guess = filetype.guess(str(p))
+    return guess is not None and guess.mime.startswith("image/")
 
 
 def count_duplicate_hashes(image_descriptions: dict) -> int:

@@ -11,7 +11,7 @@ package_name = "ydata-profiling"
 
 [project]
 name = "ydata-profiling"
-requires-python = ">=3.7,<3.13"
+requires-python = ">=3.7,<3.14"
 authors = [
     {name = "YData Labs Inc", email = "opensource@ydata.ai"}
 ]
@@ -51,7 +51,8 @@ dependencies = [
     "numpy>=1.16.0,<2.2",
     # Could be optional
     # Related to HTML report
-    "htmlmin==0.1.12",
+    "minify-html>=0.15.0",
+    "filetype>=1.0.0",
     # Correlations
     "phik>=0.11.1,<0.13",
     # Examples
@@ -108,7 +109,7 @@ notebook = [
 # note that if you are using pyspark 2.3 or 2.4 and pyarrow >= 0.15, you might need to
 # set ARROW_PRE_0_15_IPC_FORMAT=1 in your conf/spark-env.sh for toPandas functions to work properly
 spark = [
-    "pyspark>=3.0",
+    "pyspark>=4.0",
     "pyarrow>=4.0.0",
     "pandas>1.1",
     "numpy>=1.16.0",

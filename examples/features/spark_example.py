@@ -14,7 +14,10 @@ logging.basicConfig(level=logging.INFO)
 
 if __name__ == "__main__":
     spark_session = (
-        SparkSession.builder.appName("SparkProfiling").master("local[*]").getOrCreate()
+        SparkSession.builder.appName("SparkProfiling")
+        .master("local[*]")
+        .config("spark.sql.ansi.enabled", "false")
+        .getOrCreate()
     )
 
     print(spark_session.sparkContext.uiWebUrl)  # noqa: T201
