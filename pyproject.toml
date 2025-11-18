@@ -113,7 +113,7 @@ spark = [
     "pyarrow>=4.0.0",
     "pandas>1.1",
     "numpy>=1.16.0",
-    "visions[type_image_path]>=0.7.5, <0.7.7",
+    "visions[type_image_path]>=0.8.1, <0.8.2",
 ]
 
 test = [
