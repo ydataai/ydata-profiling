@@ -29,7 +29,7 @@ def func_nullable_series_contains(fn: Callable) -> Callable:
 def safe_histogram(
     values: np.ndarray,
     bins: Union[int, str, np.ndarray] = "auto",
-    weights: Optional = None,
+    weights: Optional[np.ndarray] = None,
     density: bool = False,
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
@@ -109,7 +109,7 @@ def histogram_compute(
     return stats
 
 def chi_square(
-    values: Optional = None, histogram: Optional = None
+    values: Optional[np.ndarray] = None, histogram: Optional[np.ndarray] = None
 ) -> dict:
     if histogram is None:
         try:
