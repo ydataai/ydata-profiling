@@ -55,7 +55,11 @@ def histogram_compute(
     # manter a lógica original do max_bins
     if len(bins) > hist_config.max_bins:
         bins = np.histogram_bin_edges(finite_values, bins=hist_config.max_bins)
-        weights = weights if weights is not None and len(weights) == hist_config.max_bins else None
+        weights = (
+            weights
+            if weights is not None and len(weights) == hist_config.max_bins
+            else None
+        )
 
     stats[name] = np.histogram(
         finite_values,
