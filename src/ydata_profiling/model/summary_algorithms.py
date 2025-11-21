@@ -109,32 +109,34 @@ def histogram_compute(
     return stats
 
 def chi_square(
-    values: Optional[np.ndarray] = None, histogram: Optional[np.ndarray] = None
+    values: Optional[np.ndarray] = None,
+    histogram: Optional[np.ndarray] = None,
 ) -> dict:
+    # Case 1: histogram not passed → we compute it
     if histogram is None:
+        if values is None:
+            return {"statistic": 0, "pvalue": 0}
+
+        # Try NumPy "auto" binning (may fail under NumPy 2)
         try:
             bins = np.histogram_bin_edges(values, bins="auto")
-        except ValueError as exc:
-            # NumPy 2.x strict binning error
-            if "Too many bins for data range" in str(exc) or "Cannot create" in str(exc):
-                # fallback: 1 bin covering the full range
-                finite = values[np.isfinite(values)]
-                if finite.size == 0:
-                    return {"statistic": 0, "pvalue": 0}
-                vmin = float(np.min(finite))
-                vmax = float(np.max(finite))
-                if vmin == vmax:
-                    # degenerate range, expand a little
-                    eps = 0.5 if vmin == 0 else abs(vmin) * 0.1
-                    bins = np.array([vmin - eps, vmin + eps])
-                else:
-                    bins = np.array([vmin, vmax])
+        except ValueError:
+            # Fallback: basic 1-bin histogram covering the min→max range
+            finite = values[np.isfinite(values)]
+            if finite.size == 0:
+                return {"statistic": 0, "pvalue": 0}
+
+            vmin = float(finite.min())
+            vmax = float(finite.max())
+            if vmin == vmax:
+                bins = np.array([vmin - 0.5, vmin + 0.5])
             else:
-                raise
+                bins = np.array([vmin, vmax])
 
         histogram, _ = np.histogram(values, bins=bins)
 
-    if len(histogram) == 0 or np.sum(histogram) == 0:
+    # Case 2: histogram exists but is empty
+    if histogram.size == 0 or histogram.sum() == 0:
         return {"statistic": 0, "pvalue": 0}
 
     return dict(chisquare(histogram)._asdict())
