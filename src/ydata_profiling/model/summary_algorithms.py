@@ -108,6 +108,7 @@ def histogram_compute(
     stats[name] = hist
     return stats
 
+
 def chi_square(
     values: Optional[np.ndarray] = None,
     histogram: Optional[np.ndarray] = None,
@@ -140,6 +141,7 @@ def chi_square(
         return {"statistic": 0, "pvalue": 0}
 
     return dict(chisquare(histogram)._asdict())
+
 
 def series_hashable(
     fn: Callable[[Settings, pd.Series, dict], Tuple[Settings, pd.Series, dict]]
