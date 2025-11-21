@@ -25,6 +25,7 @@ def func_nullable_series_contains(fn: Callable) -> Callable:
 
     return inner
 
+
 def safe_histogram(
     values: np.ndarray,
     bins: Union[int, str, np.ndarray] = "auto",
@@ -40,7 +41,9 @@ def safe_histogram(
     except ValueError as exc:
         if "Too many bins for data range" in str(exc):
             try:
-                return np.histogram(values, bins="auto", weights=weights, density=density)
+                return np.histogram(
+                    values, bins="auto", weights=weights, density=density
+                )
             except ValueError:
                 finite = values[np.isfinite(values)]
                 if finite.size == 0:
@@ -52,8 +55,11 @@ def safe_histogram(
                     bin_edges = np.array([vmin - eps, vmin + eps])
                 else:
                     bin_edges = np.array([vmin, vmax])
-                return np.histogram(values, bins=bin_edges, weights=weights, density=density)
+                return np.histogram(
+                    values, bins=bin_edges, weights=weights, density=density
+                )
         raise
+
 
 def histogram_compute(
     config: Settings,
