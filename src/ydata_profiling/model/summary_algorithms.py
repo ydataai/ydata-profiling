@@ -25,6 +25,35 @@ def func_nullable_series_contains(fn: Callable) -> Callable:
 
     return inner
 
+def safe_histogram(
+    values: np.ndarray,
+    bins: Union[int, str, np.ndarray] = "auto",
+    weights: Optional[np.ndarray] = None,
+    density: bool = False,
+) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Wrapper to avoid
+    ValueError: Too many bins for data range. Cannot create N finite-sized bins.
+    """
+    try:
+        return np.histogram(values, bins=bins, weights=weights, density=density)
+    except ValueError as exc:
+        if "Too many bins for data range" in str(exc):
+            try:
+                return np.histogram(values, bins="auto", weights=weights, density=density)
+            except ValueError:
+                finite = values[np.isfinite(values)]
+                if finite.size == 0:
+                    return np.array([]), np.array([])
+                vmin = float(np.min(finite))
+                vmax = float(np.max(finite))
+                if vmin == vmax:
+                    eps = 0.5 if vmin == 0 else abs(vmin) * 0.5
+                    bin_edges = np.array([vmin - eps, vmin + eps])
+                else:
+                    bin_edges = np.array([vmin, vmax])
+                return np.histogram(values, bins=bin_edges, weights=weights, density=density)
+        raise
 
 def histogram_compute(
     config: Settings,
@@ -38,31 +67,41 @@ def histogram_compute(
         return {name: []}
 
     hist_config = config.plot.histogram
-    bins_arg = "auto" if hist_config.bins == 0 else min(hist_config.bins, n_unique)
 
-    def _safe_histogram_bin_edges(values: np.ndarray, bins_param: Union[int, str]) -> np.ndarray:
-        try:
-            return np.histogram_bin_edges(values, bins=bins_param)
-        except ValueError as exc:
-            if "Too many bins for data range" in str(exc):
-                # fallback: auto selection
-                return np.histogram_bin_edges(values, bins="auto")
-            raise
+    # Compute data range
+    finite = finite_values[np.isfinite(finite_values)]
+    vmin = float(np.min(finite))
+    vmax = float(np.max(finite))
+    data_range = vmax - vmin
 
-    bins = _safe_histogram_bin_edges(finite_values, bins_arg)
+    # Choose of Bins based on observed data values
+    if data_range == 0:
+        eps = 0.5 if vmin == 0 else abs(vmin) * 0.1
+        bins = np.array([vmin - eps, vmin + eps])
+    else:
+        requested_bins = hist_config.bins if hist_config.bins > 0 else "auto"
 
-    if len(bins) > hist_config.max_bins:
-        bins = _safe_histogram_bin_edges(finite_values, hist_config.max_bins)
-        if weights is not None and len(weights) != len(bins):
-            weights = None
+        if isinstance(requested_bins, int):
+            safe_bins = min(requested_bins, n_unique, hist_config.max_bins)
 
-    stats[name] = np.histogram(
+            safe_bins = max(1, safe_bins)
+
+            bins = np.linspace(vmin, vmax, safe_bins + 1)
+        else:
+            bins = np.histogram_bin_edges(finite_values, bins="auto")
+            if len(bins) - 1 > hist_config.max_bins:
+                bins = np.linspace(vmin, vmax, hist_config.max_bins + 1)
+
+    hist = np.histogram(
         finite_values,
         bins=bins,
         weights=weights,
-        density=config.plot.histogram.density,
+        density=hist_config.density,
     )
+
+    stats[name] = hist
     return stats
+
 
 
 def chi_square(
