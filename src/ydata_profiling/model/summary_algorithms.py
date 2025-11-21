@@ -36,16 +36,22 @@ def histogram_compute(
     stats = {}
     if len(finite_values) == 0:
         return {name: []}
+
     hist_config = config.plot.histogram
     bins_arg = "auto" if hist_config.bins == 0 else min(hist_config.bins, n_unique)
-    bins = np.histogram_bin_edges(finite_values, bins=bins_arg)
-    if len(bins) > hist_config.max_bins:
-        bins = np.histogram_bin_edges(finite_values, bins=hist_config.max_bins)
-        weights = weights if weights and len(weights) == hist_config.max_bins else None
 
-    stats[name] = np.histogram(
-        finite_values, bins=bins, weights=weights, density=config.plot.histogram.density
-    )
+    try:
+        # First try: whatever the config asked for
+        bins = np.histogram_bin_edges(finite_values, bins=bins_arg)
+    except ValueError as exc:
+        # NumPy 2.x: "Too many bins for data range. Cannot create X finite-sized bins."
+        if "Too many bins for data range" in str(exc):
+            # Fallback: let NumPy choose something reasonable
+            bins = np.histogram_bin_edges(finite_values, bins="auto")
+        else:
+            # Different error → still bubble up
+            raise
+
     return stats
 
 
