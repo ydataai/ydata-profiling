@@ -1,0 +1,72 @@
+:root {
+    --md-badge-rounded-size: 4px;
+    --md-badge-padding-size: 5px;
+    /* Try to use the mkdocs material primary color. If it is undefined use blue*/
+    --md-badge-text-color: var(--md-primary-bg-color, white);
+}
+
+.badge {
+    display: inline-flex;
+    width: max-content;
+    color: var(--md-badge-text-color);
+    margin-right: 15px;
+    margin-bottom: 15px;
+}
+
+.badge a:hover,
+a.badge:hover,
+.badge-reflink:hover {
+    text-decoration: underline;
+}
+
+/* Higher priority than material's '.md-typeset a' */
+.md-typeset .badge a,
+.md-typeset a.badge {
+    color: var(--md-badge-text-color);
+}
+
+
+.badge-group {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.badge .title, .badge .value {
+    display: block;
+}
+
+.badge .title, .badge .title a {
+    color: var(--md-badge-text-color);
+    padding: var(--md-badge-padding-size);
+    background-color: gray;
+    border-bottom-left-radius: var(--md-badge-rounded-size);
+    border-top-left-radius: var(--md-badge-rounded-size);
+}
+
+.badge.badge-single .title {
+    border-bottom-right-radius: var(--md-badge-rounded-size);
+    border-top-right-radius: var(--md-badge-rounded-size);
+}
+
+.badge .value, .badge .value a {
+    color: var(--md-badge-text-color);
+    padding: var(--md-badge-padding-size);
+    background-color: var(--md-primary-fg-color, #2FA4E7);
+    border-bottom-right-radius: var(--md-badge-rounded-size);
+    border-top-right-radius: var(--md-badge-rounded-size);
+}
+
+.badge-copy {
+    cursor: help;
+}
+
+.badge-copy:hover {
+    text-decoration: underline;
+}
+
+.badge .sep {
+    display: inline-block;
+    width: 0px;
+    height: 0px;
+    opacity: 0;
+}
