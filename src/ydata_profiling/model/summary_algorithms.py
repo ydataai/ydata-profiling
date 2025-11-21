@@ -102,18 +102,36 @@ def histogram_compute(
     stats[name] = hist
     return stats
 
-
-
 def chi_square(
     values: Optional[np.ndarray] = None, histogram: Optional[np.ndarray] = None
 ) -> dict:
     if histogram is None:
-        bins = np.histogram_bin_edges(values, bins="auto")
+        try:
+            bins = np.histogram_bin_edges(values, bins="auto")
+        except ValueError as exc:
+            # NumPy 2.x strict binning error
+            if "Too many bins for data range" in str(exc) or "Cannot create" in str(exc):
+                # fallback: 1 bin covering the full range
+                finite = values[np.isfinite(values)]
+                if finite.size == 0:
+                    return {"statistic": 0, "pvalue": 0}
+                vmin = float(np.min(finite))
+                vmax = float(np.max(finite))
+                if vmin == vmax:
+                    # degenerate range, expand a little
+                    eps = 0.5 if vmin == 0 else abs(vmin) * 0.1
+                    bins = np.array([vmin - eps, vmin + eps])
+                else:
+                    bins = np.array([vmin, vmax])
+            else:
+                raise
+
         histogram, _ = np.histogram(values, bins=bins)
+
     if len(histogram) == 0 or np.sum(histogram) == 0:
         return {"statistic": 0, "pvalue": 0}
-    return dict(chisquare(histogram)._asdict())
 
+    return dict(chisquare(histogram)._asdict())
 
 def series_hashable(
     fn: Callable[[Settings, pd.Series, dict], Tuple[Settings, pd.Series, dict]]
