@@ -40,22 +40,21 @@ def histogram_compute(
     hist_config = config.plot.histogram
     bins_arg = "auto" if hist_config.bins == 0 else min(hist_config.bins, n_unique)
 
-    # --- FIX para NumPy 2.x: fallback seguro quando o range é demasiado pequeno ---
-    try:
-        bins = np.histogram_bin_edges(finite_values, bins=bins_arg)
-    except ValueError as exc:
-        # NumPy 2.x error: "Too many bins for data range. Cannot create X finite-sized bins."
-        if "Too many bins for data range" in str(exc):
-            # fallback robusto: deixar NumPy escolher automaticamente
-            bins = np.histogram_bin_edges(finite_values, bins="auto")
-        else:
-            # manter comportamento anterior para erros diferentes
+    def _safe_histogram_bin_edges(values: np.ndarray, bins_param: Union[int, str]) -> np.ndarray:
+        try:
+            return np.histogram_bin_edges(values, bins=bins_param)
+        except ValueError as exc:
+            if "Too many bins for data range" in str(exc):
+                # fallback: auto selection
+                return np.histogram_bin_edges(values, bins="auto")
             raise
 
-    # manter a lógica original do max_bins
+    bins = _safe_histogram_bin_edges(finite_values, bins_arg)
+
     if len(bins) > hist_config.max_bins:
-        bins = np.histogram_bin_edges(finite_values, bins=hist_config.max_bins)
-        weights = weights if weights is not None and len(weights) == hist_config.max_bins else None
+        bins = _safe_histogram_bin_edges(finite_values, hist_config.max_bins)
+        if weights is not None and len(weights) != len(bins):
+            weights = None
 
     stats[name] = np.histogram(
         finite_values,
