@@ -1,17 +1,22 @@
 import os
 
 import pytest
+import requests
 
 from ydata_profiling.controller import console
 from ydata_profiling.utils.paths import get_config
 
+NASA_URL = "https://data.nasa.gov/docs/legacy/meteorite_landings/Meteorite_Landings.csv"
+
 
 @pytest.fixture
 def console_data(get_data_file):
-    return get_data_file(
-        "meteorites.csv",
-        "https://data.nasa.gov/docs/legacy/meteorite_landings/Meteorite_Landings.csv",
-    )
+    try:
+        return get_data_file("meteorites.csv", NASA_URL)
+    except requests.RequestException as e:
+        pytest.skip(f"Skipping console tests: NASA dataset unavailable ({e})")
+    except Exception as e:
+        pytest.skip(f"Skipping console tests: cannot fetch meteorites.csv ({e})")
 
 
 @pytest.mark.skipif(os.name == "nt", reason="multiprocessing+pytest broken on Windows")
