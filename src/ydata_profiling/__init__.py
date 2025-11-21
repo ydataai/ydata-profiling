@@ -11,7 +11,6 @@ from ydata_profiling.compare_reports import compare  # isort:skip # noqa
 from ydata_profiling.controller import pandas_decorator  # isort:skip # noqa
 from ydata_profiling.profile_report import ProfileReport  # isort:skip # noqa
 from ydata_profiling.version import __version__  # isort:skip # noqa
-from ydata_profiling.utils.information import display_banner
 
 # backend
 import ydata_profiling.model.pandas  # isort:skip  # noqa
@@ -25,8 +24,6 @@ if spec_numba is not None:
     from numba.core.errors import NumbaDeprecationWarning  # isort:skip # noqa
 
     warnings.simplefilter("ignore", category=NumbaDeprecationWarning)
-
-display_banner()
 
 __all__ = [
     "pandas_decorator",
