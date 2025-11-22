@@ -178,4 +178,3 @@ jobs:
           make install
           pip install ".[test]"
           make test_spark
-
