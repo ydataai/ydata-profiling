@@ -5,7 +5,7 @@ from typing import Tuple
 
 import pandas as pd
 from pyspark.sql import DataFrame
-from pyspark.sql import functions as F
+from pyspark.sql import functions as F, types as T
 
 from ydata_profiling.config import Settings
 from ydata_profiling.model.summary_algorithms import describe_counts
@@ -25,6 +25,9 @@ def describe_counts_spark(
     Returns:
         Updated settings, input series, and summary dictionary.
     """
+    # Cast Decimal Type s
+    if isinstance(series.schema.fields[0].dataType, T.DecimalType):
+        series = series.select(F.col(series.columns[0]).cast(T.DoubleType()).alias(series.columns[0]))
 
     # Count occurrences of each value
     value_counts = series.groupBy(series.columns[0]).count()
