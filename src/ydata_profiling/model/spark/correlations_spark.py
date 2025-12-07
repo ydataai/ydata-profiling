@@ -49,6 +49,10 @@ def _compute_corr_natively(df: DataFrame, summary: dict, corr_type: str) -> Arra
     interval_columns = [
         column for column, type_name in variables.items() if type_name == "Numeric"
     ]
+
+    if not interval_columns:
+        return [], interval_columns
+
     df = df.select(*interval_columns)
 
     # convert to vector column first
