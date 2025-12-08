@@ -37,7 +37,8 @@ def describe_counts_spark(
 
     # Count missing values
     n_missing = (
-        value_counts.filter(F.col(series.columns[0]).isNull()).select("count").first()
+        # Need to add the isnan() check because Pandas isnull check will count NaN as null, but Spark does not
+        value_counts.filter(F.col(series.columns[0]).isNull() | F.isnan(F.col(series.columns[0]))).select("count").first()
     )
     n_missing = n_missing["count"] if n_missing else 0
 
