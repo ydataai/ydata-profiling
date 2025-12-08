@@ -36,10 +36,17 @@ def describe_counts_spark(
     value_counts_index_sorted = value_counts.orderBy(F.asc(series.columns[0]))
 
     # Count missing values
-    n_missing = (
-        # Need to add the isnan() check because Pandas isnull check will count NaN as null, but Spark does not
-        value_counts.filter(F.col(series.columns[0]).isNull() | F.isnan(F.col(series.columns[0]))).select("count").first()
-    )
+    if series.dtypes[0][1] in ("int", "float", "bigint", "double"):
+        n_missing = (
+            # Need to add the isnan() check because Pandas isnull check will count NaN as null, but Spark does not
+            value_counts.filter(F.col(series.columns[0]).isNull() | F.isnan(F.col(series.columns[0]))).select("count").first()
+        )
+    else:
+        n_missing = (
+            # Need to add the isnan() check because Pandas isnull check will count NaN as null, but Spark does not
+            value_counts.filter(F.col(series.columns[0]).isNull()).select("count").first()
+        )
+
     n_missing = n_missing["count"] if n_missing else 0
 
     # Convert top 200 values to Pandas for frequency table display
