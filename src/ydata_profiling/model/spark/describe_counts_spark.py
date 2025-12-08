@@ -61,17 +61,15 @@ def describe_counts_spark(
             value_counts.filter(F.col(column).isNotNull())  # Exclude NaNs
             .filter(~F.isnan(F.col(column)))  # Remove implicit NaNs (if numeric column)
             .groupBy(column)  # Group by unique values
-            .count()  # Count occurrences
+            .agg(F.sum("count").alias("count"))  # Sum of count
             .orderBy(F.desc("count"))  # Sort in descending order
-            .limit(200)  # Limit for performance
         )
     else:
         value_counts_no_nan = (
             value_counts.filter(F.col(column).isNotNull())  # Exclude NULLs
             .groupBy(column)  # Group by unique timestamp values
-            .count()  # Count occurrences
+            .agg(F.sum("count").alias("count"))  # Sum of count
             .orderBy(F.desc("count"))  # Sort by most frequent timestamps
-            .limit(200)  # Limit for performance
         )
 
     # Convert to Pandas Series, forcing proper structure
