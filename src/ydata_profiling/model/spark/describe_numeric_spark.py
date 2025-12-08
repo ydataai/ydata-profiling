@@ -11,6 +11,14 @@ from ydata_profiling.model.summary_algorithms import histogram_compute
 def numeric_stats_spark(df: DataFrame, summary: dict) -> dict:
     column = df.columns[0]
 
+    # Removing null types from numeric summary stats to match Pandas defaults which skip na's (skipna=False)
+    finite_filter = (
+            F.col(column).isNotNull()
+            & ~F.isnan(F.col(column))
+            & ~F.col(column).isin([np.inf, -np.inf])
+    )
+    non_null_df = df.filter(finite_filter)
+
     expr = [
         F.mean(F.col(column)).alias("mean"),
         F.stddev(F.col(column)).alias("std"),
@@ -21,7 +29,7 @@ def numeric_stats_spark(df: DataFrame, summary: dict) -> dict:
         F.skewness(F.col(column)).alias("skewness"),
         F.sum(F.col(column)).alias("sum"),
     ]
-    return df.agg(*expr).first().asDict()
+    return non_null_df.agg(*expr).first().asDict()
 
 
 def describe_numeric_1d_spark(
