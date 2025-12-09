@@ -1,5 +1,5 @@
 import functools
-from typing import Any, Callable, Optional, Tuple, TypeVar
+from typing import Any, Callable, Optional, Tuple, TypeVar, Union
 
 import numpy as np
 import pandas as pd
@@ -26,6 +26,41 @@ def func_nullable_series_contains(fn: Callable) -> Callable:
     return inner
 
 
+def safe_histogram(
+    values: np.ndarray,
+    bins: Union[int, str, np.ndarray] = "auto",
+    weights: Optional[np.ndarray] = None,
+    density: bool = False,
+) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Wrapper to avoid
+    ValueError: Too many bins for data range. Cannot create N finite-sized bins.
+    """
+    try:
+        return np.histogram(values, bins=bins, weights=weights, density=density)
+    except ValueError as exc:
+        if "Too many bins for data range" in str(exc):
+            try:
+                return np.histogram(
+                    values, bins="auto", weights=weights, density=density
+                )
+            except ValueError:
+                finite = values[np.isfinite(values)]
+                if finite.size == 0:
+                    return np.array([]), np.array([])
+                vmin = float(np.min(finite))
+                vmax = float(np.max(finite))
+                if vmin == vmax:
+                    eps = 0.5 if vmin == 0 else abs(vmin) * 0.5
+                    bin_edges = np.array([vmin - eps, vmin + eps])
+                else:
+                    bin_edges = np.array([vmin, vmax])
+                return np.histogram(
+                    values, bins=bin_edges, weights=weights, density=density
+                )
+        raise
+
+
 def histogram_compute(
     config: Settings,
     finite_values: np.ndarray,
@@ -36,27 +71,75 @@ def histogram_compute(
     stats = {}
     if len(finite_values) == 0:
         return {name: []}
-    hist_config = config.plot.histogram
-    bins_arg = "auto" if hist_config.bins == 0 else min(hist_config.bins, n_unique)
-    bins = np.histogram_bin_edges(finite_values, bins=bins_arg)
-    if len(bins) > hist_config.max_bins:
-        bins = np.histogram_bin_edges(finite_values, bins=hist_config.max_bins)
-        weights = weights if weights and len(weights) == hist_config.max_bins else None
 
-    stats[name] = np.histogram(
-        finite_values, bins=bins, weights=weights, density=config.plot.histogram.density
+    hist_config = config.plot.histogram
+
+    # Compute data range
+    finite = finite_values[np.isfinite(finite_values)]
+    vmin = float(np.min(finite))
+    vmax = float(np.max(finite))
+    data_range = vmax - vmin
+
+    # Choose of Bins based on observed data values
+    if data_range == 0:
+        eps = 0.5 if vmin == 0 else abs(vmin) * 0.1
+        bins = np.array([vmin - eps, vmin + eps])
+    else:
+        requested_bins = hist_config.bins if hist_config.bins > 0 else "auto"
+
+        if isinstance(requested_bins, int):
+            safe_bins = min(requested_bins, n_unique, hist_config.max_bins)
+
+            safe_bins = max(1, safe_bins)
+
+            bins = np.linspace(vmin, vmax, safe_bins + 1)
+        else:
+            bins = np.histogram_bin_edges(finite_values, bins="auto")
+            if len(bins) - 1 > hist_config.max_bins:
+                bins = np.linspace(vmin, vmax, hist_config.max_bins + 1)
+
+    hist = np.histogram(
+        finite_values,
+        bins=bins,
+        weights=weights,
+        density=hist_config.density,
     )
+
+    stats[name] = hist
     return stats
 
 
 def chi_square(
-    values: Optional[np.ndarray] = None, histogram: Optional[np.ndarray] = None
+    values: Optional[np.ndarray] = None,
+    histogram: Optional[np.ndarray] = None,
 ) -> dict:
+    # Case 1: histogram not passed → we compute it
     if histogram is None:
-        bins = np.histogram_bin_edges(values, bins="auto")
+        if values is None:
+            return {"statistic": 0, "pvalue": 0}
+
+        # Try NumPy "auto" binning (may fail under NumPy 2)
+        try:
+            bins = np.histogram_bin_edges(values, bins="auto")
+        except ValueError:
+            # Fallback: basic 1-bin histogram covering the min→max range
+            finite = values[np.isfinite(values)]
+            if finite.size == 0:
+                return {"statistic": 0, "pvalue": 0}
+
+            vmin = float(finite.min())
+            vmax = float(finite.max())
+            if vmin == vmax:
+                bins = np.array([vmin - 0.5, vmin + 0.5])
+            else:
+                bins = np.array([vmin, vmax])
+
         histogram, _ = np.histogram(values, bins=bins)
-    if len(histogram) == 0 or np.sum(histogram) == 0:
+
+    # Case 2: histogram exists but is empty
+    if histogram.size == 0 or histogram.sum() == 0:
         return {"statistic": 0, "pvalue": 0}
+
     return dict(chisquare(histogram)._asdict())
 
 
