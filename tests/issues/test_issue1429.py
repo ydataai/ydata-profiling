@@ -2,12 +2,16 @@
 Test for issue 1429:
 https://github.com/ydataai/ydata-profiling/issues/1429
 """
+import numpy as np
 
 from ydata_profiling.config import SparkSettings
-from ydata_profiling.model.spark.describe_numeric_spark import numeric_stats_spark
+from ydata_profiling.model.spark.describe_numeric_spark import numeric_stats_spark, describe_numeric_1d_spark
 from ydata_profiling.model.spark.describe_counts_spark import describe_counts_spark
+from ydata_profiling.model.spark.describe_generic_spark import describe_generic_spark
+from ydata_profiling.model.spark.describe_supported_spark import describe_supported_spark
 from pyspark.sql import types as T, SparkSession, DataFrame
 
+config = SparkSettings()
 
 def create_test_df(spark: SparkSession) -> DataFrame:
     schema = T.StructType(
@@ -16,24 +20,25 @@ def create_test_df(spark: SparkSession) -> DataFrame:
             T.StructField("double", T.DoubleType(), True),
             T.StructField("int", T.IntegerType(), True),
             T.StructField("boolean", T.BooleanType(), True),
+            T.StructField("null_double", T.DoubleType(), True),
         ]
     )
 
     data = [
-        (f"test_{num + 1}", float(num), int(num), True) for num in range(205)
+        (f"test_{num + 1}", float(num), int(num), True, None) for num in range(205)
     ]
 
     # Adding dupes
     data.extend(
         [
-            ("test_1", float(1), int(1), False) for _ in range(205)
+            ("test_1", float(1), int(1), False, None) for _ in range(205)
         ]
     )
 
     # Adding nulls
     data.extend(
         [
-            (None, None, None, None) for _ in range(100)
+            (None, None, None, None, None) for _ in range(100)
         ]
     )
 
@@ -49,21 +54,44 @@ def test_describe_numeric_spark(spark_session):
         assert value is not None
 
 
+def test_describe_numeric_1d_spark_for_null_column_edge_case(spark_session, test_output_dir):
+    spark = spark_session
+    test_df = create_test_df(spark)
+
+    _, _, summary = describe_counts_spark(config=config, series=test_df.select("null_double"), summary={})
+
+    _, _, summary = describe_generic_spark(config=config, df=test_df.select("null_double"), summary=summary)
+
+    _, _, summary = describe_supported_spark(config=config, series=test_df.select("null_double"), summary=summary)
+
+    _, _, summary = describe_numeric_1d_spark(config=config, df=test_df.select("null_double"), summary=summary)
+
+    assert summary["iqr"] is np.nan
+    assert summary["mad"] is np.nan
+    assert summary["cv"] is np.nan
+    assert summary["mean"] is None
+    assert summary["histogram"] == []
+
+
 def test_describe_counts_spark(spark_session):
     test_df = create_test_df(spark_session)
 
-    _, _, summary = describe_counts_spark(config=SparkSettings(), series=test_df.select("category"), summary={})
+    _, _, summary = describe_counts_spark(config=config, series=test_df.select("category"), summary={})
 
     assert summary["value_counts_without_nan"].loc["test_1"] == 206
 
-    _, _, summary = describe_counts_spark(config=SparkSettings(), series=test_df.select("double"), summary={})
+    _, _, summary = describe_counts_spark(config=config, series=test_df.select("double"), summary={})
 
     assert summary["value_counts_without_nan"].loc[float(1)] == 206
 
-    _, _, summary = describe_counts_spark(config=SparkSettings(), series=test_df.select("int"), summary={})
+    _, _, summary = describe_counts_spark(config=config, series=test_df.select("int"), summary={})
 
     assert summary["value_counts_without_nan"].loc[int(1)] == 206
 
-    _, _, summary = describe_counts_spark(config=SparkSettings(), series=test_df.select("boolean"), summary={})
+    _, _, summary = describe_counts_spark(config=config, series=test_df.select("boolean"), summary={})
 
     assert summary["value_counts_without_nan"].loc[True] == 205
+
+    _, _, summary = describe_counts_spark(config=config, series=test_df.select("null_double"), summary={})
+
+    assert summary["value_counts_without_nan"].size == 0
