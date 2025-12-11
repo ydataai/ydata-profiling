@@ -45,9 +45,18 @@ def _compute_corr_natively(df: DataFrame, summary: dict, corr_type: str) -> Arra
     exact same workflow. The syntax is Correlation.corr(dataframe, method="pearson" OR "spearman"),
     and Correlation is from pyspark.ml.stat
     """
-    variables = {column: description["type"] for column, description in summary.items()}
+    variables = {
+        column: {
+            "type": description["type"],
+            "all_missing": description.get("n", 0) - description.get("n_missing", 0)
+            == 0,
+        }
+        for column, description in summary.items()
+    }
     interval_columns = [
-        column for column, type_name in variables.items() if type_name == "Numeric"
+        column
+        for column, mapping in variables.items()
+        if mapping["type"] == "Numeric" and not mapping["all_missing"]
     ]
 
     if not interval_columns:
@@ -66,6 +75,9 @@ def _compute_corr_natively(df: DataFrame, summary: dict, corr_type: str) -> Arra
 
     assembler = VectorAssembler(**assembler_args)
     df_vector = assembler.transform(df).select(vector_col)
+
+    if df_vector.count() <= 1:
+        return [], interval_columns
 
     # get correlation matrix
     matrix = (

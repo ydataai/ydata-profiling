@@ -3,9 +3,13 @@ Test for issue 1722:
 https://github.com/ydataai/ydata-profiling/issues/1722
 """
 
-from ydata_profiling import ProfileReport
 from datetime import date, datetime
-from pyspark.sql import types as T, SparkSession
+
+from pyspark.sql import SparkSession
+from pyspark.sql import types as T
+
+from ydata_profiling import ProfileReport
+
 
 def make_non_numeric_df(spark: SparkSession):
     # Intentionally not including any numeric types
@@ -30,8 +34,22 @@ def make_non_numeric_df(spark: SparkSession):
     )
 
     data = [
-        ("r1", date(2020, 1, 1), datetime(2020, 1, 1, 12, 0), [1, 2], {"x": 1, "y": 2}, (10, "aa")),
-        ("r2", date(2021, 6, 15), datetime(2021, 6, 15, 8, 30), [3], {"z": 3}, (20, "bb")),
+        (
+            "r1",
+            date(2020, 1, 1),
+            datetime(2020, 1, 1, 12, 0),
+            [1, 2],
+            {"x": 1, "y": 2},
+            (10, "aa"),
+        ),
+        (
+            "r2",
+            date(2021, 6, 15),
+            datetime(2021, 6, 15, 8, 30),
+            [3],
+            {"z": 3},
+            (20, "bb"),
+        ),
         ("r3", date(2022, 12, 31), datetime(2022, 12, 31, 23, 59), [], {}, (30, "cc")),
     ]
 

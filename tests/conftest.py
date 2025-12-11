@@ -88,6 +88,10 @@ def spark_context():
         .setAppName("pytest-pyspark-tests")
         .setMaster("local[*]")
         .set("spark.sql.ansi.enabled", "false")
+        .set("spark.driver.host", "127.0.0.1")
+        .set("spark.driver.bindAddress", "127.0.0.1")
+        .set("spark.driver.port", "4040")
+        .set("spark.blockManager.port", "4041")
     )
 
     # Check if SparkContext exists before creating a new one
@@ -112,6 +116,8 @@ def spark_session(spark_context):
         pytest.skip("Skipping Spark tests because PySpark is not installed.")
     spark = (
         SparkSession.builder.master("local[*]")
+        .config("spark.driver.host", "127.0.0.1")
+        .config("spark.driver.bindAddress", "127.0.0.1")
         .appName("pytest")
         .config("spark.sql.ansi.enabled", "false")  # <-- restore permissive casts
         .getOrCreate()

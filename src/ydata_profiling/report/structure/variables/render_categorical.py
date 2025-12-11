@@ -23,6 +23,7 @@ from ydata_profiling.report.presentation.core import (
 from ydata_profiling.report.presentation.core.renderable import Renderable
 from ydata_profiling.report.presentation.frequency_table_utils import freq_table
 from ydata_profiling.report.structure.variables.render_common import render_common
+from ydata_profiling.report.utils import image_or_empty
 from ydata_profiling.visualisation.plot import cat_frequency_plot, histogram
 
 
@@ -95,7 +96,7 @@ def render_categorical_length(
     else:
         hist_data = histogram(config, *summary["histogram_length"])
 
-    length_histo = Image(
+    length_histo = image_or_empty(
         hist_data,
         image_format=config.plot.image_format,
         alt="length histogram",

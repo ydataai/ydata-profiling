@@ -15,6 +15,7 @@ from ydata_profiling.report.presentation.core import (
     VariableInfo,
 )
 from ydata_profiling.report.structure.variables.render_common import render_common
+from ydata_profiling.report.utils import image_or_empty
 from ydata_profiling.visualisation.plot import (
     histogram,
     mini_ts_plot,
@@ -289,18 +290,24 @@ def render_timeseries(config: Settings, summary: dict) -> dict:
         sequence_type="grid",
     )
 
-    if isinstance(summary["histogram"], list):
-        hist_data = histogram(
-            config,
-            [x[0] for x in summary["histogram"]],
-            [x[1] for x in summary["histogram"]],
-        )
-        hist_caption = f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][0][1]) - 1})"
-    else:
-        hist_data = histogram(config, *summary["histogram"])
-        hist_caption = f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][1]) - 1})"
+    summary_histogram = summary.get("histogram", [])
 
-    hist = Image(
+    hist_data = None
+    hist_caption = None
+
+    if summary_histogram:
+        if isinstance(summary_histogram, list):
+            hist_data = histogram(
+                config,
+                [x[0] for x in summary["histogram"]],
+                [x[1] for x in summary["histogram"]],
+            )
+            hist_caption = f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][0][1]) - 1})"
+        else:
+            hist_data = histogram(config, *summary["histogram"])
+            hist_caption = f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][1]) - 1})"
+
+    hist = image_or_empty(
         hist_data,
         image_format=image_format,
         alt="Histogram",

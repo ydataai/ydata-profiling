@@ -43,7 +43,10 @@ def correlation_data_cat(spark_session):
 
 @pytest.fixture
 def correlation_var_types():
-    return {"test_num_1": {"type": "Numeric"}, "test_num_2": {"type": "Numeric"}}
+    return {
+        "test_num_1": {"type": "Numeric", "n": 7, "n_missing": 0},
+        "test_num_2": {"type": "Numeric", "n": 7, "n_missing": 0},
+    }
 
 
 def test_spearman_spark(correlation_data_num, correlation_var_types):

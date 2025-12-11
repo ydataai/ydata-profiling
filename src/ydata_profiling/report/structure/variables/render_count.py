@@ -8,11 +8,11 @@ from ydata_profiling.report.formatters import (
 from ydata_profiling.report.presentation.core import (
     Container,
     FrequencyTable,
-    Image,
     Table,
     VariableInfo,
 )
 from ydata_profiling.report.structure.variables.render_common import render_common
+from ydata_profiling.report.utils import image_or_empty
 from ydata_profiling.visualisation.plot import histogram, mini_histogram
 
 
@@ -94,26 +94,41 @@ def render_count(config: Settings, summary: dict) -> dict:
         style=config.html.style,
     )
 
-    mini_histo = Image(
-        mini_histogram(config, *summary["histogram"]),
-        image_format=image_format,
+    summary_histogram = summary.get("histogram", [])
+
+    mini_hist_data = None
+
+    if summary_histogram:
+        mini_hist_data = mini_histogram(config, *summary["histogram"])
+
+    mini_histo = image_or_empty(
+        mini_hist_data,
         alt="Mini histogram",
+        image_format=image_format,
+        name="Mini Histogram",
     )
 
     template_variables["top"] = Container(
         [info, table1, table2, mini_histo], sequence_type="grid"
     )
 
-    seqs = [
-        Image(
-            histogram(config, *summary["histogram"]),
-            image_format=image_format,
-            alt="Histogram",
-            caption=f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][1]) - 1})",
-            name="Histogram",
-            anchor_id="histogram",
-        )
-    ]
+    hist_data = None
+    hist_caption = None
+
+    if summary_histogram:
+        hist_data = histogram(config, *summary["histogram"])
+        hist_caption = f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][1]) - 1})"
+
+    hist = image_or_empty(
+        hist_data,
+        alt="Histogram",
+        image_format=image_format,
+        caption=hist_caption,
+        name="Histogram",
+        anchor_id="histogram",
+    )
+
+    seqs = [hist]
 
     fq = FrequencyTable(
         template_variables["freq_table_rows"],

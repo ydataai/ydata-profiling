@@ -5,7 +5,8 @@ from typing import Tuple
 
 import pandas as pd
 from pyspark.sql import DataFrame
-from pyspark.sql import functions as F, types as T
+from pyspark.sql import functions as F
+from pyspark.sql import types as T
 
 from ydata_profiling.config import Settings
 from ydata_profiling.model.summary_algorithms import describe_counts
@@ -27,7 +28,9 @@ def describe_counts_spark(
     """
     # Cast Decimal Type s
     if isinstance(series.schema.fields[0].dataType, T.DecimalType):
-        series = series.select(F.col(series.columns[0]).cast(T.DoubleType()).alias(series.columns[0]))
+        series = series.select(
+            F.col(series.columns[0]).cast(T.DoubleType()).alias(series.columns[0])
+        )
 
     # Count occurrences of each value
     value_counts = series.groupBy(series.columns[0]).count()
@@ -42,12 +45,18 @@ def describe_counts_spark(
     if series.dtypes[0][1] in ("int", "float", "bigint", "double"):
         n_missing = (
             # Need to add the isnan() check because Pandas isnull check will count NaN as null, but Spark does not
-            value_counts.filter(F.col(series.columns[0]).isNull() | F.isnan(F.col(series.columns[0]))).select("count").first()
+            value_counts.filter(
+                F.col(series.columns[0]).isNull() | F.isnan(F.col(series.columns[0]))
+            )
+            .select("count")
+            .first()
         )
     else:
         n_missing = (
             # Need to add the isnan() check because Pandas isnull check will count NaN as null, but Spark does not
-            value_counts.filter(F.col(series.columns[0]).isNull()).select("count").first()
+            value_counts.filter(F.col(series.columns[0]).isNull())
+            .select("count")
+            .first()
         )
 
     n_missing = n_missing["count"] if n_missing else 0

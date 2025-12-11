@@ -13,9 +13,9 @@ def numeric_stats_spark(df: DataFrame, summary: dict) -> dict:
 
     # Removing null types from numeric summary stats to match Pandas defaults which skip na's (skipna=False)
     finite_filter = (
-            F.col(column).isNotNull()
-            & ~F.isnan(F.col(column))
-            & ~F.col(column).isin([np.inf, -np.inf])
+        F.col(column).isNotNull()
+        & ~F.isnan(F.col(column))
+        & ~F.col(column).isin([np.inf, -np.inf])
     )
     non_null_df = df.filter(finite_filter)
 
@@ -91,12 +91,7 @@ def describe_numeric_1d_spark(
 
     if summary.get("n") == summary.get("n_missing"):
         # This means the entire column is null/nan, so summary values need to be hard-coded:
-        summary.update(
-            {
-                f"{percentile:.0%}": np.nan
-                for percentile in quantiles
-            }
-        )
+        summary.update({f"{percentile:.0%}": np.nan for percentile in quantiles})
 
         summary["mad"] = np.nan
         summary["iqr"] = np.nan
