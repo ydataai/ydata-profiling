@@ -1,10 +1,11 @@
 from typing import List
 
 from ydata_profiling.config import Settings
-from ydata_profiling.report.presentation.core import Container, FrequencyTable, Image
+from ydata_profiling.report.presentation.core import Container, FrequencyTable
 from ydata_profiling.report.presentation.core.renderable import Renderable
 from ydata_profiling.report.presentation.frequency_table_utils import freq_table
 from ydata_profiling.report.structure.variables.render_path import render_path
+from ydata_profiling.report.utils import image_or_empty
 from ydata_profiling.visualisation.plot import histogram
 
 
@@ -20,17 +21,21 @@ def render_file(config: Settings, summary: dict) -> dict:
     image_format = config.plot.image_format
 
     file_tabs: List[Renderable] = []
+
+    hist_data = None
+    if summary["histogram_file_size"]:
+        hist_data = histogram(config, *summary["histogram_file_size"])
+
     if "file_size" in summary:
-        file_tabs.append(
-            Image(
-                histogram(config, *summary["histogram_file_size"]),
-                image_format=image_format,
-                alt="Size",
-                caption=f"<strong>Histogram with fixed size bins of file sizes (in bytes)</strong> (bins={len(summary['histogram_file_size'][1]) - 1})",
-                name="File size",
-                anchor_id=f"{varid}file_size_histogram",
-            )
+        hist = image_or_empty(
+            hist_data,
+            image_format=image_format,
+            alt="Size",
+            caption=f"<strong>Histogram with fixed size bins of file sizes (in bytes)</strong> (bins={len(summary['histogram_file_size'][1]) - 1})",
+            name="File size",
+            anchor_id=f"{varid}file_size_histogram",
         )
+        file_tabs.append(hist)
 
     file_dates = {
         "file_created_time": "Created",

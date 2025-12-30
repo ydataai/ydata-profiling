@@ -134,13 +134,49 @@ def plot_word_cloud(config: Settings, word_counts: pd.Series) -> str:
     return plot_360_n0sc0pe(config)
 
 
+def _is_valid_hist_data(series: np.ndarray, bins: Union[int, np.ndarray]) -> bool:
+    """
+    Returns True if the series and bins contain enough usable numeric data
+    to produce a histogram without matplotlib errors.
+    """
+    if series is None or bins is None:
+        return False
+
+    if len(series) == 0:
+        return False
+
+    try:
+        series_arr = np.asarray(series, dtype=float)
+    except Exception:
+        return False
+
+    if not np.isfinite(series_arr).any():
+        return False
+
+    # Handle bins type
+    if isinstance(bins, int):
+        if bins < 1:
+            return False
+    else:
+        try:
+            bins_arr = np.asarray(bins, dtype=float)
+        except Exception:
+            return False
+        if len(bins_arr) < 2:
+            return False
+        if not np.isfinite(bins_arr).all():
+            return False
+
+    return True
+
+
 @manage_matplotlib_context()
 def histogram(
     config: Settings,
     series: np.ndarray,
     bins: Union[int, np.ndarray],
     date: bool = False,
-) -> str:
+) -> str | None:
     """Plot an histogram of the data.
 
     Args:
@@ -153,6 +189,9 @@ def histogram(
       The resulting histogram encoded as a string.
 
     """
+
+    if not _is_valid_hist_data(series, bins):
+        return None
     plot = _plot_histogram(config, series, bins, date=date, figsize=(7, 3))
     plot.xaxis.set_tick_params(rotation=90 if date else 45)
     plot.figure.tight_layout()
@@ -165,7 +204,7 @@ def mini_histogram(
     series: np.ndarray,
     bins: Union[int, np.ndarray],
     date: bool = False,
-) -> str:
+) -> str | None:
     """Plot a small (mini) histogram of the data.
 
     Args:
@@ -176,6 +215,9 @@ def mini_histogram(
     Returns:
       The resulting mini histogram encoded as a string.
     """
+    if not _is_valid_hist_data(series, bins):
+        return None
+
     plot = _plot_histogram(
         config, series, bins, figsize=(3, 2.25), date=date, hide_yaxis=True
     )
@@ -253,8 +295,16 @@ def correlation_matrix(config: Settings, data: pd.DataFrame, vmin: int = -1) -> 
     cmap.set_bad(config.plot.correlation.bad)
 
     labels = data.columns
+
+    try:
+        matrix = np.asarray(data, dtype=float)
+    except Exception:
+        # If conversion fails, create an all-NaN matrix of the appropriate shape
+        n = len(data)
+        matrix = np.full((n, n), np.nan, dtype=float)
+
     matrix_image = axes_cor.imshow(
-        data, vmin=vmin, vmax=1, interpolation="nearest", cmap=cmap
+        matrix, vmin=vmin, vmax=1, interpolation="nearest", cmap=cmap
     )
     plt.colorbar(matrix_image)
 

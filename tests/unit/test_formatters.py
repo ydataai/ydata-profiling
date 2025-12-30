@@ -83,6 +83,7 @@ def test_fmt_array(array, threshold, expected):
         (1e20, 10, "1 × 10<sup>20</sup>"),
         (1e-20, 10, "1 × 10<sup>-20</sup>"),
         (1e8, 3, "1 × 10<sup>8</sup>"),
+        (None, 3, "N/A"),
     ],
 )
 def test_fmt_numeric(value, precision, expected):

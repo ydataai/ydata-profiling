@@ -9,11 +9,11 @@ from ydata_profiling.report.formatters import (
 from ydata_profiling.report.presentation.core import (
     Container,
     FrequencyTable,
-    Image,
     Table,
     VariableInfo,
 )
 from ydata_profiling.report.structure.variables.render_common import render_common
+from ydata_profiling.report.utils import image_or_empty
 from ydata_profiling.visualisation.plot import histogram, mini_histogram
 
 
@@ -118,22 +118,27 @@ def render_real(config: Settings, summary: dict) -> dict:
         style=config.html.style,
     )
 
-    if isinstance(summary.get("histogram", []), list):
-        mini_histo = Image(
-            mini_histogram(
+    summary_histogram = summary.get("histogram", [])
+
+    mini_hist_data = None
+
+    if summary_histogram:
+        if isinstance(summary_histogram, list):
+            mini_hist_data = mini_histogram(
                 config,
-                [x[0] for x in summary.get("histogram", [])],
-                [x[1] for x in summary.get("histogram", [])],
-            ),
-            image_format=image_format,
-            alt="Mini histogram",
-        )
-    else:
-        mini_histo = Image(
-            mini_histogram(config, *summary["histogram"]),
-            image_format=image_format,
-            alt="Mini histogram",
-        )
+                [x[0] for x in summary_histogram],
+                [x[1] for x in summary_histogram],
+            )
+        else:
+            mini_hist_data = mini_histogram(config, *summary_histogram)
+
+    mini_histo = image_or_empty(
+        mini_hist_data,
+        alt="Mini histogram",
+        image_format=image_format,
+        name="Mini Histogram",
+        anchor_id=f"{varid}minihistogram",
+    )
 
     template_variables["top"] = Container(
         [info, table1, table2, mini_histo], sequence_type="grid"
@@ -243,22 +248,31 @@ def render_real(config: Settings, summary: dict) -> dict:
         sequence_type="grid",
     )
 
-    if isinstance(summary.get("histogram", []), list):
-        hist_data = histogram(
-            config,
-            [x[0] for x in summary.get("histogram", [])],
-            [x[1] for x in summary.get("histogram", [])],
-        )
-        bins = len(summary["histogram"][0][1]) - 1 if "histogram" in summary else 0
-        hist_caption = f"<strong>Histogram with fixed size bins</strong> (bins={bins})"
-    else:
-        hist_data = histogram(config, *summary["histogram"])
-        hist_caption = f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][1]) - 1})"
+    hist_data = None
+    hist_caption = None
 
-    hist = Image(
+    if summary_histogram:
+        if isinstance(summary_histogram, list):
+            hist_data = histogram(
+                config,
+                [x[0] for x in summary_histogram],
+                [x[1] for x in summary_histogram],
+            )
+            bins = len(summary_histogram[0][1])
+            hist_caption = (
+                f"<strong>Histogram with fixed size bins</strong> (bins={bins - 1})"
+            )
+        else:
+            hist_data = histogram(config, *summary_histogram)
+            hist_caption = (
+                f"<strong>Histogram with fixed size bins</strong> "
+                f"(bins={len(summary_histogram[1]) - 1})"
+            )
+
+    hist = image_or_empty(
         hist_data,
-        image_format=image_format,
         alt="Histogram",
+        image_format=image_format,
         caption=hist_caption,
         name="Histogram",
         anchor_id=f"{varid}histogram",

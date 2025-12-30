@@ -6,6 +6,7 @@ from typing import Tuple
 import pandas as pd
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
+from pyspark.sql import types as T
 
 from ydata_profiling.config import Settings
 from ydata_profiling.model.summary_algorithms import describe_counts
@@ -25,6 +26,11 @@ def describe_counts_spark(
     Returns:
         Updated settings, input series, and summary dictionary.
     """
+    # Cast Decimal Type s
+    if isinstance(series.schema.fields[0].dataType, T.DecimalType):
+        series = series.select(
+            F.col(series.columns[0]).cast(T.DoubleType()).alias(series.columns[0])
+        )
 
     # Count occurrences of each value
     value_counts = series.groupBy(series.columns[0]).count()
@@ -36,9 +42,23 @@ def describe_counts_spark(
     value_counts_index_sorted = value_counts.orderBy(F.asc(series.columns[0]))
 
     # Count missing values
-    n_missing = (
-        value_counts.filter(F.col(series.columns[0]).isNull()).select("count").first()
-    )
+    if series.dtypes[0][1] in ("int", "float", "bigint", "double"):
+        n_missing = (
+            # Need to add the isnan() check because Pandas isnull check will count NaN as null, but Spark does not
+            value_counts.filter(
+                F.col(series.columns[0]).isNull() | F.isnan(F.col(series.columns[0]))
+            )
+            .select("count")
+            .first()
+        )
+    else:
+        n_missing = (
+            # Need to add the isnan() check because Pandas isnull check will count NaN as null, but Spark does not
+            value_counts.filter(F.col(series.columns[0]).isNull())
+            .select("count")
+            .first()
+        )
+
     n_missing = n_missing["count"] if n_missing else 0
 
     # Convert top 200 values to Pandas for frequency table display
@@ -60,17 +80,15 @@ def describe_counts_spark(
             value_counts.filter(F.col(column).isNotNull())  # Exclude NaNs
             .filter(~F.isnan(F.col(column)))  # Remove implicit NaNs (if numeric column)
             .groupBy(column)  # Group by unique values
-            .count()  # Count occurrences
+            .agg(F.sum("count").alias("count"))  # Sum of count
             .orderBy(F.desc("count"))  # Sort in descending order
-            .limit(200)  # Limit for performance
         )
     else:
         value_counts_no_nan = (
             value_counts.filter(F.col(column).isNotNull())  # Exclude NULLs
             .groupBy(column)  # Group by unique timestamp values
-            .count()  # Count occurrences
+            .agg(F.sum("count").alias("count"))  # Sum of count
             .orderBy(F.desc("count"))  # Sort by most frequent timestamps
-            .limit(200)  # Limit for performance
         )
 
     # Convert to Pandas Series, forcing proper structure

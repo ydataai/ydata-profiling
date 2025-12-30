@@ -11,6 +11,14 @@ from ydata_profiling.model.summary_algorithms import histogram_compute
 def numeric_stats_spark(df: DataFrame, summary: dict) -> dict:
     column = df.columns[0]
 
+    # Removing null types from numeric summary stats to match Pandas defaults which skip na's (skipna=False)
+    finite_filter = (
+        F.col(column).isNotNull()
+        & ~F.isnan(F.col(column))
+        & ~F.col(column).isin([np.inf, -np.inf])
+    )
+    non_null_df = df.filter(finite_filter)
+
     expr = [
         F.mean(F.col(column)).alias("mean"),
         F.stddev(F.col(column)).alias("std"),
@@ -21,7 +29,7 @@ def numeric_stats_spark(df: DataFrame, summary: dict) -> dict:
         F.skewness(F.col(column)).alias("skewness"),
         F.sum(F.col(column)).alias("sum"),
     ]
-    return df.agg(*expr).first().asDict()
+    return non_null_df.agg(*expr).first().asDict()
 
 
 def describe_numeric_1d_spark(
@@ -81,30 +89,42 @@ def describe_numeric_1d_spark(
     quantiles = config.vars.num.quantiles
     quantile_threshold = 0.05
 
-    summary.update(
-        {
-            f"{percentile:.0%}": value
-            for percentile, value in zip(
-                quantiles,
-                df.stat.approxQuantile(
-                    f"{df.columns[0]}",
+    if summary.get("n") == summary.get("n_missing"):
+        # This means the entire column is null/nan, so summary values need to be hard-coded:
+        summary.update({f"{percentile:.0%}": np.nan for percentile in quantiles})
+
+        summary["mad"] = np.nan
+        summary["iqr"] = np.nan
+
+    else:
+        summary.update(
+            {
+                f"{percentile:.0%}": value
+                for percentile, value in zip(
                     quantiles,
-                    quantile_threshold,
-                ),
-            )
-        }
-    )
+                    df.stat.approxQuantile(
+                        f"{df.columns[0]}",
+                        quantiles,
+                        quantile_threshold,
+                    ),
+                )
+            }
+        )
 
-    median = summary["50%"]
+        median = summary.get("50%")
 
-    summary["mad"] = df.select(
-        (F.abs(F.col(f"{df.columns[0]}").cast("int") - median)).alias("abs_dev")
-    ).stat.approxQuantile("abs_dev", [0.5], quantile_threshold)[0]
+        summary["mad"] = df.select(
+            (F.abs(F.col(f"{df.columns[0]}").cast("int") - median)).alias("abs_dev")
+        ).stat.approxQuantile("abs_dev", [0.5], quantile_threshold)[0]
+
+        summary["iqr"] = summary["75%"] - summary["25%"]
 
     # FIXME: move to fmt
     summary["p_negative"] = summary["n_negative"] / summary["n"]
-    summary["range"] = summary["max"] - summary["min"]
-    summary["iqr"] = summary["75%"] - summary["25%"]
+    if summary["min"] is None or summary["max"] is None:
+        summary["range"] = np.nan
+    else:
+        summary["range"] = summary["max"] - summary["min"]
     summary["cv"] = summary["std"] / summary["mean"] if summary["mean"] else np.nan
     summary["p_zeros"] = summary["n_zeros"] / summary["n"]
     summary["p_infinite"] = summary["n_infinite"] / summary["n"]
