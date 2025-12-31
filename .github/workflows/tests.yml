@@ -22,7 +22,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     
     - name: Setup python
       uses: actions/setup-python@v5
@@ -70,7 +70,7 @@ jobs:
         numpy: [ "numpy>=1.21" ]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: Setup python
       uses: actions/setup-python@v5
@@ -139,7 +139,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Java 17 (Temurin)
         uses: actions/setup-java@v4
