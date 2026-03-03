@@ -6,6 +6,7 @@
 import warnings  # isort:skip # noqa
 
 import importlib.util  # isort:skip # noqa
+from warnings import warn
 
 from ydata_profiling.compare_reports import compare  # isort:skip # noqa
 from ydata_profiling.controller import pandas_decorator  # isort:skip # noqa
@@ -24,6 +25,15 @@ if spec_numba is not None:
     from numba.core.errors import NumbaDeprecationWarning  # isort:skip # noqa
 
     warnings.simplefilter("ignore", category=NumbaDeprecationWarning)
+
+warn(
+    """
+    `import ydata_profiling` is deprecated and will not receive more updates. 
+    Please install fg-data-profiling via `pip install fg-data-profiling` and use `import data_profiling` instead.
+    """,
+    DeprecationWarning,
+    stacklevel=2,
+)
 
 __all__ = [
     "pandas_decorator",

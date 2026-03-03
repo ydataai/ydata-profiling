@@ -1,5 +1,7 @@
 # ydata-profiling
 
+> **`ydata-profiling` is now `fg-data-profiling`.** This package has been renamed to `fg-data-profiling`. Please follow the [Migration Guide](#migration-guide) as soon as possible — the old package will no longer receive updates or bug fixes.
+
 [![Build Status](https://github.com/ydataai/pandas-profiling/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/ydataai/pandas-profiling/actions/workflows/tests.yml)
 [![PyPI download month](https://img.shields.io/pypi/dm/ydata-profiling.svg)](https://pypi.python.org/pypi/ydata-profiling/)
 [![](https://pepy.tech/badge/pandas-profiling)](https://pypi.org/project/ydata-profiling/)
@@ -32,6 +34,40 @@ The package outputs a simple and digested analysis of a dataset, including **tim
 
 > **Looking for a scalable solution that can fully integrate with your database systems?**<br>
 > Leverage YData Fabric Data Catalog to connect to different databases and storages (Oracle, snowflake, PostGreSQL, GCS, S3, etc.) and leverage an interactive and guided profiling experience in Fabric. Check out the [Community Version](http://ydata.ai/register?utm_source=ydata-profiling&utm_medium=documentation&utm_campaign=YData%20Fabric%20Community).
+
+## Migration Guide
+ 
+### 1. Uninstall the old package
+ 
+```bash
+pip uninstall ydata-profiling
+```
+ 
+### 2. Install the new package
+ 
+```bash
+pip install fg-data-profiling
+```
+ 
+### 3. Update your imports
+ 
+Find and replace all occurrences of the old import in your codebase:
+ 
+```python
+# Before
+import ydata_profiling
+from ydata_profiling import ProfileReport
+
+# After
+import data_profiling
+from data_profiling import ProfileReport
+```
+ 
+You can use this one-liner to find all affected files:
+ 
+```bash
+grep -r "ydata_profiling" . --include="*.py"
+```
 
 ## ▶️ Quickstart
 
