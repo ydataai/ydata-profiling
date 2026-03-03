@@ -27,13 +27,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.ACCESS_TOKEN }}
 
     - uses: cycjimmy/semantic-release-action@v3
       id: semantic
-      env:
-        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       with:
         branch: master
         dry_run: true
@@ -58,8 +54,6 @@ jobs:
 
     steps:
     - uses: ydataai/create-tag@v1.0.0
-      env:
-        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       with:
         tag: ${{ needs.prepare.outputs.version }}
         message: ${{  github.event.head_commit.message }}
@@ -77,13 +71,9 @@ jobs:
     steps:
     - name: Delete Previous drafts
       uses: hugo19941994/delete-draft-releases@v1.0.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
     - name: Create Draft Release
       uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       with:
         tag_name: ${{ needs.prepare.outputs.release }}
         release_name: ${{ needs.prepare.outputs.release }}

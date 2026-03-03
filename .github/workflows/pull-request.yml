@@ -6,6 +6,9 @@ on:
     - renovate/**
   pull_request:
 
+permissions:
+  contents: write
+
 jobs:
   commitlint:
     name: Lint commit message
@@ -81,7 +84,6 @@ jobs:
       if: always() && steps.commit.outputs.CHANGES == 'true'
       with:
         branch: ${{ github.head_ref }}
-        github_token: ${{ secrets.ACCESS_TOKEN }}
 
   validate-docs:
     name: Validate Docs
