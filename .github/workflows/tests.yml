@@ -52,7 +52,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-${{ matrix.pandas }}-pip-
     - run: |
-        pip install --upgrade pip setuptools wheel
+        pip install --upgrade pip "setuptools<81" wheel
         pip install ".[test]" "${{ matrix.pandas }}" "${{ matrix.numpy }}"
     - run: echo "YDATA_PROFILING_NO_ANALYTICS=False" >> $GITHUB_ENV
     - run: make install
@@ -100,7 +100,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-${{ matrix.pandas }}-pip-
     - run: |
-        pip install --upgrade pip setuptools wheel
+        pip install --upgrade pip "setuptools<81" wheel
         pip install ".[test]" "${{ matrix.pandas }}" "${{ matrix.numpy }}"
         echo "YDATA_PROFILING_NO_ANALYTICS=False" >> $GITHUB_ENV
     - run: make install
@@ -115,7 +115,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-${{ matrix.pandas }}-pip-
     - run: |
-        pip install --upgrade pip setuptools wheel
+        pip install --upgrade pip "setuptools<81" wheel
         pip install ".[test]" "${{ matrix.pandas }}" "${{ matrix.numpy }}"
     - run: make install
     - run: make test_cov
@@ -163,7 +163,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          python -m pip install -U pip setuptools wheel
+          python -m pip install -U pip "setuptools<81" wheel
           pip install "pyspark~=${{ matrix.pyspark-version }}" "pyarrow>4.0.0" --no-cache-dir
           pip install ".[test]"
           # Make PySpark use this Python and bind locally; give it a safe tmp dir
