@@ -62,7 +62,22 @@ This section provides a comprehensive overview of individual variables within a 
 as it automatically calculated detailed statistics, visualizations, and insights for each variable in the dataset. It offers information such as data type, missing values, unique values, basic descriptive statistics
 , histogram plots, and distribution plots. This allows data analysts and scientists to quickly understand the characteristics of each variable, identify potential data quality issues, and gain initial insights into the data's distribution and variability. 
 
-For more details about the different metrics and visualizations check the Univariate section details page. 
+This section provides a comprehensive overview of individual variables within a given dataset...
+
+**Univariate analysis** examines each variable individually. For every column in your dataset, ydata-profiling automatically computes:
+
+- **Descriptive statistics** — count, mean, median, standard deviation, min/max
+- **Missing values** — count and percentage of null entries
+- **Unique values** — number and percentage of distinct values
+- **Distribution plots** — histogram and density curve
+- **Data type** — inferred type (Numerical, Categorical, Date, etc.)
+
+**Multivariate analysis** examines relationships between variables. ydata-profiling computes:
+
+- **Correlations** — Pearson, Spearman, Kendall, and Cramér's V matrices
+- **Interactions** — pairwise scatter plots between numerical variables
+- **Missing data patterns** — which variables tend to be missing together
+- **Duplicate rows** — detection of identical records across the dataset
 
 ## Multivariate profiling
 
