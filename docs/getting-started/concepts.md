@@ -62,7 +62,6 @@ This section provides a comprehensive overview of individual variables within a 
 as it automatically calculated detailed statistics, visualizations, and insights for each variable in the dataset. It offers information such as data type, missing values, unique values, basic descriptive statistics
 , histogram plots, and distribution plots. This allows data analysts and scientists to quickly understand the characteristics of each variable, identify potential data quality issues, and gain initial insights into the data's distribution and variability. 
 
-This section provides a comprehensive overview of individual variables within a given dataset...
 
 **Univariate analysis** examines each variable individually. For every column in your dataset, ydata-profiling automatically computes:
 
