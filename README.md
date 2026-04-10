@@ -57,7 +57,7 @@ Find and replace all occurrences of the old import in your codebase:
 # Before
 import ydata_profiling
 from ydata_profiling import ProfileReport
- 
+
 # After
 import data_profiling
 from data_profiling import ProfileReport
