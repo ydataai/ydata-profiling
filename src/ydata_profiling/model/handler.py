@@ -25,10 +25,9 @@ def compose(functions: Sequence[Callable]) -> Callable:
 
 
 class Handler:
-    """Generic handler for data type specific processing pipelines.
+    """A generic handler
 
-    Builds a processing pipeline for each data type by composing functions
-    along the type hierarchy. Allows custom summarization strategies.
+    Allows any custom mapping between data types and functions
     """
 
     def __init__(
@@ -43,11 +42,6 @@ class Handler:
         self._complete_dag()
 
     def _complete_dag(self) -> None:
-        """Propagate functions along the type hierarchy DAG.
-
-        Functions defined for parent types are inherited by subtypes,
-        creating a complete processing pipeline for each type.
-        """
         for from_type, to_type in nx.topological_sort(
             nx.line_graph(self.typeset.base_graph)
         ):
@@ -56,15 +50,9 @@ class Handler:
             )
 
     def handle(self, dtype: str, *args, **kwargs) -> dict:
-        """Execute the processing pipeline for a given data type.
-
-        Args:
-            dtype: Name of the data type to process
-            *args: Arguments passed to the processing pipeline
-            **kwargs: Additional keyword arguments
-
+        """
         Returns:
-            Extracted summary dictionary
+            object: a tuple containing the config, the dataset series and the summary extracted
         """
         funcs = self.mapping.get(dtype, [])
         op = compose(funcs)

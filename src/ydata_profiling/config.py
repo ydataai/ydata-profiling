@@ -407,15 +407,8 @@ class SparkSettings(Settings):
     samples.random = 0
 
 
-class _Config:
-    """Container for configuration presets and shorthand mappings.
-    
-    This class provides predefined configuration groups (sensitive, explorative, themes)
-    and shorthand mappings for common configuration options. It should be used only
-    through its static methods.
-    """
-    
-    arg_groups = {
+class Config:
+    arg_groups: Dict[str, Any] = {
         "sensitive": {
             "samples": None,
             "duplicates": None,
@@ -482,36 +475,18 @@ class _Config:
 
     @staticmethod
     def get_arg_groups(key: str) -> dict:
-        """Get expanded configuration for a preset group.
-        
-        Args:
-            key: Name of preset group (e.g., "sensitive", "explorative")
-            
-        Returns:
-            Expanded configuration dictionary with shorthands resolved
-        """
-        kwargs = _Config.arg_groups[key]
-        shorthand_args, _ = _Config.shorthands(kwargs, split=False)
+        kwargs = Config.arg_groups[key]
+        shorthand_args, _ = Config.shorthands(kwargs, split=False)
         return shorthand_args
 
     @staticmethod
     def shorthands(kwargs: dict, split: bool = True) -> Tuple[dict, dict]:
-        """Expand shorthand configuration keys.
-        
-        Args:
-            kwargs: Configuration dictionary potentially containing shorthands
-            split: If True, remove shorthands from kwargs and return separately.
-                   If False, expand shorthands in-place within kwargs.
-                   
-        Returns:
-            Tuple of (shorthand_args, remaining_kwargs)
-        """
         shorthand_args = {}
         if not split:
             shorthand_args = kwargs
         for key, value in list(kwargs.items()):
-            if value is None and key in _Config._shorthands:
-                shorthand_args[key] = _Config._shorthands[key]
+            if value is None and key in Config._shorthands:
+                shorthand_args[key] = Config._shorthands[key]
                 if split:
                     del kwargs[key]
 
@@ -519,6 +494,3 @@ class _Config:
             return shorthand_args, kwargs
         else:
             return shorthand_args, {}
-
-
-Config = _Config
