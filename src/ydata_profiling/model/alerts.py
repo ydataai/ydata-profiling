@@ -9,25 +9,8 @@ import pandas as pd
 
 from ydata_profiling.config import Settings
 from ydata_profiling.model.correlations import perform_check_correlation
+from ydata_profiling.utils.formatters import fmt_percent
 from ydata_profiling.utils.styles import get_alert_styles
-
-
-def fmt_percent(value: float, edge_cases: bool = True) -> str:
-    """Format a ratio as a percentage.
-
-    Args:
-        edge_cases: Check for edge cases?
-        value: The ratio.
-
-    Returns:
-        The percentage with 1 point precision.
-    """
-    if edge_cases and round(value, 3) == 0 and value > 0:
-        return "< 0.1%"
-    if edge_cases and round(value, 3) == 1 and value < 1:
-        return "> 99.9%"
-
-    return f"{value*100:2.1f}%"
 
 
 @unique

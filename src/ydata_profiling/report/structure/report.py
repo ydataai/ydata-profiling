@@ -1,5 +1,5 @@
 import os
-from typing import List, Sequence
+from typing import Callable, Dict, List, Sequence
 
 import pandas as pd
 from tqdm.auto import tqdm
@@ -7,7 +7,6 @@ from tqdm.auto import tqdm
 from ydata_profiling.config import Settings
 from ydata_profiling.model import BaseDescription
 from ydata_profiling.model.alerts import AlertType
-from ydata_profiling.model.handler import get_render_map
 from ydata_profiling.report.presentation.core import (
     HTML,
     Collapse,
@@ -22,6 +21,30 @@ from ydata_profiling.report.presentation.core.root import Root
 from ydata_profiling.report.structure.correlations import get_correlation_items
 from ydata_profiling.report.structure.overview import get_dataset_items
 from ydata_profiling.utils.dataframe import slugify
+
+
+def get_render_map() -> Dict[str, Callable]:
+    """Create mapping from data types to rendering functions.
+    
+    Returns:
+        Dictionary mapping data type names to their respective render functions
+    """
+    import ydata_profiling.report.structure.variables as render_algorithms
+
+    return {
+        "Boolean": render_algorithms.render_boolean,
+        "Numeric": render_algorithms.render_real,
+        "Complex": render_algorithms.render_complex,
+        "Text": render_algorithms.render_text,
+        "DateTime": render_algorithms.render_date,
+        "Categorical": render_algorithms.render_categorical,
+        "URL": render_algorithms.render_url,
+        "Path": render_algorithms.render_path,
+        "File": render_algorithms.render_file,
+        "Image": render_algorithms.render_image,
+        "Unsupported": render_algorithms.render_generic,
+        "TimeSeries": render_algorithms.render_timeseries,
+    }
 
 
 def get_missing_items(config: Settings, summary: BaseDescription) -> list:

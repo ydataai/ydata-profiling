@@ -74,13 +74,11 @@ def histogram_compute(
 
     hist_config = config.plot.histogram
 
-    # Compute data range
     finite = finite_values[np.isfinite(finite_values)]
     vmin = float(np.min(finite))
     vmax = float(np.max(finite))
     data_range = vmax - vmin
 
-    # Choose of Bins based on observed data values
     if data_range == 0:
         eps = 0.5 if vmin == 0 else abs(vmin) * 0.1
         bins = np.array([vmin - eps, vmin + eps])
@@ -113,16 +111,13 @@ def chi_square(
     values: Optional[np.ndarray] = None,
     histogram: Optional[np.ndarray] = None,
 ) -> dict:
-    # Case 1: histogram not passed → we compute it
     if histogram is None:
         if values is None:
             return {"statistic": 0, "pvalue": 0}
 
-        # Try NumPy "auto" binning (may fail under NumPy 2)
         try:
             bins = np.histogram_bin_edges(values, bins="auto")
         except ValueError:
-            # Fallback: basic 1-bin histogram covering the min→max range
             finite = values[np.isfinite(values)]
             if finite.size == 0:
                 return {"statistic": 0, "pvalue": 0}
@@ -136,7 +131,6 @@ def chi_square(
 
         histogram, _ = np.histogram(values, bins=bins)
 
-    # Case 2: histogram exists but is empty
     if histogram.size == 0 or histogram.sum() == 0:
         return {"statistic": 0, "pvalue": 0}
 
