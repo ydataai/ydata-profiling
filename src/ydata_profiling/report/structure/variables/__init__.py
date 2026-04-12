@@ -1,3 +1,5 @@
+from typing import Callable, Dict
+
 from ydata_profiling.report.structure.variables.render_boolean import render_boolean
 from ydata_profiling.report.structure.variables.render_categorical import (
     render_categorical,
@@ -17,6 +19,26 @@ from ydata_profiling.report.structure.variables.render_timeseries import (
 )
 from ydata_profiling.report.structure.variables.render_url import render_url
 
+
+def get_render_map() -> Dict[str, Callable]:
+    render_map = {
+        "Boolean": render_boolean,
+        "Numeric": render_real,
+        "Complex": render_complex,
+        "Text": render_text,
+        "DateTime": render_date,
+        "Categorical": render_categorical,
+        "URL": render_url,
+        "Path": render_path,
+        "File": render_file,
+        "Image": render_image,
+        "Unsupported": render_generic,
+        "TimeSeries": render_timeseries,
+    }
+
+    return render_map
+
+
 __all__ = [
     "render_boolean",
     "render_categorical",
@@ -32,4 +54,5 @@ __all__ = [
     "render_text",
     "render_timeseries",
     "render_url",
+    "get_render_map",
 ]

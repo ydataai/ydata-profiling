@@ -1,5 +1,5 @@
 """
-Backend detection utilities for pandas and spark.
+    File with a function to check the backend being used
 """
 import importlib
 
