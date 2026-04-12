@@ -7,8 +7,6 @@ import pandas as pd
 def _frequency_table(
     freqtable: pd.Series, n: int, max_number_to_print: int
 ) -> List[Dict[str, Any]]:
-    # TODO: replace '' by '(Empty)' ?
-
     if max_number_to_print > n:
         max_number_to_print = n
 
@@ -26,7 +24,6 @@ def _frequency_table(
 
     max_freq = max(freqtable.values[0], freq_other, freq_missing)
 
-    # TODO: Correctly sort missing and other
     # No values
     if max_freq == 0:
         return []
@@ -77,7 +74,7 @@ def freq_table(
     freqtable: Union[pd.Series, List[pd.Series]],
     n: Union[int, List[int]],
     max_number_to_print: int,
-) -> Union[List[Dict[str, Any]], List[List[Dict[str, Any]]]]:
+) -> List[List[Dict[str, Any]]]:
     """Render the rows for a frequency table (value, count).
 
     Args:
@@ -94,7 +91,7 @@ def freq_table(
             _frequency_table(v, n2, max_number_to_print) for v, n2 in zip(freqtable, n)
         ]
     else:
-        return [_frequency_table(freqtable, n, max_number_to_print)]  # type: ignore
+        return [_frequency_table(freqtable, n, max_number_to_print)]
 
 
 def _extreme_obs_table(
@@ -138,4 +135,4 @@ def extreme_obs_table(
             _extreme_obs_table(v, number_to_print, n1) for v, n1 in zip(freqtable, n)
         ]
 
-    return [_extreme_obs_table(freqtable, number_to_print, n)]  # type: ignore
+    return [_extreme_obs_table(freqtable, number_to_print, n)]

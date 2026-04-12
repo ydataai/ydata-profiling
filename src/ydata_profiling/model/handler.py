@@ -1,33 +1,31 @@
 """
     Auxiliary handler methods for data summary extraction
 """
-from typing import Any, Callable, Dict, List, Sequence, Tuple, Union
+from typing import Any, Callable, Dict, List, Sequence, Tuple
 
 import networkx as nx
 from visions import VisionsTypeset
 
 
-def compose(functions: Sequence[Callable]) -> Callable:
+def compose(functions: Sequence[Callable[..., Any]]) -> Callable[..., Tuple[Any, ...]]:
     """
     Compose a sequence of functions.
 
-    Each function in the sequence receives the result of the previous function.
-    Functions are expected to accept and return tuples for proper chaining.
-
-    :param functions: sequence of functions that accept and return tuples
-    :return: combined function applying all functions in order
+    Each function in the sequence should accept the arguments passed to the composed
+    function and return either a single value or a tuple of values.
+    
+    :param functions: sequence of functions
+    :return: combined function applying all functions in order.
     """
 
     def composed_function(*args: Any) -> Tuple[Any, ...]:
-        result: Union[Tuple[Any, ...], Any] = args
+        result: Tuple[Any, ...] = args
         for func in functions:
-            if isinstance(result, tuple):
-                result = func(*result)
-            else:
-                result = func(result)
-        if isinstance(result, tuple):
-            return result
-        return (result,)
+            result = func(*result)
+            # Ensure result is always a tuple for consistent unpacking
+            if not isinstance(result, tuple):
+                result = (result,)
+        return result
 
     return composed_function
 
@@ -35,13 +33,12 @@ def compose(functions: Sequence[Callable]) -> Callable:
 class Handler:
     """A generic handler
 
-    Allows any custom mapping between data types and functions.
-    Functions are composed based on the type hierarchy defined in the typeset.
+    Allows any custom mapping between data types and functions
     """
 
     def __init__(
         self,
-        mapping: Dict[str, List[Callable]],
+        mapping: Dict[str, List[Callable[..., Any]]],
         typeset: VisionsTypeset,
         *args: Any,
         **kwargs: Any
@@ -54,33 +51,28 @@ class Handler:
         for from_type, to_type in nx.topological_sort(
             nx.line_graph(self.typeset.base_graph)
         ):
-            from_key = str(from_type)
-            to_key = str(to_type)
-            self.mapping[to_key] = self.mapping.get(from_key, []) + self.mapping.get(
-                to_key, []
+            self.mapping[str(to_type)] = (
+                self.mapping[str(from_type)] + self.mapping[str(to_type)]
             )
 
-    def handle(self, dtype: str, *args: Any, **kwargs: Any) -> Dict[str, Any]:
+    def handle(self, dtype: str, *args: Any, **kwargs: Any) -> Any:
         """
-        Execute the handler chain for the given data type.
-
-        :param dtype: the data type to handle
-        :param args: arguments to pass to the handler functions
-        :param kwargs: keyword arguments (currently unused but reserved for extensibility)
-        :return: a dictionary containing the summary extracted from the data
+        Execute the handler chain for the given dtype.
+        
+        :param dtype: The data type to handle
+        :param args: Arguments to pass to the handler chain
+        :return: The last element of the result tuple from the handler chain
         """
         funcs = self.mapping.get(dtype, [])
         op = compose(funcs)
-        result = op(*args)
-        if result:
-            return result[-1] if isinstance(result[-1], dict) else {}
-        return {}
+        summary = op(*args)[-1]
+        return summary
 
 
-def get_render_map() -> Dict[str, Callable]:
+def get_render_map() -> Dict[str, Callable[..., Any]]:
     import ydata_profiling.report.structure.variables as render_algorithms
 
-    render_map = {
+    render_map: Dict[str, Callable[..., Any]] = {
         "Boolean": render_algorithms.render_boolean,
         "Numeric": render_algorithms.render_real,
         "Complex": render_algorithms.render_complex,

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional
+from typing import Any, Callable, Dict, Optional
 
 
 class Renderable(ABC):
@@ -38,5 +38,10 @@ class Renderable(ABC):
         return self.__class__.__name__
 
     @classmethod
-    def convert_to_class(cls, obj: "Renderable", flavour_func) -> None:
+    def convert_to_class(cls, obj: "Renderable", flavour_func: Callable[["Renderable"], None]) -> None:
+        """Convert the object's class to this class and recursively apply flavour to nested items.
+        
+        :param obj: The renderable object to convert
+        :param flavour_func: Function to apply to nested renderable items
+        """
         obj.__class__ = cls
