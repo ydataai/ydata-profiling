@@ -11,21 +11,6 @@ from ydata_profiling.config import Settings
 T = TypeVar("T")
 
 
-def func_nullable_series_contains(fn: Callable) -> Callable:
-    @functools.wraps(fn)
-    def inner(
-        config: Settings, series: pd.Series, state: dict, *args, **kwargs
-    ) -> bool:
-        if series.hasnans:
-            series = series.dropna()
-            if series.empty:
-                return False
-
-        return fn(config, series, state, *args, **kwargs)
-
-    return inner
-
-
 def safe_histogram(
     values: np.ndarray,
     bins: Union[int, str, np.ndarray] = "auto",
