@@ -34,9 +34,9 @@ class Renderable(ABC):
     def render(self) -> Any:
         pass
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.__class__.__name__
 
     @classmethod
-    def convert_to_class(cls, obj: "Renderable", flavour_func) -> None:  # noqa: ANN001
+    def convert_to_class(cls, obj: "Renderable", flavour_func) -> None:
         obj.__class__ = cls

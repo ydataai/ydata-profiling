@@ -56,7 +56,6 @@ class MissingnoBarSparkPatch:
 def missing_bar(config: Settings, df: DataFrame) -> str:
     import pyspark.sql.functions as F
 
-    # FIXME: move to univariate
     data_nan_counts = (
         df.agg(
             *[F.count(F.when(F.isnull(c) | F.isnan(c), c)).alias(c) for c in df.columns]
@@ -83,11 +82,9 @@ def missing_matrix(config: Settings, df: DataFrame) -> str:
 def missing_heatmap(config: Settings, df: DataFrame) -> str:
     df = MissingnoBarSparkPatch(df, columns=df.columns, original_df_size=df.count())
 
-    # Remove completely filled or completely empty variables.
     columns = [i for i, n in enumerate(np.var(df.isnull(), axis="rows")) if n > 0]
     df = df.iloc[:, columns]
 
-    # Create and mask the correlation matrix. Construct the base heatmap.
     corr_mat = df.isnull().corr()
     mask = np.zeros_like(corr_mat)
     mask[np.triu_indices_from(mask)] = True

@@ -1,6 +1,8 @@
 """
     Flavours registry information
 """
+from typing import Callable
+
 from ydata_profiling.report.presentation.core import Root
 from ydata_profiling.report.presentation.core.renderable import Renderable
 
@@ -20,7 +22,7 @@ def get_flavour_mapping(name: str) -> dict:
 def apply_renderable_mapping(
     mapping: dict,
     structure: Renderable,
-    flavour_func,  # noqa: ANN001
+    flavour_func: Callable[[Renderable], None],
 ) -> None:
     mapping[type(structure)].convert_to_class(structure, flavour_func)
 

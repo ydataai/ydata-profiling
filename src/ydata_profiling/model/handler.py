@@ -1,7 +1,7 @@
 """
     Auxiliary handler methods for data summary extraction
 """
-from typing import Any, Callable, Dict, List, Sequence
+from typing import Any, Callable, Dict, List, Sequence, Tuple, Union
 
 import networkx as nx
 from visions import VisionsTypeset
@@ -11,31 +11,40 @@ def compose(functions: Sequence[Callable]) -> Callable:
     """
     Compose a sequence of functions.
 
-    :param functions: sequence of functions
-    :return: combined function applying all functions in order.
+    Each function in the sequence receives the result of the previous function.
+    Functions are expected to accept and return tuples for proper chaining.
+
+    :param functions: sequence of functions that accept and return tuples
+    :return: combined function applying all functions in order
     """
 
-    def composed_function(*args) -> List[Any]:
-        result = args  # Start with the input arguments
+    def composed_function(*args: Any) -> Tuple[Any, ...]:
+        result: Union[Tuple[Any, ...], Any] = args
         for func in functions:
-            result = func(*result) if isinstance(result, tuple) else func(result)
-        return result  # type: ignore
+            if isinstance(result, tuple):
+                result = func(*result)
+            else:
+                result = func(result)
+        if isinstance(result, tuple):
+            return result
+        return (result,)
 
-    return composed_function  # type: ignore
+    return composed_function
 
 
 class Handler:
     """A generic handler
 
-    Allows any custom mapping between data types and functions
+    Allows any custom mapping between data types and functions.
+    Functions are composed based on the type hierarchy defined in the typeset.
     """
 
     def __init__(
         self,
         mapping: Dict[str, List[Callable]],
         typeset: VisionsTypeset,
-        *args,
-        **kwargs
+        *args: Any,
+        **kwargs: Any
     ):
         self.mapping = mapping
         self.typeset = typeset
@@ -45,19 +54,27 @@ class Handler:
         for from_type, to_type in nx.topological_sort(
             nx.line_graph(self.typeset.base_graph)
         ):
-            self.mapping[str(to_type)] = (
-                self.mapping[str(from_type)] + self.mapping[str(to_type)]
+            from_key = str(from_type)
+            to_key = str(to_type)
+            self.mapping[to_key] = self.mapping.get(from_key, []) + self.mapping.get(
+                to_key, []
             )
 
-    def handle(self, dtype: str, *args, **kwargs) -> dict:
+    def handle(self, dtype: str, *args: Any, **kwargs: Any) -> Dict[str, Any]:
         """
-        Returns:
-            object: a tuple containing the config, the dataset series and the summary extracted
+        Execute the handler chain for the given data type.
+
+        :param dtype: the data type to handle
+        :param args: arguments to pass to the handler functions
+        :param kwargs: keyword arguments (currently unused but reserved for extensibility)
+        :return: a dictionary containing the summary extracted from the data
         """
         funcs = self.mapping.get(dtype, [])
         op = compose(funcs)
-        summary = op(*args)[-1]
-        return summary
+        result = op(*args)
+        if result:
+            return result[-1] if isinstance(result[-1], dict) else {}
+        return {}
 
 
 def get_render_map() -> Dict[str, Callable]:
