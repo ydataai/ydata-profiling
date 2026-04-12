@@ -25,7 +25,7 @@ from tqdm.auto import tqdm
 from typeguard import typechecked
 from visions import VisionsTypeset
 
-from ydata_profiling.config import Config, Settings, SparkSettings
+from ydata_profiling.config import Settings, SparkSettings
 from ydata_profiling.expectations_report import ExpectationsReport
 from ydata_profiling.model import BaseDescription
 from ydata_profiling.model.alerts import AlertType
@@ -132,11 +132,11 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             cfg = Settings()
             for condition, key in groups:
                 if condition:
-                    cfg = cfg.update(Config.get_arg_groups(key))
+                    cfg = cfg.update(Settings.get_arg_groups(key))
             report_config = report_config.update(cfg.dict(exclude_defaults=True))
 
         if len(kwargs) > 0:
-            shorthands, kwargs = Config.shorthands(kwargs)
+            shorthands, kwargs = Settings.shorthands(kwargs)
             report_config = report_config.update(
                 Settings().update(shorthands).dict(exclude_defaults=True)
             )
