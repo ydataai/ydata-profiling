@@ -10,6 +10,7 @@ def render_common(config: Settings, summary: dict) -> dict:
     n_freq_table_max = config.n_freq_table_max
 
     template_variables = {
+        # TODO: with nan
         "freq_table_rows": freq_table(
             freqtable=summary["value_counts_without_nan"],
             n=summary["n"],

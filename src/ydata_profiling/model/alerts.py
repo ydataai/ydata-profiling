@@ -12,8 +12,8 @@ from ydata_profiling.model.correlations import perform_check_correlation
 from ydata_profiling.utils.styles import get_alert_styles
 
 
-def _fmt_percent(value: float, edge_cases: bool = True) -> str:
-    """Format a ratio as a percentage (internal copy to avoid circular imports).
+def fmt_percent(value: float, edge_cases: bool = True) -> str:
+    """Format a ratio as a percentage.
 
     Args:
         edge_cases: Check for edge cases?
@@ -209,7 +209,7 @@ class DuplicatesAlert(Alert):
 
     def _get_description(self) -> str:
         if self.values is not None:
-            return f"Dataset has {self.values['n_duplicates']} ({_fmt_percent(self.values['p_duplicates'])}) duplicate rows"
+            return f"Dataset has {self.values['n_duplicates']} ({fmt_percent(self.values['p_duplicates'])}) duplicate rows"
         else:
             return "Dataset has no duplicated rows"
 
@@ -231,7 +231,7 @@ class NearDuplicatesAlert(Alert):
 
     def _get_description(self) -> str:
         if self.values is not None:
-            return f"Dataset has {self.values['n_near_dups']} ({_fmt_percent(self.values['p_near_dups'])}) near duplicate rows"
+            return f"Dataset has {self.values['n_near_dups']} ({fmt_percent(self.values['p_near_dups'])}) near duplicate rows"
         else:
             return "Dataset has no near duplicated rows"
 
@@ -272,7 +272,7 @@ class HighCardinalityAlert(Alert):
 
     def _get_description(self) -> str:
         if self.values is not None:
-            return f"[{self.column_name}] has {self.values['n_distinct']:} ({_fmt_percent(self.values['p_distinct'])}) distinct values"
+            return f"[{self.column_name}] has {self.values['n_distinct']:} ({fmt_percent(self.values['p_distinct'])}) distinct values"
         else:
             return f"[{self.column_name}] has a high cardinality"
 
@@ -294,7 +294,7 @@ class DirtyCategoryAlert(Alert):
 
     def _get_description(self) -> str:
         if self.values is not None:
-            return f"[{self.column_name}] has {self.values['n_fuzzy_vals']} fuzzy values: {_fmt_percent(self.values['p_fuzzy_vals'])} per category"
+            return f"[{self.column_name}] has {self.values['n_fuzzy_vals']} fuzzy values: {fmt_percent(self.values['p_fuzzy_vals'])} per category"
         else:
             return f"[{self.column_name}] no dirty categories values."
 
@@ -365,7 +365,7 @@ class InfiniteAlert(Alert):
 
     def _get_description(self) -> str:
         if self.values is not None:
-            return f"[{self.column_name}] has {self.values['n_infinite']} ({_fmt_percent(self.values['p_infinite'])}) infinite values"
+            return f"[{self.column_name}] has {self.values['n_infinite']} ({fmt_percent(self.values['p_infinite'])}) infinite values"
         else:
             return f"[{self.column_name}] has infinite values"
 
@@ -387,7 +387,7 @@ class MissingAlert(Alert):
 
     def _get_description(self) -> str:
         if self.values is not None:
-            return f"[{self.column_name}] {self.values['n_missing']} ({_fmt_percent(self.values['p_missing'])}) missing values"
+            return f"[{self.column_name}] {self.values['n_missing']} ({fmt_percent(self.values['p_missing'])}) missing values"
         else:
             return f"[{self.column_name}] has missing values"
 
@@ -541,7 +541,7 @@ class ZerosAlert(Alert):
 
     def _get_description(self) -> str:
         if self.values is not None:
-            return f"[{self.column_name}] has {self.values['n_zeros']} ({_fmt_percent(self.values['p_zeros'])}) zeros"
+            return f"[{self.column_name}] has {self.values['n_zeros']} ({fmt_percent(self.values['p_zeros'])}) zeros"
         else:
             return f"[{self.column_name}] has predominantly zeros"
 
