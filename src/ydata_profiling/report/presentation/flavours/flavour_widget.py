@@ -39,7 +39,10 @@ from ydata_profiling.report.presentation.flavours.widget import (
     WidgetVariableInfo,
 )
 
-widget_mapping = {
+from typing import cast
+from ydata_profiling.report.presentation.flavours.flavours import _FlavourMapping
+
+widget_mapping = cast(_FlavourMapping, {
     Container: WidgetContainer,
     Variable: WidgetVariable,
     VariableInfo: WidgetVariableInfo,
@@ -56,6 +59,6 @@ widget_mapping = {
     ToggleButton: WidgetToggleButton,
     Collapse: WidgetCollapse,
     CorrelationTable: WidgetCorrelationTable,
-}
+})
 
 register_flavour("widget", widget_mapping)

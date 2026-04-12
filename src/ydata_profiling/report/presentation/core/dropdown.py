@@ -15,7 +15,7 @@ class Dropdown(ItemRenderer):
         anchor_id: str,
         classes: list,
         is_row: bool,
-        **kwargs
+        **kwargs: Any,
     ):
         super().__init__(
             "dropdown",

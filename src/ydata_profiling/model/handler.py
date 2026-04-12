@@ -1,13 +1,16 @@
 """
     Auxiliary handler methods for data summary extraction
 """
-from typing import Any, Callable, Dict, List, Sequence
+from typing import Any, Callable, Dict, List, Sequence, Tuple, TypeVar, cast
 
 import networkx as nx
 from visions import VisionsTypeset
 
+T = TypeVar("T")
+SummaryFunction = Callable[..., Tuple[Any, ...]]
 
-def compose(functions: Sequence[Callable]) -> Callable:
+
+def compose(functions: Sequence[SummaryFunction]) -> SummaryFunction:
     """
     Compose a sequence of functions.
 
@@ -15,13 +18,17 @@ def compose(functions: Sequence[Callable]) -> Callable:
     :return: combined function applying all functions in order.
     """
 
-    def composed_function(*args) -> List[Any]:
-        result = args  # Start with the input arguments
+    def composed_function(*args: Any) -> Tuple[Any, ...]:
+        result: Tuple[Any, ...] = args
         for func in functions:
-            result = func(*result) if isinstance(result, tuple) else func(result)
-        return result  # type: ignore
+            step_result = func(*result)
+            if not isinstance(step_result, tuple):
+                result = (step_result,)
+            else:
+                result = step_result
+        return result
 
-    return composed_function  # type: ignore
+    return composed_function
 
 
 class Handler:
@@ -32,12 +39,12 @@ class Handler:
 
     def __init__(
         self,
-        mapping: Dict[str, List[Callable]],
+        mapping: Dict[str, List[SummaryFunction]],
         typeset: VisionsTypeset,
-        *args,
-        **kwargs
-    ):
-        self.mapping = mapping
+        *args: Any,
+        **kwargs: Any,
+    ) -> None:
+        self.mapping: Dict[str, List[SummaryFunction]] = mapping
         self.typeset = typeset
         self._complete_dag()
 
@@ -45,19 +52,28 @@ class Handler:
         for from_type, to_type in nx.topological_sort(
             nx.line_graph(self.typeset.base_graph)
         ):
-            self.mapping[str(to_type)] = (
-                self.mapping[str(from_type)] + self.mapping[str(to_type)]
-            )
+            from_type_str = str(from_type)
+            to_type_str = str(to_type)
+            
+            if from_type_str not in self.mapping:
+                continue
+                
+            if to_type_str in self.mapping:
+                self.mapping[to_type_str] = (
+                    self.mapping[from_type_str] + self.mapping[to_type_str]
+                )
+            else:
+                self.mapping[to_type_str] = self.mapping[from_type_str].copy()
 
-    def handle(self, dtype: str, *args, **kwargs) -> dict:
+    def handle(self, dtype: str, *args: Any, **kwargs: Any) -> Dict[str, Any]:
         """
         Returns:
             object: a tuple containing the config, the dataset series and the summary extracted
         """
         funcs = self.mapping.get(dtype, [])
         op = compose(funcs)
-        summary = op(*args)[-1]
-        return summary
+        result = op(*args)
+        return cast(Dict[str, Any], result[-1])
 
 
 def get_render_map() -> Dict[str, Callable]:

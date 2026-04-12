@@ -48,6 +48,7 @@ def pandas_get_table_stats(
         else 0
     )
 
+    # Variable type counts
     table_stats.update(
         {"types": dict(Counter([v["type"] for v in variable_stats.values()]))}
     )

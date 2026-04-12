@@ -6,7 +6,7 @@ from ydata_profiling.report.presentation.core.toggle_button import ToggleButton
 
 
 class Collapse(ItemRenderer):
-    def __init__(self, button: ToggleButton, item: Renderable, **kwargs):
+    def __init__(self, button: ToggleButton, item: Renderable, **kwargs: Any):
         super().__init__("collapse", {"button": button, "item": item}, **kwargs)
 
     def __repr__(self) -> str:

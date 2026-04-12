@@ -37,6 +37,7 @@ def get_table_stats_spark(
             if series_summary["n_missing"] == n:
                 table_stats["n_vars_all_missing"] += 1
 
+    # without this check we'll get a div by zero error
     if result["n"] * result["n_var"] > 0:
         table_stats["p_cells_missing"] = (
             table_stats["n_cells_missing"] / (result["n"] * result["n_var"])
@@ -51,6 +52,7 @@ def get_table_stats_spark(
     result["n_vars_all_missing"] = table_stats["n_vars_all_missing"]
     result["n_vars_with_missing"] = table_stats["n_vars_with_missing"]
 
+    # Variable type counts
     result["types"] = dict(Counter([v["type"] for v in variable_stats.values()]))
 
     return result
