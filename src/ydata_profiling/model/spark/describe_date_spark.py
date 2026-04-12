@@ -5,6 +5,7 @@ from numpy import array
 from pyspark.sql import DataFrame
 
 from ydata_profiling.config import Settings
+from ydata_profiling.model.summary_algorithms import describe_date_1d
 
 
 def date_stats_spark(df: DataFrame, summary: dict) -> dict:
@@ -18,6 +19,7 @@ def date_stats_spark(df: DataFrame, summary: dict) -> dict:
     return df.agg(*expr).first().asDict()
 
 
+@describe_date_1d.register
 def describe_date_1d_spark(
     config: Settings, df: DataFrame, summary: dict
 ) -> Tuple[Settings, DataFrame, dict]:
