@@ -7,7 +7,7 @@ from tqdm.auto import tqdm
 from ydata_profiling.config import Settings
 from ydata_profiling.model import BaseDescription
 from ydata_profiling.model.alerts import AlertType
-from ydata_profiling.model.handler import get_render_map
+from ydata_profiling.report.structure.variables import get_render_map
 from ydata_profiling.report.presentation.core import (
     HTML,
     Collapse,
