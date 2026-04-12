@@ -60,6 +60,4 @@ class Handler:
         return summary
 
 
-from ydata_profiling.report.structure import get_render_map
 
-__all__ = ["compose", "Handler", "get_render_map"]

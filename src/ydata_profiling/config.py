@@ -6,7 +6,24 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 import yaml
 from pydantic.v1 import BaseModel, BaseSettings, Field, PrivateAttr
 
-from ydata_profiling.utils.common import update
+
+def _merge_dictionaries(dict1: dict, dict2: dict) -> dict:
+    """
+    Recursive merge dictionaries.
+
+    :param dict1: Base dictionary to merge.
+    :param dict2: Dictionary to merge on top of base dictionary.
+    :return: Merged dictionary
+    """
+    for key, val in dict1.items():
+        if isinstance(val, dict):
+            dict2_node = dict2.setdefault(key, {})
+            _merge_dictionaries(val, dict2_node)
+        else:
+            if key not in dict2:
+                dict2[key] = val
+
+    return dict2
 
 
 class Dataset(BaseModel):
@@ -338,7 +355,60 @@ class Settings(BaseSettings):
     html: Html = Html()
     notebook: Notebook = Notebook()
 
-    _arg_groups: Dict[str, Any] = {
+    def update(self, updates: dict) -> "Settings":
+        update = _merge_dictionaries(self.dict(), updates)
+        return self.parse_obj(self.copy(update=update))
+
+    @staticmethod
+    def from_file(config_file: Union[Path, str]) -> "Settings":
+        """Create a Settings object from a yaml file.
+
+        Args:
+            config_file: yaml file path
+        Returns:
+            Settings
+        """
+        with open(config_file) as f:
+            data = yaml.safe_load(f)
+
+        return Settings.parse_obj(data)
+
+
+class SparkSettings(Settings):
+    """
+    Setting class with the standard report configuration for Spark DataFrames
+    All the supported analysis are set to true
+    """
+
+    vars: Univariate = Univariate()
+
+    vars.num.low_categorical_threshold = 0
+
+    infer_dtypes: bool = False
+
+    correlations: Dict[str, Correlation] = {
+        "spearman": Correlation(key="spearman", calculate=True),
+        "pearson": Correlation(key="pearson", calculate=True),
+    }
+
+    correlation_table: bool = True
+
+    interactions: Interactions = Interactions()
+    interactions.continuous = False
+
+    missing_diagrams: Dict[str, bool] = {
+        "bar": False,
+        "matrix": False,
+        "dendrogram": False,
+        "heatmap": False,
+    }
+    samples: Samples = Samples()
+    samples.tail = 0
+    samples.random = 0
+
+
+class Config:
+    arg_groups: Dict[str, Any] = {
         "sensitive": {
             "samples": None,
             "duplicates": None,
@@ -405,8 +475,8 @@ class Settings(BaseSettings):
 
     @staticmethod
     def get_arg_groups(key: str) -> dict:
-        kwargs = Settings._arg_groups[key]
-        shorthand_args, _ = Settings.shorthands(kwargs, split=False)
+        kwargs = Config.arg_groups[key]
+        shorthand_args, _ = Config.shorthands(kwargs, split=False)
         return shorthand_args
 
     @staticmethod
@@ -415,8 +485,8 @@ class Settings(BaseSettings):
         if not split:
             shorthand_args = kwargs
         for key, value in list(kwargs.items()):
-            if value is None and key in Settings._shorthands:
-                shorthand_args[key] = Settings._shorthands[key]
+            if value is None and key in Config._shorthands:
+                shorthand_args[key] = Config._shorthands[key]
                 if split:
                     del kwargs[key]
 
@@ -424,63 +494,3 @@ class Settings(BaseSettings):
             return shorthand_args, kwargs
         else:
             return shorthand_args, {}
-
-    def update(self, updates: dict) -> "Settings":
-        merged = update(self.dict().copy(), updates)
-        return self.parse_obj(self.copy(update=merged))
-
-    @staticmethod
-    def from_file(config_file: Union[Path, str]) -> "Settings":
-        """Create a Settings object from a yaml file.
-
-        Args:
-            config_file: yaml file path
-        Returns:
-            Settings
-        """
-        with open(config_file) as f:
-            data = yaml.safe_load(f)
-
-        return Settings.parse_obj(data)
-
-
-class SparkSettings(Settings):
-    """
-    Setting class with the standard report configuration for Spark DataFrames
-    All the supported analysis are set to true
-    """
-
-    vars: Univariate = Univariate()
-
-    vars.num.low_categorical_threshold = 0
-
-    infer_dtypes: bool = False
-
-    correlations: Dict[str, Correlation] = {
-        "spearman": Correlation(key="spearman", calculate=True),
-        "pearson": Correlation(key="pearson", calculate=True),
-    }
-
-    correlation_table: bool = True
-
-    interactions: Interactions = Interactions()
-    interactions.continuous = False
-
-    missing_diagrams: Dict[str, bool] = {
-        "bar": False,
-        "matrix": False,
-        "dendrogram": False,
-        "heatmap": False,
-    }
-    samples: Samples = Samples()
-    samples.tail = 0
-    samples.random = 0
-
-
-class Config(Settings):
-    """
-    Deprecated: Use Settings instead.
-    Backward compatibility alias for Settings class.
-    """
-
-    pass
