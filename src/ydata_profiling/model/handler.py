@@ -1,32 +1,33 @@
 """
     Auxiliary handler methods for data summary extraction
 """
-from typing import Any, Callable, Dict, List, Sequence, Tuple, TypeVar, cast
+from typing import Any, Callable, Dict, List, Sequence, Tuple, Union
 
 import networkx as nx
 from visions import VisionsTypeset
 
-T = TypeVar("T")
-SummaryFunction = Callable[..., Tuple[Any, ...]]
 
-
-def compose(functions: Sequence[SummaryFunction]) -> SummaryFunction:
+def compose(functions: Sequence[Callable]) -> Callable:
     """
     Compose a sequence of functions.
 
-    :param functions: sequence of functions
-    :return: combined function applying all functions in order.
+    Each function in the sequence receives the result of the previous function.
+    Functions are expected to accept and return tuples for proper chaining.
+
+    :param functions: sequence of functions that accept and return tuples
+    :return: combined function applying all functions in order
     """
 
     def composed_function(*args: Any) -> Tuple[Any, ...]:
-        result: Tuple[Any, ...] = args
+        result: Union[Tuple[Any, ...], Any] = args
         for func in functions:
-            step_result = func(*result)
-            if not isinstance(step_result, tuple):
-                result = (step_result,)
+            if isinstance(result, tuple):
+                result = func(*result)
             else:
-                result = step_result
-        return result
+                result = func(result)
+        if isinstance(result, tuple):
+            return result
+        return (result,)
 
     return composed_function
 
@@ -34,17 +35,18 @@ def compose(functions: Sequence[SummaryFunction]) -> SummaryFunction:
 class Handler:
     """A generic handler
 
-    Allows any custom mapping between data types and functions
+    Allows any custom mapping between data types and functions.
+    Functions are composed based on the type hierarchy defined in the typeset.
     """
 
     def __init__(
         self,
-        mapping: Dict[str, List[SummaryFunction]],
+        mapping: Dict[str, List[Callable]],
         typeset: VisionsTypeset,
         *args: Any,
-        **kwargs: Any,
-    ) -> None:
-        self.mapping: Dict[str, List[SummaryFunction]] = mapping
+        **kwargs: Any
+    ):
+        self.mapping = mapping
         self.typeset = typeset
         self._complete_dag()
 
@@ -52,28 +54,27 @@ class Handler:
         for from_type, to_type in nx.topological_sort(
             nx.line_graph(self.typeset.base_graph)
         ):
-            from_type_str = str(from_type)
-            to_type_str = str(to_type)
-            
-            if from_type_str not in self.mapping:
-                continue
-                
-            if to_type_str in self.mapping:
-                self.mapping[to_type_str] = (
-                    self.mapping[from_type_str] + self.mapping[to_type_str]
-                )
-            else:
-                self.mapping[to_type_str] = self.mapping[from_type_str].copy()
+            from_key = str(from_type)
+            to_key = str(to_type)
+            self.mapping[to_key] = self.mapping.get(from_key, []) + self.mapping.get(
+                to_key, []
+            )
 
     def handle(self, dtype: str, *args: Any, **kwargs: Any) -> Dict[str, Any]:
         """
-        Returns:
-            object: a tuple containing the config, the dataset series and the summary extracted
+        Execute the handler chain for the given data type.
+
+        :param dtype: the data type to handle
+        :param args: arguments to pass to the handler functions
+        :param kwargs: keyword arguments (currently unused but reserved for extensibility)
+        :return: a dictionary containing the summary extracted from the data
         """
         funcs = self.mapping.get(dtype, [])
         op = compose(funcs)
         result = op(*args)
-        return cast(Dict[str, Any], result[-1])
+        if result:
+            return result[-1] if isinstance(result[-1], dict) else {}
+        return {}
 
 
 def get_render_map() -> Dict[str, Callable]:

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Dict, Optional
 
 
 class Renderable(ABC):
@@ -38,5 +38,5 @@ class Renderable(ABC):
         return self.__class__.__name__
 
     @classmethod
-    def convert_to_class(cls, obj: "Renderable", flavour_func: Callable) -> None:
+    def convert_to_class(cls, obj: "Renderable", flavour_func) -> None:
         obj.__class__ = cls
