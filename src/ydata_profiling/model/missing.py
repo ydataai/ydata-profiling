@@ -1,17 +1,32 @@
+import importlib
 import warnings
-from typing import Any, Dict, Optional, Sized
+from typing import Any, Callable, Dict, Optional, Sized
 
 import pandas as pd
 
 from ydata_profiling.config import Settings
-from ydata_profiling.utils.backend import BaseBackend
 
 
-class MissingDataBackend(BaseBackend):
+class MissingDataBackend:
     """Helper class to select and cache the appropriate missing-data backend (Pandas or Spark)."""
 
-    _pandas_module = "ydata_profiling.model.pandas.missing_pandas"
-    _spark_module = "ydata_profiling.model.spark.missing_spark"
+    def __init__(self, df: Sized):
+        """Determine backend once and store it for all missing-data computations."""
+        if isinstance(df, pd.DataFrame):
+            self.backend_module = "ydata_profiling.model.pandas.missing_pandas"
+        else:
+            self.backend_module = "ydata_profiling.model.spark.missing_spark"
+
+        self.module = importlib.import_module(self.backend_module)
+
+    def get_method(self, method_name: str) -> Callable:
+        """Retrieve the appropriate missing-data function from the backend module."""
+        try:
+            return getattr(self.module, method_name)
+        except AttributeError as ex:
+            raise AttributeError(
+                f"Missing-data function '{method_name}' is not available in {self.backend_module}."
+            ) from ex
 
 
 class MissingData:

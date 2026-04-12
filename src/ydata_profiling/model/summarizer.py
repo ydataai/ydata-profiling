@@ -50,8 +50,9 @@ class BaseSummarizer(Handler):
         return self.handle(str(dtype), config, series, {"type": str(dtype)})
 
 
+# Revisit this with the correct support for Spark as well.
 class ProfilingSummarizer(BaseSummarizer):
-    """A summarizer supporting both Pandas and Spark DataFrames."""
+    """A summarizer for Pandas DataFrames."""
 
     def __init__(self, typeset: VisionsTypeset, use_spark: bool = False):
         self.use_spark = use_spark and is_pyspark_installed()
