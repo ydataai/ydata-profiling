@@ -5,13 +5,15 @@ import pyspark.sql.functions as F
 from pyspark.sql import DataFrame
 
 from ydata_profiling.config import Settings
-from ydata_profiling.model.summary_algorithms import histogram_compute
+from ydata_profiling.model.summary_algorithms import (
+    describe_numeric_1d,
+    histogram_compute,
+)
 
 
 def numeric_stats_spark(df: DataFrame, summary: dict) -> dict:
     column = df.columns[0]
 
-    # Removing null types from numeric summary stats to match Pandas defaults which skip na's (skipna=False)
     finite_filter = (
         F.col(column).isNotNull()
         & ~F.isnan(F.col(column))
@@ -32,6 +34,7 @@ def numeric_stats_spark(df: DataFrame, summary: dict) -> dict:
     return non_null_df.agg(*expr).first().asDict()
 
 
+@describe_numeric_1d.register
 def describe_numeric_1d_spark(
     config: Settings, df: DataFrame, summary: dict
 ) -> Tuple[Settings, DataFrame, dict]:
@@ -90,7 +93,6 @@ def describe_numeric_1d_spark(
     quantile_threshold = 0.05
 
     if summary.get("n") == summary.get("n_missing"):
-        # This means the entire column is null/nan, so summary values need to be hard-coded:
         summary.update({f"{percentile:.0%}": np.nan for percentile in quantiles})
 
         summary["mad"] = np.nan
@@ -135,10 +137,6 @@ def describe_numeric_1d_spark(
     # ... https://stackoverflow.com/questions/60221841/how-to-detect-monotonic-decrease-in-pyspark
     summary["monotonic"] = 0
 
-    # this function only displays the top N (see config) values for a histogram.
-    # This might be confusing if there are a lot of values of equal magnitude, but we cannot bring all the values to
-    # display in pandas display
-    # the alternative is to do this in spark natively, but it is not trivial
     infinity_values = [np.inf, -np.inf]
 
     infinity_index = summary["value_counts_without_nan"].index.isin(infinity_values)
