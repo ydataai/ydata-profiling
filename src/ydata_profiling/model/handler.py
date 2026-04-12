@@ -58,6 +58,3 @@ class Handler:
         op = compose(funcs)
         summary = op(*args)[-1]
         return summary
-
-
-

@@ -3,6 +3,14 @@ from typing import Callable, Dict
 
 
 def get_render_map() -> Dict[str, Callable]:
+    """Get the mapping of variable types to their render functions.
+
+    This function was moved from model.handler to report.structure to eliminate
+    the reverse dependency from model layer to report layer.
+
+    Returns:
+        Dictionary mapping type names to render functions.
+    """
     import ydata_profiling.report.structure.variables as render_algorithms
 
     render_map = {
