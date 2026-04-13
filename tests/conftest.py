@@ -12,10 +12,10 @@ try:
 except ImportError:
     has_spark = False
 
-from ydata_profiling.config import Settings
-from ydata_profiling.model.summarizer import ProfilingSummarizer
-from ydata_profiling.model.typeset import ProfilingTypeSet
-from ydata_profiling.utils.cache import cache_file
+from data_profiling.config import Settings
+from data_profiling.model.summarizer import ProfilingSummarizer
+from data_profiling.model.typeset import ProfilingTypeSet
+from data_profiling.utils.cache import cache_file
 
 
 def pytest_configure(config):

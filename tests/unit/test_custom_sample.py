@@ -1,7 +1,7 @@
 import pandas as pd
 
-from ydata_profiling import ProfileReport
-from ydata_profiling.utils.dataframe import hash_dataframe
+from data_profiling import ProfileReport
+from data_profiling.utils.dataframe import hash_dataframe
 
 
 def test_custom_sample():

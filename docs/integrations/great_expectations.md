@@ -6,7 +6,7 @@
     You can recreate the integration with the following
     packages versions: 
 
-        - ydata-profiling==2.1.0 
+        - data-profiling==2.1.0 
         - great-expectations==0.13.4
 
 [Great Expectations](https://www.greatexpectations.io) is a Python-based
@@ -15,7 +15,7 @@ data. It helps you to maintain data quality and improve communication
 about data between teams. With Great Expectations, you can assert what
 you expect from the data you load and transform, and catch data issues
 quickly -- Expectations are basically *unit tests for your data*.
-`ydata-profiling` features a method to create a suite of Expectations
+`data-profiling` features a method to create a suite of Expectations
 based on the results of your `ProfileReport`!
 
 ## About Great Expectations
@@ -47,13 +47,13 @@ documentation](https://docs.greatexpectations.io/en/latest/) and join
 the [Great Expectations Slack
 channel](https://www.greatexpectations.io/slack) for help.
 
-## Creating Expectation Suites with ydata-profiling
+## Creating Expectation Suites with adata-profiling
 
 An *Expectation Suite* is simply a set of Expectations. You can create
 Expectation Suites by writing out individual statements, such as the one
 above, or by automatically generating them based on profiler results.
 
-`ydata-profiling` provides a simple `to_expectation_suite()` method that
+`data-profiling` provides a simple `to_expectation_suite()` method that
 returns a Great Expectations `ExpectationSuite` object which contains a
 set of Expectations.
 
@@ -68,11 +68,11 @@ project\'s directory.
 
 ``` python linenums="1" title="Get your set of expectations"
 import pandas as pd
-from ydata_profiling import ProfileReport
+from data_profiling import ProfileReport
 
 df = pd.read_csv("titanic.csv")
 
-profile = ProfileReport(df, title="YData Profiling Report", explorative=True)
+profile = ProfileReport(df, title="Data Profiling Report", explorative=True)
 
 # Obtain an Expectation Suite with a set of default Expectations
 # By default, this also profiles the dataset, saves the suite, runs validation, and builds Data Docs
@@ -106,7 +106,7 @@ suite = profile.to_expectation_suite(
 ```
 
 See [the Great Expectations
-Examples](https://github.com/ydataai/ydata-profiling/blob/master/examples/integrations/great_expectations/great_expectations_example.py)
+Examples](https://github.com/Data-Centric-AI-Community/data-profiling/blob/master/examples/integrations/great_expectations/great_expectations_example.py)
 for complete examples.
 
 <img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=baa0e45f-0c03-4190-9646-9d8ea2640ba2" />

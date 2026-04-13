@@ -2,7 +2,7 @@
 
 !!! note ""Spark support"
     **Spark dataframes support** - Spark Dataframes profiling is available
-    from ydata-profiling version 4.0.0 onwards
+    from data-profiling version 4.0.0 onwards
 
 Data Profiling is a core step in the process of developing AI solutions.
 For small datasets, the data can be loaded into memory and easily
@@ -11,7 +11,7 @@ what can be done?
 
 Big data engines, that distribute the workload through different
 machines, are the answer. Particularly, Spark rose as one of the most
-used and adopted engines by the data community. `ydata-profiling`
+used and adopted engines by the data community. `data-profiling`
 provides an ease-to-use interface to generate complete and comprehensive
 data profiling out of your Spark dataframes with a single line of code.
 
@@ -71,12 +71,12 @@ command line to launch PySpark shell and confirm both python and pyspark
 versions. A more detailed tutorial for the installation can be found
 [here](https://sparkbyexamples.com/pyspark/how-to-install-pyspark-on-mac/)
 
-### Install ydata-profiling
+### Install data-profiling
 
-Create a pip virtual environment or a conda environment and install `ydata-profiling` with pyspark as a dependency
+Create a pip virtual environment or a conda environment and install `data-profiling` with pyspark as a dependency
 
 ```console
-pip install ydata-profiling[pyspark]
+pip install data-profiling[pyspark]
 ```
 
 ## Profiling with Spark - Supported Features
@@ -84,9 +84,9 @@ pip install ydata-profiling[pyspark]
 !!! note "Minimal mode"
     This mode was introduced in version v4.0.0
 
-`ydata-profiling` now supports Spark Dataframes profiling. You can find
+`data-profiling` now supports Spark Dataframes profiling. You can find
 an example of the integration
-[here](https://github.com/ydataai/ydata-profiling/blob/master/examples/features/spark_example.py).
+[here](https://github.com/Data-Centric-AI-Community/data-profiling/blob/master/examples/features/spark_example.py).
 
 **Features supported:**
 
@@ -103,7 +103,7 @@ an example of the integration
 ## Profiling with Spark DataFrames
 
 A quickstart example to profile data from a CSV leveraging Pyspark
-engine and `ydata-profiling`.
+engine and `data-profiling`.
 
 ``` python linenums="1" title="Profiling with Spark Dataframes"
 from pyspark.sql import SparkSession
@@ -119,13 +119,13 @@ a = ProfileReport(df)
 a.to_file("spark_profile.html")
 ```
 
-### ydata-profiling in Databricks
+### data-profiling in Databricks
 
 Yes! We have fantastic new coming with a full tutorial on how you can
-use ydata-profiling in Databricks Notebooks.
+use data-profiling in Databricks Notebooks.
 
 The notebook example can be found
-[here](https://github.com/ydataai/ydata-profiling/tree/master/examples/integrations/databricks).
+[here](https://github.com/Data-Centric-AI-Community/data-profiling/tree/master/examples/integrations/databricks).
 
 Stay tuned - we are going to update the documentation soon!
 

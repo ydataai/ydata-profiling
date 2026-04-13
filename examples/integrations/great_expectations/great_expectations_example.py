@@ -1,8 +1,8 @@
 import great_expectations as ge
 import pandas as pd
 
-from ydata_profiling import ProfileReport
-from ydata_profiling.utils.cache import cache_file
+from data_profiling import ProfileReport
+from data_profiling.utils.cache import cache_file
 
 file_name = cache_file(
     "titanic.csv",
