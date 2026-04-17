@@ -2,8 +2,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from ydata_profiling.config import Settings
-from ydata_profiling.model.summary_algorithms import (
+from data_profiling.config import Settings
+from data_profiling.model.summary_algorithms import (
     describe_counts,
     describe_generic,
     describe_supported,

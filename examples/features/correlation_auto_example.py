@@ -2,8 +2,8 @@ from pathlib import Path
 
 import pandas as pd
 
-from ydata_profiling import ProfileReport
-from ydata_profiling.utils.cache import cache_zipped_file
+from data_profiling import ProfileReport
+from data_profiling.utils.cache import cache_zipped_file
 
 """
 The "Auto" correlation is an interpretable pairwise column metric of the following mapping:

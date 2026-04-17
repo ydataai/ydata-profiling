@@ -1,12 +1,12 @@
 """
 Test for issue 523:
-https://github.com/ydataai/ydata-profiling/issues/XXX
+https://github.com/Data-Centric-AI-Community/data-profiling/issues/523
 """
 from dataclasses import asdict
 
 import pandas as pd
 
-from ydata_profiling import ProfileReport
+from data_profiling import ProfileReport
 
 
 def test_issue523():

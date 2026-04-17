@@ -5,7 +5,7 @@ https://github.com/ydataai/ydata-profiling/issues/1602
 
 from pyspark.sql import types as T
 
-from ydata_profiling import ProfileReport
+from data_profiling import ProfileReport
 
 
 def test_spark_handles_decimal_type(test_output_dir, spark_session):
