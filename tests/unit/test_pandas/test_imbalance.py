@@ -1,6 +1,6 @@
 import pandas as pd
 
-from ydata_profiling.model.pandas.imbalance_pandas import column_imbalance_score
+from data_profiling.model.pandas.imbalance_pandas import column_imbalance_score
 
 
 def test_column_imbalance_score_many_classes():

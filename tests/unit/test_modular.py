@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from ydata_profiling import ProfileReport
+from data_profiling import ProfileReport
 
 
 @pytest.fixture

@@ -1,6 +1,6 @@
 """
 Test for issue 377:
-https://github.com/ydataai/ydata-profiling/issues/377
+https://github.com/Data-Centric-AI-Community/data-profiling/issues/377
 """
 import sys
 import zipfile
@@ -9,8 +9,8 @@ import pandas as pd
 import pytest
 import requests
 
-from ydata_profiling import ProfileReport
-from ydata_profiling.utils.cache import cache_zipped_file
+from data_profiling import ProfileReport
+from data_profiling.utils.cache import cache_zipped_file
 
 
 @pytest.fixture()
