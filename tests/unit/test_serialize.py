@@ -2,8 +2,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from ydata_profiling import ProfileReport
-from ydata_profiling.model import BaseDescription
+from data_profiling import ProfileReport
+from data_profiling.model import BaseDescription
 
 
 def test_load(get_data_file, test_output_dir):

@@ -1,13 +1,13 @@
 """
 Test for issue 169:
-https://github.com/ydataai/ydata-profiling/issues/169
+https://github.com/Data-Centric-AI-Community/data-profiling/issues/169
 """
 from io import StringIO
 
 import pandas as pd
 import pytest
 
-from ydata_profiling import ProfileReport
+from data_profiling import ProfileReport
 
 
 @pytest.fixture

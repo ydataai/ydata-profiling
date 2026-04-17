@@ -2,7 +2,7 @@
 
 !!! question "Text/corpus data - your input is needed!"
 
-    `ydata-profiling` team is considering the support of a new set of features for corpus data
+    `data-profiling` team is considering the support of a new set of features for corpus data
     and we want to hear from you! We're particularly interested in understanding why you think
     these features would be useful, and your input will help us prioritize and refine this development.
 
@@ -19,7 +19,7 @@ It can reveal information about data volatility, periodicity, and anomalies, fac
 - **Text:**  when it comes to text data, such as strings or documents, the profiling offers insightful statistics on the distribution of word frequencies, common phrases, and unique words. 
 
 ## Data types
-Types, when going beyond the logical data types such as integer, floats, etc,  are a powerful abstraction for effective data analysis, allowing analysis under higher level lenses. ``ydata-profiling`` is backed by a powerful type system developed specifically for data analysis: `visions <https://github.com/dylan-profiler/visions>`_. Currently, ``ydata-profiling`` recognizes the following types:
+Types, when going beyond the logical data types such as integer, floats, etc,  are a powerful abstraction for effective data analysis, allowing analysis under higher level lenses. ``data-profiling`` is backed by a powerful type system developed specifically for data analysis: `visions <https://github.com/dylan-profiler/visions>`_. Currently, ``data-profiling`` recognizes the following types:
 
 - Boolean
 - Numerical
@@ -33,12 +33,12 @@ Types, when going beyond the logical data types such as integer, floats, etc,  a
 
 Appropriate typesets can both improve the overall expressiveness and reduce the complexity of the analysis/code. 
 User customized summarizations and type definitions are fully supported, with PRs supporting new data types
-for specific use cases more than welcome. For reference, you can check the implementation of ``ydata-profiling``'s
-default typeset [here](https://github.com/ydataai/ydata-profiling/blob/develop/src/ydata_profiling/model/typeset.py).
+for specific use cases more than welcome. For reference, you can check the implementation of ``data-profiling``'s
+default typeset [here](https://github.com/Data-Centric-AI-Community/data-profiling/blob/develop/src/data_profiling/model/typeset.py).
 
 ## Data quality alerts
 <figure markdown>     
-   ![Data quality warnings ydata-profiling](../_static/img/warnings_section.png){width="700"}
+   ![Data quality warnings data-profiling](../_static/img/warnings_section.png){width="700"}
    <figcaption>Data quality warnings</figcaption>
 </figure>
 
@@ -54,7 +54,7 @@ as well as settings to disable specific ones, can be consulted in the [documenta
 ## Univariate profiling                                
 
 <figure markdown>     
-   ![Univariate profiling ydata-profiling](../_static/img/univariate_profiling.png){width="700"}
+   ![Univariate profiling data-profiling](../_static/img/univariate_profiling.png){width="700"}
    <figcaption>Univariate profiling metrics and visualization</figcaption>
 </figure>
 
@@ -67,7 +67,7 @@ For more details about the different metrics and visualizations check the Univar
 ## Multivariate profiling
 
 <figure markdown>     
-   ![Multivariate profiling ydata-profiling](../_static/img/multivariate_profiling.png){width="700"}
+   ![Multivariate profiling data-profiling](../_static/img/multivariate_profiling.png){width="700"}
    <figcaption>Multivariate profiling metrics and visualization</figcaption>
 </figure>
 
@@ -102,7 +102,7 @@ The identification of outliers allows the data analyst or scientist to assess wh
 Feature limited to user of the [cloud hosted solution](http://ydata.ai/register?utm_source=ydata-profiling&utm_medium=documentation&utm_campaign=YData%20Fabric%20Community).
 
 ## Preview data 
-For a quick overview of the data, ydata-profiling provides the following sections that can be easily configure by the user:
+For a quick overview of the data, data-profiling provides the following sections that can be easily configure by the user:
 - First n records of a given dataset
 - Last n records of a given dataset
 - A table containing observed duplicates (exact matches)

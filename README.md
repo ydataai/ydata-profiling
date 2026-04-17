@@ -1,24 +1,24 @@
-# ydata-profiling
+# fg-data-profiling
 
 > **`ydata-profiling` is now `fg-data-profiling`.** This package has been renamed to `fg-data-profiling`. Please follow the [Migration Guide](#migration-guide) as soon as possible — the old package will no longer receive updates or bug fixes.
 
 [![Build Status](https://github.com/ydataai/pandas-profiling/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/ydataai/pandas-profiling/actions/workflows/tests.yml)
-[![PyPI download month](https://img.shields.io/pypi/dm/ydata-profiling.svg)](https://pypi.python.org/pypi/ydata-profiling/)
-[![](https://pepy.tech/badge/pandas-profiling)](https://pypi.org/project/ydata-profiling/)
+[![PyPI download month](https://img.shields.io/pypi/dm/fg-data-profiling.svg)](https://pypi.python.org/pypi/fg-data-profiling/)
+[![](https://pepy.tech/badge/pandas-profiling)](https://pypi.org/project/fg-data-profiling/)
 [![Code Coverage](https://codecov.io/gh/ydataai/pandas-profiling/branch/master/graph/badge.svg?token=gMptB4YUnF)](https://codecov.io/gh/ydataai/pandas-profiling)
 [![Release Version](https://img.shields.io/github/release/ydataai/pandas-profiling.svg)](https://github.com/ydataai/pandas-profiling/releases)
-[![Python Version](https://img.shields.io/pypi/pyversions/ydata-profiling)](https://pypi.org/project/ydata-profiling/)
+[![Python Version](https://img.shields.io/pypi/pyversions/fg-data-profiling)](https://pypi.org/project/fg-data-profiling/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 <img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=cb7e69df-af81-4352-809a-d4251756affc" />
 
-<p align="center"><img width="300" src="https://assets.ydata.ai/oss/ydata-profiling_black.png" alt="YData Profiling Logo"></p>
+<p align="center"><img width="300" src="https://assets.ydata.ai/oss/ydata-profiling_black.png" alt="Data Profiling Logo"></p>
 
 <p align="center">
   <a href="https://ydata-profiling.ydata.ai/docs/master/">Documentation</a>
   |
-  <a href="https://tiny.ydata.ai/dcai-ydata-profiling">Discord</a>
+  <a href="https://tiny.ydata.ai/dcai-data-profiling">Discord</a>
   | 
-  <a href="https://stackoverflow.com/questions/tagged/pandas-profiling+or+ydata-profiling">Stack Overflow</a>
+  <a href="https://stackoverflow.com/questions/tagged/pandas-profiling+or+data-profiling">Stack Overflow</a>
   |
   <a href="https://ydata-profiling.ydata.ai/docs/master/pages/reference/changelog.html#changelog">Latest changelog</a>
 
@@ -28,12 +28,12 @@
   Do you like this project? Show us your love and <a href="https://engage.ydata.ai">give feedback!</a>
 </p>
 
-`ydata-profiling` primary goal is to provide a one-line Exploratory Data Analysis (EDA) experience in a consistent and fast solution. Like pandas `df.describe()` function, that is so handy, ydata-profiling delivers an extended analysis of a DataFrame while allowing the data analysis to be exported in different formats such as **html** and **json**.
+`fg-data-profiling` primary goal is to provide a one-line Exploratory Data Analysis (EDA) experience in a consistent and fast solution. Like pandas `df.describe()` function, that is so handy, fg-data-profiling delivers an extended analysis of a DataFrame while allowing the data analysis to be exported in different formats such as **html** and **json**.
 
 The package outputs a simple and digested analysis of a dataset, including **time-series** and **text**.
 
 > **Looking for a scalable solution that can fully integrate with your database systems?**<br>
-> Leverage YData Fabric Data Catalog to connect to different databases and storages (Oracle, snowflake, PostGreSQL, GCS, S3, etc.) and leverage an interactive and guided profiling experience in Fabric. Check out the [Community Version](http://ydata.ai/register?utm_source=ydata-profiling&utm_medium=documentation&utm_campaign=YData%20Fabric%20Community).
+> Leverage YData Fabric Data Catalog to connect to different databases and storages (Oracle, snowflake, PostGreSQL, GCS, S3, etc.) and leverage an interactive and guided profiling experience in Fabric. Check out the [Community Version](http://ydata.ai/register?utm_source=data-profiling&utm_medium=documentation&utm_campaign=YData%20Fabric%20Community).
 
 ## Migration Guide
  
@@ -73,11 +73,11 @@ grep -r "ydata_profiling" . --include="*.py"
 
 ### Install
 ```cmd
-pip install ydata-profiling
+pip install fg-data-profiling
 ```
 or
 ```cmd
-conda install -c conda-forge ydata-profiling
+conda install -c conda-forge fg-data-profiling
 ```
 ### Start profiling
 
@@ -86,7 +86,7 @@ Start by loading your pandas `DataFrame` as you normally would, e.g. by using:
 ```python
 import numpy as np
 import pandas as pd
-from ydata_profiling import ProfileReport
+from data_profiling import ProfileReport
 
 df = pd.DataFrame(np.random.rand(100, 5), columns=["a", "b", "c", "d", "e"])
 ```
@@ -124,16 +124,16 @@ The report contains three additional sections:
 ### ✨ Spark
 
 Spark support has been released, but we are always looking for an extra pair of hands 👐.
-[Check current work in progress!](https://github.com/ydataai/ydata-profiling/projects/3).
+[Check current work in progress!](https://github.com/Data-Centric-AI-Community/fg-data-profiling/projects/3).
 
 ## 📝 Use cases
-YData-profiling can be used to deliver a variety of different use-case. The documentation includes guides, tips and tricks for tackling them:
+fg-data-profiling can be used to deliver a variety of different use-case. The documentation includes guides, tips and tricks for tackling them:
 
 | Use case | Description                                                                                 |
 |----------|---------------------------------------------------------------------------------------------|
 | [Comparing datasets](https://docs.profiling.ydata.ai/latest/features/comparing_datasets)                        | Comparing multiple version of the same dataset                                              |
 | [Profiling a Time-Series dataset](https://docs.profiling.ydata.ai/latest/features/time_series_datasets)               | Generating a report for a time-series dataset with a single line of code                    |
-|[Profiling large datasets](https://docs.profiling.ydata.ai/latest/features/big_data)                            | Tips on how to prepare data and configure `ydata-profiling` for working with large datasets |
+|[Profiling large datasets](https://docs.profiling.ydata.ai/latest/features/big_data)                            | Tips on how to prepare data and configure `fg-data-profiling` for working with large datasets |
 | [Handling sensitive data](https://docs.profiling.ydata.ai/latest/features/sensitive_data)                       | Generating reports which are mindful about sensitive data in the input dataset              |
 | [Dataset metadata and data dictionaries](https://docs.profiling.ydata.ai/latest/features/metadata)               | Complementing the report with dataset details and column-specific data dictionaries         |
 | [Customizing the report's appearance](https://docs.profiling.ydata.ai/latest/features/custom_reports) | Changing the appearance of the report's page and of the contained visualizations            |
@@ -142,7 +142,7 @@ YData-profiling can be used to deliver a variety of different use-case. The docu
 
 There are two interfaces to consume the report inside a Jupyter notebook: through widgets and through an embedded HTML report.
 
-<img alt="Notebook Widgets" src="https://ydata-profiling.ydata.ai/docs/master/assets/widgets.gif" width="800" />
+<img alt="Notebook Widgets" src="https://data-profiling.ydata.ai/docs/master/assets/widgets.gif" width="800" />
 
 The above is achieved by simply displaying the report as a set of widgets. In a Jupyter Notebook, run:
 
@@ -178,10 +178,10 @@ profile.to_file("your_report.json")
 
 ### Using in the command line
 
-For standard formatted CSV files (which can be read directly by pandas without additional settings), the `ydata_profiling` executable can be used in the command line. The example below generates a report named *Example Profiling Report*, using a configuration file called `default.yaml`, in the file `report.html` by processing a `data.csv` dataset.
+For standard formatted CSV files (which can be read directly by pandas without additional settings), the `data_profiling` executable can be used in the command line. The example below generates a report named *Example Profiling Report*, using a configuration file called `default.yaml`, in the file `report.html` by processing a `data.csv` dataset.
 
 ```sh
-ydata_profiling --title "Example Profiling Report" --config_file default.yaml data.csv report.html
+data_profiling --title "Example Profiling Report" --config_file default.yaml data.csv report.html
 ```
 
 Additional details on the CLI are available [on the documentation](https://ydata-profiling.ydata.ai/docs/master/pages/getting_started/quickstart.html#command-line-usage).
@@ -202,21 +202,21 @@ The following example reports showcase the potentialities of the package across 
 * [Website Inaccessibility](https://ydata-profiling.ydata.ai/examples/master/features/website_inaccessibility_report.html) (website accessibility analysis, showcasing support for URL data)
 * [Orange prices](https://ydata-profiling.ydata.ai/examples/master/features/united_report.html) and 
 * [Coal prices](https://ydata-profiling.ydata.ai/examples/master/features/flatly_report.html) (simple pricing evolution datasets, showcasing the theming options)
-* [USA Air Quality](https://github.com/ydataai/pandas-profiling/tree/master/examples/usaairquality) (Time-series air quality dataset EDA example)
-* [HCC](https://github.com/ydataai/pandas-profiling/tree/master/examples/hcc) (Open dataset from healthcare, showcasing compare between two sets of data, before and after preprocessing)
+* [USA Air Quality](https://github.com/Data-Centric-AI-Community/fg-data-profiling/tree/master/examples/usaairquality) (Time-series air quality dataset EDA example)
+* [HCC](https://github.com/Data-Centric-AI-Community/fg-data-profiling/tree/master/examples/hcc) (Open dataset from healthcare, showcasing compare between two sets of data, before and after preprocessing)
 
 ## 🛠️ Installation
 Additional details, including information about widget support, are available [on the documentation](https://ydata-profiling.ydata.ai/docs/master/pages/getting_started/installation.html).
 
 ### Using pip
-[![PyPi Downloads](https://pepy.tech/badge/ydata-profiling)](https://pepy.tech/project/ydata-profiling)
-[![PyPi Monthly Downloads](https://pepy.tech/badge/pandas-profiling/month)](https://pepy.tech/project/ydata-profiling/month)
-[![PyPi Version](https://badge.fury.io/py/ydata-profiling.svg)](https://pypi.org/project/ydata-profiling/)
+[![PyPi Downloads](https://pepy.tech/badge/fg-data-profiling)](https://pepy.tech/project/fg-data-profiling)
+[![PyPi Monthly Downloads](https://pepy.tech/badge/pandas-profiling/month)](https://pepy.tech/project/fg-data-profiling/month)
+[![PyPi Version](https://badge.fury.io/py/fg-data-profiling.svg)](https://pypi.org/project/fg-data-profiling/)
 
 You can install using the `pip` package manager by running:
 
 ```sh
-pip install -U ydata-profiling
+pip install -U fg-data-profiling
 ```
 
 #### Extras
@@ -230,7 +230,7 @@ The package declares "extras", sets of additional dependencies.
 Install these with e.g.
 
 ```sh
-pip install -U ydata-profiling[notebook,unicode,pyspark]
+pip install -U fg-data-profiling[notebook,unicode,pyspark]
 ```
 
 
@@ -242,7 +242,7 @@ pip install -U ydata-profiling[notebook,unicode,pyspark]
 You can install using the `conda` package manager by running:
 
 ```sh
-conda install -c conda-forge ydata-profiling
+conda install -c conda-forge fg-data-profiling
 ```
 
 ### From source (development)
@@ -268,7 +268,7 @@ You need [Python 3](https://python3statement.github.io/) to run the package. Oth
 
 ## 🔗 Integrations
 
-To maximize its usefulness in real world contexts, `ydata-profiling` has a set of implicit and explicit integrations with a variety of other actors in the Data Science ecosystem: 
+To maximize its usefulness in real world contexts, `fg-data-profiling` has a set of implicit and explicit integrations with a variety of other actors in the Data Science ecosystem: 
 
 | Integration type | Description |
 |---|---|
@@ -276,15 +276,15 @@ To maximize its usefulness in real world contexts, `ydata-profiling` has a set o
 | [Great Expectations](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/great_expectations.html) | Generating [Great Expectations](https://greatexpectations.io) expectations suites directly from a profiling report |
 | [Interactive applications](https://docs.profiling.ydata.ai/latest/integrations/interactive_applications) | Embedding profiling reports in [Streamlit](http://streamlit.io), [Dash](http://dash.plotly.com) or [Panel](https://panel.holoviz.org) applications |
 | [Pipelines](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/pipelines.html) | Integration with DAG workflow execution tools like [Airflow](https://airflow.apache.org) or [Kedro](https://kedro.org) |
-| [Cloud services](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/cloud_services.html) | Using `ydata-profiling` in hosted computation services like [Lambda](https://lambdalabs.com), [Google Cloud](https://github.com/GoogleCloudPlatform/analytics-componentized-patterns/blob/master/retail/propensity-model/bqml/bqml_kfp_retail_propensity_to_purchase.ipynb) or [Kaggle](https://www.kaggle.com/code) |
-| [IDEs](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/ides.html) | Using `ydata-profiling` directly from integrated development environments such as [PyCharm](https://www.jetbrains.com/pycharm/) |
+| [Cloud services](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/cloud_services.html) | Using `fg-data-profiling` in hosted computation services like [Lambda](https://lambdalabs.com), [Google Cloud](https://github.com/GoogleCloudPlatform/analytics-componentized-patterns/blob/master/retail/propensity-model/bqml/bqml_kfp_retail_propensity_to_purchase.ipynb) or [Kaggle](https://www.kaggle.com/code) |
+| [IDEs](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/ides.html) | Using `fg-data-profiling` directly from integrated development environments such as [PyCharm](https://www.jetbrains.com/pycharm/) |
 
 ## 🙋 Support
 Need help? Want to share a perspective? Report a bug? Ideas for collaborations? Reach out via the following channels:
 
-- [Stack Overflow](https://stackoverflow.com/questions/tagged/pandas-profiling+or+ydata-profiling): ideal for asking questions on how to use the package
-- [GitHub Issues](https://github.com/ydataai/ydata-profiling/issues): bugs, proposals for changes, feature requests
-- [Discord](https://tiny.ydata.ai/dcai-ydata-profiling): ideal for projects discussions, ask questions, collaborations, general chat
+- [Stack Overflow](https://stackoverflow.com/questions/tagged/pandas-profiling+or+data-profiling): ideal for asking questions on how to use the package
+- [GitHub Issues](https://github.com/Data-Centric-AI-Community/fg-data-profiling/issues): bugs, proposals for changes, feature requests
+- [Discord](https://tiny.ydata.ai/dcai-data-profiling): ideal for projects discussions, ask questions, collaborations, general chat
 
 > **Need Help?**<br>
 > Get your questions answered with a product owner by [booking a Pawsome chat](https://meetings.hubspot.com/fabiana-clemente)! 🐼
@@ -294,13 +294,13 @@ Need help? Want to share a perspective? Report a bug? Ideas for collaborations? 
 ## 🤝🏽 Contributing
 Learn how to get involved in the [Contribution Guide](https://ydata-profiling.ydata.ai/docs/master/pages/support_contrib/contribution_guidelines.html).
 
-A low-threshold place to ask questions or start contributing is the [Data Centric AI Community's Discord](https://tiny.ydata.ai/dcai-ydata-profiling).
+A low-threshold place to ask questions or start contributing is the [Data Centric AI Community's Discord](https://tiny.ydata.ai/dcai-data-profiling).
 
 
 A big thank you to all our amazing contributors! 
 
-<a href="https://github.com/ydataai/ydata-profiling/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=ydataai/ydata-profiling" />
+<a href="https://github.com/Data-Centric-AI-Community/fg-data-profiling/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Data-Centric-AI-Community/fg-data-profiling" />
 </a>
 
 Contributors wall made with [contrib.rocks](https://contrib.rocks).

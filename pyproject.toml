@@ -1,16 +1,16 @@
 [build-system]
 build-backend = "setuptools.build_meta"
 requires = [
-    "setuptools>=72.0.0,<80.0.0",
+    "setuptools>=72.0.0,<81.0.0",
     "setuptools-scm>=8.0.0,<9.0.0",
     "wheel>=0.38.4,<1.0.0"
 ]
 
 [packaging]
-package_name = "ydata-profiling"
+package_name = "fg-data-profiling"
 
 [project]
-name = "ydata-profiling"
+name = "fg-data-profiling"
 requires-python = ">=3.10,<3.14"
 authors = [
     {name = "YData Labs Inc", email = "opensource@ydata.ai"}
@@ -133,11 +133,11 @@ unicode= [
 
 [project.urls]
 Homepage = "https://ydata.ai"
-Repository = "https://github.com/ydataai/ydata-profiling"
+Repository = "https://github.com/Data-Centric-AI-Community/fg-data-profiling"
 
 [project.scripts]
-ydata_profiling = "ydata_profiling.controller.console:main"
-pandas_profiling = "ydata_profiling.controller.console:main"
+data_profiling = "data_profiling.controller.console:main"
+pandas_profiling = "data_profiling.controller.console:main"
 
 # setuptools relative
 
@@ -145,7 +145,7 @@ pandas_profiling = "ydata_profiling.controller.console:main"
 include-package-data = true
 
 [tool.setuptools.package-data]
-ydata_profiling = ["py.typed"]
+data_profiling = ["py.typed"]
 
 [tool.distutils.bdist_wheel]
 universal = true

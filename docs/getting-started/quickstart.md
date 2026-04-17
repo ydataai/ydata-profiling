@@ -6,7 +6,7 @@ using:
 ``` python linenums="1"
 import numpy as np
 import pandas as pd
-from ydata_profiling import ProfileReport
+from data_profiling import ProfileReport
 
 df = pd.DataFrame(np.random.rand(100, 5), columns=["a", "b", "c", "d", "e"])
 ```
@@ -23,7 +23,7 @@ There are two interfaces to consume the report inside a Jupyter notebook
 (see animations below): through widgets and through an embedded HTML
 report.
 
-![Running ydata-proling inside a Jupyter Notebook](../_static/img/widgets.gif)
+![Running data-proling inside a Jupyter Notebook](../_static/img/widgets.gif)
 
 This is achieved by simply displaying the report as a set of widgets. In
 a Jupyter Notebook, run:
@@ -38,7 +38,7 @@ The HTML report can be directly embedded in a cell in a similar fashion:
 profile.to_notebook_iframe()
 ```
 
-![ydata-profiling widgets](../_static/img/iframe.gif)
+![data-profiling widgets](../_static/img/iframe.gif)
 
 ## Exporting the report to a file
 
@@ -62,14 +62,14 @@ profile.to_file("your_report.json")
 ## Command line usage
 
 For standard formatted CSV files (which can be read directly by pandas
-without additional settings), the `ydata_profiling` executable can be
+without additional settings), the `data_profiling` executable can be
 used in the command line. The example below generates a report named
 *Example Profiling Report*, using a configuration file called
 `default.yaml`, in the file `report.html` by processing a `data.csv`
 dataset.
 
 ``` bash
-ydata_profiling --title "Example Profiling Report" --config_file default.yaml data.csv report.html
+data_profiling --title "Example Profiling Report" --config_file default.yaml data.csv report.html
 ```
 
 Information about all available options and arguments can be viewed
@@ -79,7 +79,7 @@ filenames, setting a custom report title, specifying
 role="doc"} and control other advanced aspects of the experience.
 
 ``` bash
-ydata_profiling -h
+data_profiling -h
 ```
 <figure markdown>
   ![Image title](../_static/img/cli.png){width="500"}
@@ -96,8 +96,8 @@ data profiling option.
 profile = ProfileReport(df, title="Profiling Report", explorative=True)
 ```
 
-On the CLI utility `ydata_profiling`, this mode can be activated with
-the `-e` flag. Learn more about configuring `ydata-profiling` on the
+On the CLI utility `data_profiling`, this mode can be activated with
+the `-e` flag. Learn more about configuring `data_profiling` on the
 `../advanced_usage/available_settings`{.interpreted-text role="doc"}.
 
 <img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=baa0e45f-0c03-4190-9646-9d8ea2640ba2" />

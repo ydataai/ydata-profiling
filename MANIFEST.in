@@ -6,10 +6,10 @@ include LICENSE
 include *.md
 
 # Templates and static resources
-recursive-include src/ydata_profiling/report/presentation/flavours/html/templates *.html *.js *.css
+recursive-include src/data_profiling/report/presentation/flavours/html/templates *.html *.js *.css
 
 # Configuration
-include src/ydata_profiling/*.yaml
+include src/data_profiling/*.yaml
 
 # Spark Dev venv
 recursive-include venv *.yml

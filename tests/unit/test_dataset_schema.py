@@ -1,6 +1,6 @@
 import pandas as pd
 
-from ydata_profiling.utils.cache import cache_file
+from data_profiling.utils.cache import cache_file
 
 
 def test_dataset_schema():

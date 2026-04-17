@@ -3,8 +3,8 @@ import os
 import pytest
 import requests
 
-from ydata_profiling.controller import console
-from ydata_profiling.utils.paths import get_config
+from data_profiling.controller import console
+from data_profiling.utils.paths import get_config
 
 NASA_URL = "https://data.nasa.gov/docs/legacy/meteorite_landings/Meteorite_Landings.csv"
 

@@ -4,7 +4,7 @@
 
 [YData Fabric](https://ydata.ai/products/fabric) is a Data-Centric AI
 development platform. YData Fabric provides all capabilities of
-ydata-profiling in a hosted environment combined with a guided UI
+data-profiling in a hosted environment combined with a guided UI
 experience.
 
 [Fabric\'s Data Catalog](https://ydata.ai/products/data_catalog)

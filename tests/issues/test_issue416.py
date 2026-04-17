@@ -1,11 +1,11 @@
 """
 Test for issue 416:
-https://github.com/ydataai/ydata-profiling/issues/416
+https://github.com/Data-Centric-AI-Community/data-profiling/issues/416
 """
 import pandas as pd
 
-import ydata_profiling
-from ydata_profiling.utils.cache import cache_file
+import data_profiling
+from data_profiling.utils.cache import cache_file
 
 
 def test_issue416():
@@ -17,7 +17,7 @@ def test_issue416():
     df = pd.read_csv(file_name, sep="\t")
     df["path"] = df["url"].str.replace("http://www.acme.com", "", regex=False)
 
-    profile = ydata_profiling.ProfileReport(
+    profile = data_profiling.ProfileReport(
         df,
         title="YData Profiling Report",
         html={"style": {"full_width": True}},

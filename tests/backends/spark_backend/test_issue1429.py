@@ -1,6 +1,6 @@
 """
 Test for issue 1429:
-https://github.com/ydataai/ydata-profiling/issues/1429
+https://github.com/Data-Centric-AI-Community/data-profiling/issues/1429
 """
 from typing import List, Optional, Tuple
 
@@ -8,15 +8,15 @@ import numpy as np
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import types as T
 
-from ydata_profiling import ProfileReport
-from ydata_profiling.config import SparkSettings
-from ydata_profiling.model.spark.describe_counts_spark import describe_counts_spark
-from ydata_profiling.model.spark.describe_generic_spark import describe_generic_spark
-from ydata_profiling.model.spark.describe_numeric_spark import (
+from data_profiling import ProfileReport
+from data_profiling.config import SparkSettings
+from data_profiling.model.spark.describe_counts_spark import describe_counts_spark
+from data_profiling.model.spark.describe_generic_spark import describe_generic_spark
+from data_profiling.model.spark.describe_numeric_spark import (
     describe_numeric_1d_spark,
     numeric_stats_spark,
 )
-from ydata_profiling.model.spark.describe_supported_spark import (
+from data_profiling.model.spark.describe_supported_spark import (
     describe_supported_spark,
 )
 
