@@ -27,6 +27,37 @@ from ydata_profiling.utils.progress_bar import progress
 from ydata_profiling.version import __version__
 
 
+def _validate_inputs(
+    config: Settings, df: Union[pd.DataFrame, "pyspark.sql.DataFrame"]  # type: ignore[name-defined] # noqa: F821
+) -> None:
+    """Validate input types for profiling.
+    
+    Args:
+        config: Report configuration settings
+        df: DataFrame to profile
+        
+    Raises:
+        TypeError: If inputs are of incorrect type
+    """
+    if not isinstance(config, Settings):
+        raise TypeError(f"`config` must be of type `Settings`, got {type(config)}")
+
+    if isinstance(df, pd.DataFrame):
+        return
+        
+    try:
+        from pyspark.sql import DataFrame as SparkDataFrame
+        if isinstance(df, SparkDataFrame):
+            return
+    except ImportError:
+        pass
+        
+    raise TypeError(
+        f"`df` must be either a `pandas.DataFrame` or a `pyspark.sql.DataFrame`, but got {type(df)}."
+        f"If using Spark, make sure PySpark is installed."
+    )
+
+
 def describe(
     config: Settings,
     df: Union[pd.DataFrame, "pyspark.sql.DataFrame"],  # type: ignore[name-defined] # noqa: F821
@@ -52,26 +83,7 @@ def describe(
             - alerts: direct special attention to these patterns in your data.
             - package: package details.
     """
-    # ** Validate Input types **
-    if not isinstance(config, Settings):
-        raise TypeError(f"`config` must be of type `Settings`, got {type(config)}")
-
-    # Validate df input type
-
-    if not isinstance(df, pd.DataFrame):
-        try:
-            from pyspark.sql import DataFrame as SparkDataFrame  # type: ignore
-
-            if not isinstance(df, SparkDataFrame):  # noqa: TC301
-                raise TypeError(  # noqa: TC301
-                    f"`df` must be either a `pandas.DataFrame` or a `pyspark.sql.DataFrame`, but got {type(df)}."
-                )
-        except ImportError as ex:
-            raise TypeError(
-                f"`df must be either a `pandas.DataFrame` or a `pyspark.sql.DataFrame`, but got {type(df)}."
-                f"If using Spark, make sure PySpark is installed."
-            ) from ex
-
+    _validate_inputs(config, df)
     df = preprocess(config, df)
 
     number_of_tasks = 5
