@@ -3,12 +3,13 @@
 """Correlations between variables."""
 
 import warnings
-from typing import Dict, List, Optional, Sized, no_type_check
+from typing import Dict, List, Optional, Sized
 
 import numpy as np
 import pandas as pd
 
 from ydata_profiling.config import Settings
+from ydata_profiling.utils.backend import BaseBackend
 
 try:
     from pandas.core.base import DataError
@@ -16,30 +17,11 @@ except ImportError:
     from pandas.errors import DataError
 
 
-class CorrelationBackend:
+class CorrelationBackend(BaseBackend):
     """Helper class to select and cache the appropriate correlation backend (Pandas or Spark)."""
 
-    @no_type_check
-    def __init__(self, df: Sized):
-        """Determine backend once and store it for all correlation computations."""
-        if isinstance(df, pd.DataFrame):
-            from ydata_profiling.model.pandas import (
-                correlations_pandas as correlation_backend,  # type: ignore
-            )
-        else:
-            from ydata_profiling.model.spark import (
-                correlations_spark as correlation_backend,  # type: ignore
-            )
-
-        self.backend = correlation_backend
-
-    def get_method(self, method_name: str):  # noqa: ANN201
-        """Retrieve the appropriate correlation method class from the backend."""
-        if hasattr(self.backend, method_name):
-            return getattr(self.backend, method_name)
-        raise AttributeError(
-            f"Correlation method '{method_name}' is not available in the backend."
-        )
+    _pandas_module = "ydata_profiling.model.pandas.correlations_pandas"
+    _spark_module = "ydata_profiling.model.spark.correlations_spark"
 
 
 class Correlation:
