@@ -1,4 +1,4 @@
-from ydata_profiling.report.presentation.core.table import Table
+from ydata_profiling.report.presentation.core import Table
 from ydata_profiling.report.presentation.flavours.html import templates
 
 

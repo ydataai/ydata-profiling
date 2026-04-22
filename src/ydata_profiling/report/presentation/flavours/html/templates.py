@@ -1,6 +1,7 @@
 """Contains all templates used for generating the HTML profile report"""
 import shutil
 from pathlib import Path
+from typing import Any
 
 import jinja2
 

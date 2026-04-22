@@ -1,27 +1,33 @@
 """
     Auxiliary handler methods for data summary extraction
 """
-from typing import Any, Callable, Dict, List, Sequence
+from typing import Any, Callable, Dict, List, Sequence, Tuple
 
 import networkx as nx
 from visions import VisionsTypeset
 
 
-def compose(functions: Sequence[Callable]) -> Callable:
+def compose(functions: Sequence[Callable[..., Any]]) -> Callable[..., Tuple[Any, ...]]:
     """
     Compose a sequence of functions.
 
+    Each function in the sequence should accept the arguments passed to the composed
+    function and return either a single value or a tuple of values.
+    
     :param functions: sequence of functions
     :return: combined function applying all functions in order.
     """
 
-    def composed_function(*args) -> List[Any]:
-        result = args  # Start with the input arguments
+    def composed_function(*args: Any) -> Tuple[Any, ...]:
+        result: Tuple[Any, ...] = args
         for func in functions:
-            result = func(*result) if isinstance(result, tuple) else func(result)
-        return result  # type: ignore
+            result = func(*result)
+            # Ensure result is always a tuple for consistent unpacking
+            if not isinstance(result, tuple):
+                result = (result,)
+        return result
 
-    return composed_function  # type: ignore
+    return composed_function
 
 
 class Handler:
@@ -32,10 +38,10 @@ class Handler:
 
     def __init__(
         self,
-        mapping: Dict[str, List[Callable]],
+        mapping: Dict[str, List[Callable[..., Any]]],
         typeset: VisionsTypeset,
-        *args,
-        **kwargs
+        *args: Any,
+        **kwargs: Any
     ):
         self.mapping = mapping
         self.typeset = typeset
@@ -49,10 +55,13 @@ class Handler:
                 self.mapping[str(from_type)] + self.mapping[str(to_type)]
             )
 
-    def handle(self, dtype: str, *args, **kwargs) -> dict:
+    def handle(self, dtype: str, *args: Any, **kwargs: Any) -> Any:
         """
-        Returns:
-            object: a tuple containing the config, the dataset series and the summary extracted
+        Execute the handler chain for the given dtype.
+        
+        :param dtype: The data type to handle
+        :param args: Arguments to pass to the handler chain
+        :return: The last element of the result tuple from the handler chain
         """
         funcs = self.mapping.get(dtype, [])
         op = compose(funcs)
@@ -60,10 +69,10 @@ class Handler:
         return summary
 
 
-def get_render_map() -> Dict[str, Callable]:
+def get_render_map() -> Dict[str, Callable[..., Any]]:
     import ydata_profiling.report.structure.variables as render_algorithms
 
-    render_map = {
+    render_map: Dict[str, Callable[..., Any]] = {
         "Boolean": render_algorithms.render_boolean,
         "Numeric": render_algorithms.render_real,
         "Complex": render_algorithms.render_complex,
