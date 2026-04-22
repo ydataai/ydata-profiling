@@ -13,7 +13,7 @@ class Container(Renderable):
         anchor_id: Optional[str] = None,
         classes: Optional[str] = None,
         oss: Optional[bool] = None,
-        **kwargs,
+        **kwargs: Any,
     ):
         args = {"items": items, "nested": nested}
         args.update(**kwargs)

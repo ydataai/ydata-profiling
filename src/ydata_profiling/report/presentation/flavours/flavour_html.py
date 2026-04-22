@@ -41,7 +41,10 @@ from ydata_profiling.report.presentation.flavours.html import (
     HTMLVariableInfo,
 )
 
-html_mapping = {
+from typing import cast
+from ydata_profiling.report.presentation.flavours.flavours import _FlavourMapping
+
+html_mapping = cast(_FlavourMapping, {
     Container: HTMLContainer,
     Variable: HTMLVariable,
     VariableInfo: HTMLVariableInfo,
@@ -59,6 +62,6 @@ html_mapping = {
     Collapse: HTMLCollapse,
     CorrelationTable: HTMLCorrelationTable,
     Scores: HTMLScores,
-}
+})
 
 register_flavour("html", html_mapping)

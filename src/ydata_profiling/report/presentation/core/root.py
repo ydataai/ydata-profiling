@@ -11,7 +11,7 @@ class Root(ItemRenderer):
     """
 
     def __init__(
-        self, name: str, body: Renderable, footer: Renderable, style: Style, **kwargs
+        self, name: str, body: Renderable, footer: Renderable, style: Style, **kwargs: Any
     ):
         super().__init__(
             "report",
@@ -23,7 +23,7 @@ class Root(ItemRenderer):
     def __repr__(self) -> str:
         return "Root"
 
-    def render(self, **kwargs) -> Any:
+    def render(self, **kwargs: Any) -> Any:
         raise NotImplementedError()
 
     @classmethod

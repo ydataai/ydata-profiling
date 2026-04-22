@@ -56,7 +56,6 @@ class MissingnoBarSparkPatch:
 def missing_bar(config: Settings, df: DataFrame) -> str:
     import pyspark.sql.functions as F
 
-    # FIXME: move to univariate
     data_nan_counts = (
         df.agg(
             *[F.count(F.when(F.isnull(c) | F.isnan(c), c)).alias(c) for c in df.columns]
