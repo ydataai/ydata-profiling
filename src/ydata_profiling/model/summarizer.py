@@ -50,9 +50,8 @@ class BaseSummarizer(Handler):
         return self.handle(str(dtype), config, series, {"type": str(dtype)})
 
 
-# Revisit this with the correct support for Spark as well.
 class ProfilingSummarizer(BaseSummarizer):
-    """A summarizer for Pandas DataFrames."""
+    """A summarizer supporting both Pandas and Spark DataFrames."""
 
     def __init__(self, typeset: VisionsTypeset, use_spark: bool = False):
         self.use_spark = use_spark and is_pyspark_installed()
@@ -65,7 +64,15 @@ class ProfilingSummarizer(BaseSummarizer):
         return self._summary_map
 
     def _create_summary_map(self) -> Dict[str, List[Callable]]:
-        """Creates the summary map for Pandas summarization."""
+        """Creates the summary map based on the backend."""
+        common_map = {
+            "URL": [describe_url_1d],
+            "Path": [describe_path_1d],
+            "File": [describe_file_1d],
+            "Image": [describe_image_1d],
+            "TimeSeries": [describe_timeseries_1d],
+        }
+
         if self.use_spark:
             from ydata_profiling.model.spark import (
                 describe_boolean_1d_spark,
@@ -78,7 +85,7 @@ class ProfilingSummarizer(BaseSummarizer):
                 describe_text_1d_spark,
             )
 
-            summary_map = {
+            base_map = {
                 "Unsupported": [
                     describe_counts_spark,
                     describe_generic_spark,
@@ -89,14 +96,9 @@ class ProfilingSummarizer(BaseSummarizer):
                 "Text": [describe_text_1d_spark],
                 "Categorical": [describe_categorical_1d_spark],
                 "Boolean": [describe_boolean_1d_spark],
-                "URL": [describe_url_1d],
-                "Path": [describe_path_1d],
-                "File": [describe_file_1d],
-                "Image": [describe_image_1d],
-                "TimeSeries": [describe_timeseries_1d],
             }
         else:
-            summary_map = {
+            base_map = {
                 "Unsupported": [
                     pandas_describe_counts,
                     pandas_describe_generic,
@@ -107,13 +109,10 @@ class ProfilingSummarizer(BaseSummarizer):
                 "Text": [pandas_describe_text_1d],
                 "Categorical": [pandas_describe_categorical_1d],
                 "Boolean": [pandas_describe_boolean_1d],
-                "URL": [pandas_describe_url_1d],
-                "Path": [pandas_describe_path_1d],
-                "File": [pandas_describe_file_1d],
-                "Image": [pandas_describe_image_1d],
-                "TimeSeries": [pandas_describe_timeseries_1d],
             }
-        return summary_map
+
+        base_map.update(common_map)
+        return base_map
 
 
 def format_summary(summary: Union[BaseDescription, dict]) -> dict:
