@@ -12,7 +12,7 @@ IF "%1%" == "docs" (
 IF "%1" == "test" (
     pytest tests/unit/
     pytest tests/issues/
-    pytest --nbval tests/notebooks/
+    pytest --nbtest tests/notebooks/
     ECHO "Tests completed!"
     GOTO end
 )
