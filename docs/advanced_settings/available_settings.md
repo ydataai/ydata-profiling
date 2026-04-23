@@ -1,6 +1,6 @@
 # Available Settings
 
-A set of options is available in order to customize the behaviour of ``ydata-profiling`` and the appearance of the generated report. The depth of customization allows the creation of behaviours highly targeted at the specific dataset being analysed. The available settings are listed below. To learn how to change them, check :doc:`changing_settings`.
+A set of options is available in order to customize the behaviour of ``data-profiling`` and the appearance of the generated report. The depth of customization allows the creation of behaviours highly targeted at the specific dataset being analysed. The available settings are listed below. To learn how to change them, check :doc:`changing_settings`.
 
 ## General settings
 
@@ -45,8 +45,8 @@ Configure the schema type for a given dataset.
   import json
   import pandas as pd
 
-  from ydata_profiling import ProfileReport
-  from ydata_profiling.utils.cache import cache_file
+  from data_profiling import ProfileReport
+  from data_profiling.utils.cache import cache_file
 
   file_name = cache_file(
       "titanic.csv",

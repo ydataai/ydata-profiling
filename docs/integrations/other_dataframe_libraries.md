@@ -1,12 +1,12 @@
 # Other DataFrame libraries
 
-`ydata-profiling` is built on `pandas` and `numpy`. Pandas supports a
+`data-profiling` is built on `pandas` and `numpy`. Pandas supports a
 wide range of data formats including CSV, XLSX, SQL, JSON, HDF5, SAS,
 BigQuery and Stata. Read more on [supported formats by
 Pandas](https://pandas.pydata.org/docs/user_guide/io.html).
 
 If you have data in another framework of the Python Data ecosystem, you
-can use `ydata-profiling` by converting to a pandas `DataFrame`, as
+can use `data-profiling` by converting to a pandas `DataFrame`, as
 direct integrations are not yet supported. Large datasets might require
 sampling (as seen in our documentation on [how to profile large datasets](../features/big_data.md)).
 

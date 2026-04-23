@@ -5,10 +5,10 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from ydata_profiling.config import SparkSettings
-from ydata_profiling.model.describe import describe
+from data_profiling.config import SparkSettings
+from data_profiling.model.describe import describe
 
-check_is_NaN = "ydata_profiling.check_is_NaN"
+check_is_NaN = "data_profiling.check_is_NaN"
 
 
 @pytest.fixture

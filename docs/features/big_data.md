@@ -2,7 +2,7 @@
 
 <img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=baa0e45f-0c03-4190-9646-9d8ea2640ba2" />
 
-By default, `ydata-profiling` comprehensively summarizes the input
+By default, `data-profiling` comprehensively summarizes the input
 dataset in a way that gives the most insights for data analysis. For
 small datasets, these computations can be performed in *quasi*
 real-time. For larger datasets, deciding upfront which calculations to
@@ -10,7 +10,7 @@ make might be required. Whether a computation scales to a large datasets
 not only depends on the exact size of the dataset, but also on its
 complexity and on whether fast computations are available. If the
 computation time of the profiling becomes a bottleneck,
-`ydata-profiling` offers several alternatives to overcome it.
+`data-profiling` offers several alternatives to overcome it.
 
 !!! info "Scale in a fully managed system"
     
@@ -27,9 +27,9 @@ computation time of the profiling becomes a bottleneck,
     This mode was introduced in version v4.0.0
 
 
-`ydata-profiling` now supports Spark Dataframes profiling. You can find
+`data-profiling` now supports Spark Dataframes profiling. You can find
 an example of the integration
-[here](https://github.com/ydataai/ydata-profiling/blob/master/examples/features/spark_example.py).
+[here](https://github.com/Data-Centric-AI-Community/data-profiling/blob/master/examples/features/spark_example.py).
 
 **Features supported:** - Univariate variables' analysis - Head and Tail
 dataset sample - Correlation matrices: Pearson and Spearman
@@ -38,7 +38,7 @@ dataset sample - Correlation matrices: Pearson and Spearman
 histogram computation
 
 Keep an eye on the
-[GitHub](https://github.com/ydataai/ydata-profiling/issues) page to
+[GitHub](https://github.com/Data-Centric-AI-Community/data-profiling/issues) page to
 follow the updates on the implementation of [Pyspark Dataframes
 support](https://github.com/orgs/ydataai/projects/16/views/2).
 
@@ -48,7 +48,7 @@ support](https://github.com/orgs/ydataai/projects/16/views/2).
 
     This mode was introduced in version v2.4.0
 
-`ydata-profiling` includes a minimal configuration file where the most
+`data-profiling` includes a minimal configuration file where the most
 expensive computations are turned off by default. This is the
 recommended starting point for larger datasets.
 
@@ -58,7 +58,7 @@ profile.to_file("output.html")
 ```
 
 This configuration file can be found here:
-[config_minimal.yaml](https://github.com/ydataai/ydata-profiling/blob/master/src/ydata_profiling/config_minimal.yaml).
+[config_minimal.yaml](https://github.com/Data-Centric-AI-Community/data-profiling/blob/master/src/data_profiling/config_minimal.yaml).
 More details on settings and configuration are available in
 `../advanced_usage/available_settings`{.interpreted-text role="doc"}.
 
@@ -103,7 +103,7 @@ that only the interactions with these variables in specific are
 computed.
 
 ``` python linenums="1" title="Disable expensive computations"
-from ydata_profiling import ProfileReport
+from data_profiling import ProfileReport
 import pandas as pd
 
 # Reading the data
@@ -127,14 +127,14 @@ role="doc"}.
 
 # Concurrency
 
-`ydata-profiling` is a project under active development. One of the
+`data-profiling` is a project under active development. One of the
 highly desired features is the addition of a scalable backend such as
 [Modin](https://github.com/modin-project/modin) or
 [Dask](https://dask.org/).
 
 Keep an eye on the
-[GitHub](https://github.com/ydataai/ydata-profiling/issues) page to
+[GitHub](https://github.com/Data-Centric-AI-Community/data-profiling/issues) page to
 follow the updates on the implementation of a concurrent and highly
 scalable backend. Specifically, development of a Spark backend is
 [currently
-underway](https://github.com/ydataai/ydata-profiling/projects/3).
+underway](https://github.com/Data-Centric-AI-Community/data-profiling/projects/3).

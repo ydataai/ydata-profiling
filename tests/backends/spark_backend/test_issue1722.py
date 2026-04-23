@@ -1,6 +1,6 @@
 """
 Test for issue 1722:
-https://github.com/ydataai/ydata-profiling/issues/1722
+https://github.com/Data-Centric-AI-Community/data-profiling/issues/1722
 """
 
 from datetime import date, datetime
@@ -8,7 +8,7 @@ from datetime import date, datetime
 from pyspark.sql import SparkSession
 from pyspark.sql import types as T
 
-from ydata_profiling import ProfileReport
+from data_profiling import ProfileReport
 
 
 def make_non_numeric_df(spark: SparkSession):

@@ -1,10 +1,10 @@
 # History & community
 
-The `ydata-profiling` project became what it is today due to the work of
+The `data-profiling` project became what it is today due to the work of
 the creators to make it successful. This page aims to highlight a bit
 of the development history. For the full picture, have a look at the
 [contributor
-history](https://github.com/ydataai/pandas-profiling/graphs/contributors).
+history](https://github.com/Data-Centric-AI-Community/data-profiling/graphs/contributors).
 
 **[YData](https://ydata.ai/)** is the company behind this successful package being responsible 
 for releases such as the support for time-series, compare datasets and spark
@@ -13,8 +13,8 @@ support.
 ## Thank you to our amazing contributors
 A big thank you to all our amazing contributors! 
 
-<a href="https://github.com/ydataai/ydata-profiling/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=ydataai/ydata-profiling" />
+<a href="https://github.com/Data-Centric-AI-Community/data-profiling/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Data-Centric-AI-Community/data-profiling" />
 </a>
 
 Contributors wall made with [contrib.rocks](https://contrib.rocks).
@@ -65,7 +65,7 @@ Chan](https://www.linkedin.com/in/edwin-chan/).
 ## Where are we now?
 
 At the time of writing, `pandas-profiling` is receiving a new face and
-name `ydata-profiling`. Derived from the most recent and major feature,
+name `data-profiling`. Derived from the most recent and major feature,
 Spark support, we have decided to move from [pandas]{.title-ref} to a
 name that opens the possibility of new integrations and developments.
 
@@ -76,7 +76,7 @@ insurance companies, startups and universities.
 
 ## What's next?
 
-`ydata-profiling` is committed to the mission of helping data-scientists
+`data-profiling` is committed to the mission of helping data-scientists
 to adopt a Data-Centric approach towards the development of AI.
 Continuous development and support will to be part of the development of
 one of the most beloved open-sources by the data science community.
