@@ -13,9 +13,7 @@ T = TypeVar("T")
 
 def func_nullable_series_contains(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def inner(
-        config: Settings, series: pd.Series, state: dict, *args, **kwargs
-    ) -> bool:
+    def inner(config: Settings, series: pd.Series, state: dict, *args, **kwargs) -> bool:
         if series.hasnans:
             series = series.dropna()
             if series.empty:
@@ -32,18 +30,12 @@ def safe_histogram(
     weights: Optional[np.ndarray] = None,
     density: bool = False,
 ) -> Tuple[np.ndarray, np.ndarray]:
-    """
-    Wrapper to avoid
-    ValueError: Too many bins for data range. Cannot create N finite-sized bins.
-    """
     try:
         return np.histogram(values, bins=bins, weights=weights, density=density)
     except ValueError as exc:
         if "Too many bins for data range" in str(exc):
             try:
-                return np.histogram(
-                    values, bins="auto", weights=weights, density=density
-                )
+                return np.histogram(values, bins="auto", weights=weights, density=density)
             except ValueError:
                 finite = values[np.isfinite(values)]
                 if finite.size == 0:
@@ -55,9 +47,7 @@ def safe_histogram(
                     bin_edges = np.array([vmin - eps, vmin + eps])
                 else:
                     bin_edges = np.array([vmin, vmax])
-                return np.histogram(
-                    values, bins=bin_edges, weights=weights, density=density
-                )
+                return np.histogram(values, bins=bin_edges, weights=weights, density=density)
         raise
 
 
@@ -69,18 +59,20 @@ def histogram_compute(
     weights: Optional[np.ndarray] = None,
 ) -> dict:
     stats = {}
+
     if len(finite_values) == 0:
         return {name: []}
 
     hist_config = config.plot.histogram
 
-    # Compute data range
     finite = finite_values[np.isfinite(finite_values)]
+    if len(finite) == 0:
+        return {name: []}
+
     vmin = float(np.min(finite))
     vmax = float(np.max(finite))
     data_range = vmax - vmin
 
-    # Choose of Bins based on observed data values
     if data_range == 0:
         eps = 0.5 if vmin == 0 else abs(vmin) * 0.1
         bins = np.array([vmin - eps, vmin + eps])
@@ -89,14 +81,13 @@ def histogram_compute(
 
         if isinstance(requested_bins, int):
             safe_bins = min(requested_bins, n_unique, hist_config.max_bins)
-
             safe_bins = max(1, safe_bins)
-
             bins = np.linspace(vmin, vmax, safe_bins + 1)
         else:
-            bins = np.histogram_bin_edges(finite_values, bins="auto")
-            if len(bins) - 1 > hist_config.max_bins:
-                bins = np.linspace(vmin, vmax, hist_config.max_bins + 1)
+            bins = np.histogram_bin_edges(
+                finite_values,
+                bins=min(len(finite_values), hist_config.max_bins),
+            )
 
     hist = np.histogram(
         finite_values,
@@ -113,16 +104,13 @@ def chi_square(
     values: Optional[np.ndarray] = None,
     histogram: Optional[np.ndarray] = None,
 ) -> dict:
-    # Case 1: histogram not passed → we compute it
     if histogram is None:
         if values is None:
             return {"statistic": 0, "pvalue": 0}
 
-        # Try NumPy "auto" binning (may fail under NumPy 2)
         try:
             bins = np.histogram_bin_edges(values, bins="auto")
         except ValueError:
-            # Fallback: basic 1-bin histogram covering the min→max range
             finite = values[np.isfinite(values)]
             if finite.size == 0:
                 return {"statistic": 0, "pvalue": 0}
@@ -136,20 +124,15 @@ def chi_square(
 
         histogram, _ = np.histogram(values, bins=bins)
 
-    # Case 2: histogram exists but is empty
     if histogram.size == 0 or histogram.sum() == 0:
         return {"statistic": 0, "pvalue": 0}
 
     return dict(chisquare(histogram)._asdict())
 
 
-def series_hashable(
-    fn: Callable[[Settings, pd.Series, dict], Tuple[Settings, pd.Series, dict]]
-) -> Callable[[Settings, pd.Series, dict], Tuple[Settings, pd.Series, dict]]:
+def series_hashable(fn):
     @functools.wraps(fn)
-    def inner(
-        config: Settings, series: pd.Series, summary: dict
-    ) -> Tuple[Settings, pd.Series, dict]:
+    def inner(config: Settings, series: pd.Series, summary: dict):
         if not summary["hashable"]:
             return config, series, summary
         return fn(config, series, summary)
@@ -157,120 +140,85 @@ def series_hashable(
     return inner
 
 
-def series_handle_nulls(
-    fn: Callable[[Settings, pd.Series, dict], Tuple[Settings, pd.Series, dict]]
-) -> Callable[[Settings, pd.Series, dict], Tuple[Settings, pd.Series, dict]]:
-    """Decorator for nullable series"""
-
+def series_handle_nulls(fn):
     @functools.wraps(fn)
-    def inner(
-        config: Settings, series: pd.Series, summary: dict
-    ) -> Tuple[Settings, pd.Series, dict]:
+    def inner(config: Settings, series: pd.Series, summary: dict):
         if series.hasnans:
             series = series.dropna()
-
         return fn(config, series, summary)
 
     return inner
 
 
 def named_aggregate_summary(series: pd.Series, key: str) -> dict:
-    summary = {
+    return {
         f"max_{key}": np.max(series),
         f"mean_{key}": np.mean(series),
         f"median_{key}": np.median(series),
         f"min_{key}": np.min(series),
     }
 
-    return summary
-
 
 @multimethod
-def describe_counts(
-    config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+def describe_counts(config: Settings, series: Any, summary: dict):
     raise NotImplementedError()
 
 
 @multimethod
-def describe_supported(
-    config: Settings, series: Any, series_description: dict
-) -> Tuple[Settings, Any, dict]:
+def describe_supported(config: Settings, series: Any, summary: dict):
     raise NotImplementedError()
 
 
 @multimethod
-def describe_generic(
-    config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+def describe_generic(config: Settings, series: Any, summary: dict):
     raise NotImplementedError()
 
 
 @multimethod
-def describe_numeric_1d(
-    config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+def describe_numeric_1d(config: Settings, series: Any, summary: dict):
     raise NotImplementedError()
 
 
 @multimethod
-def describe_text_1d(
-    config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict, Any]:
+def describe_text_1d(config: Settings, series: Any, summary: dict):
     raise NotImplementedError()
 
 
 @multimethod
-def describe_date_1d(
-    config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+def describe_date_1d(config: Settings, series: Any, summary: dict):
     raise NotImplementedError()
 
 
 @multimethod
-def describe_categorical_1d(
-    config: Settings, series: pd.Series, summary: dict
-) -> Tuple[Settings, pd.Series, dict]:
+def describe_categorical_1d(config: Settings, series: pd.Series, summary: dict):
     raise NotImplementedError()
 
 
 @multimethod
-def describe_url_1d(
-    config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+def describe_url_1d(config: Settings, series: Any, summary: dict):
     raise NotImplementedError()
 
 
 @multimethod
-def describe_file_1d(
-    config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+def describe_file_1d(config: Settings, series: Any, summary: dict):
     raise NotImplementedError()
 
 
 @multimethod
-def describe_path_1d(
-    config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+def describe_path_1d(config: Settings, series: Any, summary: dict):
     raise NotImplementedError()
 
 
 @multimethod
-def describe_image_1d(
-    config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+def describe_image_1d(config: Settings, series: Any, summary: dict):
     raise NotImplementedError()
 
 
 @multimethod
-def describe_boolean_1d(
-    config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+def describe_boolean_1d(config: Settings, series: Any, summary: dict):
     raise NotImplementedError()
 
 
 @multimethod
-def describe_timeseries_1d(
-    config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+def describe_timeseries_1d(config: Settings, series: Any, summary: dict):
     raise NotImplementedError()
