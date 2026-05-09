@@ -1,14 +1,19 @@
 import copy
 import json
 import warnings
+
+# Use stdlib `importlib.metadata` instead of `pkg_resources`. The latter
+# was removed in setuptools >= 81 (see
+# https://setuptools.pypa.io/en/latest/history.html#v81-0-0); since
+# pyproject.toml pins ``requires-python = ">=3.10"`` and
+# ``importlib.metadata`` ships with the stdlib from Python 3.8 onward,
+# no fallback is needed here.
+from importlib.metadata import PackageNotFoundError
+from importlib.metadata import version as _metadata_version
 from pathlib import Path
 from typing import Any, Optional, Union
 
 from data_profiling.utils.backend import is_pyspark_installed
-
-with warnings.catch_warnings():
-    warnings.simplefilter("ignore")
-    import pkg_resources
 
 if not is_pyspark_installed():
     from typing import TypeVar
@@ -357,14 +362,27 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             output_file: The name or the path of the file to generate including the extension (.html, .json).
             silent: if False, opens the file in the default browser or download it in a Google Colab environment
         """
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            pillow_version = pkg_resources.get_distribution("Pillow").version
-        version_tuple = tuple(map(int, pillow_version.split(".")))
-        if version_tuple < (9, 5, 0):
-            warnings.warn(
-                "Try running command: 'pip install --upgrade Pillow' to avoid ValueError"
-            )
+        # Resolve the installed Pillow version via the stdlib metadata API.
+        # If Pillow is not installed (it's an indirect dependency, so this
+        # is unusual but possible in trimmed environments), skip the warning
+        # rather than crashing the whole report-write path.
+        try:
+            pillow_version = _metadata_version("Pillow")
+        except PackageNotFoundError:
+            pillow_version = None
+        if pillow_version is not None:
+            # Some Pillow pre-releases use non-numeric segments (e.g. "11.0.0a1");
+            # take only the leading numeric components so int() never fails.
+            numeric_parts = []
+            for part in pillow_version.split("."):
+                digits = "".join(c for c in part if c.isdigit())
+                if not digits:
+                    break
+                numeric_parts.append(int(digits))
+            if len(numeric_parts) >= 3 and tuple(numeric_parts[:3]) < (9, 5, 0):
+                warnings.warn(
+                    "Try running command: 'pip install --upgrade Pillow' to avoid ValueError"
+                )
 
         if not isinstance(output_file, Path):
             output_file = Path(str(output_file))

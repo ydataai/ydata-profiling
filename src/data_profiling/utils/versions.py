@@ -1,10 +1,10 @@
-try:
-    from importlib.metadata import version
-except ImportError:
-    import pkg_resources
-
-    def version(pkg: str) -> str:  # type: ignore
-        return pkg_resources.get_distribution(pkg).version
+# `importlib.metadata.version` is in the stdlib since Python 3.8.
+# pyproject.toml pins `requires-python = ">=3.10,<3.14"`, so the previous
+# `pkg_resources` fallback was dead code under any supported runtime.
+# Removing it also drops a runtime dependency on setuptools, which now
+# raises `ModuleNotFoundError: No module named 'pkg_resources'` on
+# setuptools >= 81 where pkg_resources was removed.
+from importlib.metadata import version
 
 
 def pandas_version() -> list:
