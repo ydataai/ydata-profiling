@@ -102,7 +102,7 @@ def analytics_features(
                 f"&dbx={dbx}"
             )
 
-            requests.get(request_message)
+            requests.get(request_message, timeout=30)
 
 
 def is_running_in_databricks():
