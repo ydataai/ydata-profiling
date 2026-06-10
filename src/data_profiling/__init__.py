@@ -4,6 +4,7 @@
 """
 # ignore numba warnings
 import warnings  # isort:skip # noqa
+import japanize_matplotlib
 
 import importlib.util  # isort:skip # noqa
 from warnings import warn
