@@ -37,6 +37,12 @@ def manage_matplotlib_context() -> Any:
         "image.cmap": "Greys",
         "font.family": ["sans-serif"],
         "font.sans-serif": [
+            "IPAexGothic",
+            "Meiryo",            
+            "Hiragino Sans",     
+            "Hiragino Kaku Gothic ProN", 
+            "Noto Sans CJK JP",  
+            "IPAGothic",       
             "Arial",
             "Liberation Sans",
             "Bitstream Vera Sans",
@@ -75,8 +81,8 @@ def manage_matplotlib_context() -> Any:
 
     try:
         register_matplotlib_converters()
-        matplotlib.rcParams.update(customRcParams)
         sns.set_style(style="white")
+        matplotlib.rcParams.update(customRcParams)
         yield
     finally:
         deregister_matplotlib_converters()  # revert to original unit registries
