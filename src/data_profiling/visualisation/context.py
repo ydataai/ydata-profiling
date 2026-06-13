@@ -81,8 +81,8 @@ def manage_matplotlib_context() -> Any:
 
     try:
         register_matplotlib_converters()
-        matplotlib.rcParams.update(customRcParams)
         sns.set_style(style="white")
+        matplotlib.rcParams.update(customRcParams)
         yield
     finally:
         deregister_matplotlib_converters()  # revert to original unit registries

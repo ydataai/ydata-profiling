@@ -10,6 +10,7 @@ from matplotlib import pyplot as plt
 from matplotlib.collections import PolyCollection
 from matplotlib.colors import Colormap, LinearSegmentedColormap, ListedColormap, rgb2hex
 from matplotlib.dates import AutoDateLocator, ConciseDateFormatter
+from matplotlib.font_manager import findfont, FontProperties
 from matplotlib.patches import Patch
 from matplotlib.ticker import FuncFormatter, MaxNLocator
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
@@ -20,6 +21,15 @@ from data_profiling.config import Settings
 from data_profiling.utils.common import convert_timestamp_to_datetime
 from data_profiling.visualisation.context import manage_matplotlib_context
 from data_profiling.visualisation.utils import plot_360_n0sc0pe
+
+
+def _resolve_font_path() -> Optional[str]:
+    """Return the file path of the current matplotlib sans-serif font."""
+    try:
+        fp = FontProperties()
+        return findfont(fp)
+    except Exception:
+        return None
 
 
 def format_fn(tick_val: int, tick_pos: Any) -> str:
@@ -36,8 +46,9 @@ def _plot_word_cloud(
     plot = plt.figure(figsize=figsize)
     for i, series_data in enumerate(series):
         word_dict = series_data.to_dict()
+        font_path = config.plot.font_path or _resolve_font_path()
         wordcloud = WordCloud(
-            font_path=config.plot.font_path,
+            font_path=font_path,
             background_color="white",
             random_state=123,
             width=300,
