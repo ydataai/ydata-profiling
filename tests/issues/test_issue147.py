@@ -1,10 +1,10 @@
 """
 Test for issue 147:
-https://github.com/ydataai/ydata-profiling/issues/147
+https://github.com/Data-Centric-AI-Community/data-profiling/issues/147
 """
 import pandas as pd
 
-from ydata_profiling import ProfileReport
+from data_profiling import ProfileReport
 
 
 def test_issue147(get_data_file):
@@ -19,4 +19,4 @@ def test_issue147(get_data_file):
     )
     html = report.to_html()
     assert type(html) == str
-    assert "Dataset statistics</p>" in html
+    assert "Dataset statistics" in html

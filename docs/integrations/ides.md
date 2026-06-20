@@ -5,22 +5,22 @@ Environments, such as [PyCharm](https://www.jetbrains.com/pycharm/).
 
 ## PyCharm
 
-1.  Install `ydata-profiling` via
+1.  Install `data-profiling` via
     `../getting_started/installation`{.interpreted-text role="doc"}
-2.  Locate your `ydata-profiling` executable.
+2.  Locate your `data-profiling` executable.
 
  On macOS / Linux / BSD:
 
  ``` console
- $ which ydata_profiling
- (example) /usr/local/bin/ydata_profiling
+ $ which data_profiling
+ (example) /usr/local/bin/data_profiling
  ```
 
  On Windows:
 
  ``` console
- $ where ydata_profiling
- (example) C:\ProgramData\Anaconda3\Scripts\ydata_profiling.exe
+ $ where data_profiling
+ (example) C:\ProgramData\Anaconda3\Scripts\data_profiling.exe
  ```
 
 3.  In PyCharm, go to *Settings* (or *Preferences* on macOS) \ *Tools*

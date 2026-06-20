@@ -1,11 +1,11 @@
 """
 Test for issue 282:
-https://github.com/ydataai/ydata-profiling/issues/282
+https://github.com/Data-Centric-AI-Community/data-profiling/issues/282
 """
 import pandas as pd
 
-from ydata_profiling import ProfileReport
-from ydata_profiling.model import BaseDescription
+from data_profiling import ProfileReport
+from data_profiling.model import BaseDescription
 
 
 def test_issue282():

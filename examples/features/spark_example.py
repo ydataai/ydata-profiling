@@ -7,14 +7,17 @@ import pandas as pd
 from matplotlib import MatplotlibDeprecationWarning
 from pyspark.sql import SparkSession
 
-from ydata_profiling import ProfileReport
-from ydata_profiling.config import Settings
+from data_profiling import ProfileReport
+from data_profiling.config import Settings
 
 logging.basicConfig(level=logging.INFO)
 
 if __name__ == "__main__":
     spark_session = (
-        SparkSession.builder.appName("SparkProfiling").master("local[*]").getOrCreate()
+        SparkSession.builder.appName("SparkProfiling")
+        .master("local[*]")
+        .config("spark.sql.ansi.enabled", "false")
+        .getOrCreate()
     )
 
     print(spark_session.sparkContext.uiWebUrl)  # noqa: T201

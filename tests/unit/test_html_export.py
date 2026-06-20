@@ -3,7 +3,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from ydata_profiling import ProfileReport
+from data_profiling import ProfileReport
 
 
 def check_assets(assets_dir: Path, file_type, n_css, n_js):

@@ -11,12 +11,12 @@ across a wide range of dataset and data types:
     Meteorites](../examples/meteorites/meteorites_report.html)
     (comprehensive set of meteorite landing - object properties and
     locations)
-    [![Open in Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ydataai/ydata-profiling/master?filepath=examples%2Fmeteorites%2Fmeteorites.ipynb)
-    [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ydataai/ydata-profiling/blob/master/examples/meteorites/meteorites.ipynb)
+    [![Open in Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Data-Centric-AI-Community/data-profiling/master?filepath=examples%2Fmeteorites%2Fmeteorites.ipynb)
+    [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Data-Centric-AI-Community/data-profiling/blob/master/examples/meteorites/meteorites.ipynb)
 -   [Titanic](../examples/titanic/titanic_report.html)
     (the \"Wonderwall\" of datasets)
-    [![Open in Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ydataai/ydata-profiling/master?filepath=examples%2Ftitanic%2Ftitanic.ipynb)
-    [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ydataai/ydata-profiling/blob/master/examples/titanic/titanic.ipynb)
+    [![Open in Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Data-Centric-AI-Community/data-profiling/master?filepath=examples%2Ftitanic%2Ftitanic.ipynb)
+    [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Data-Centric-AI-Community/data-profiling/blob/master/examples/titanic/titanic.ipynb)
 -   [NZA](../examples/nza/nza_report.html)
     (open data from the Dutch Healthcare Authority)
 -   [Stata
@@ -41,9 +41,9 @@ across a wide range of dataset and data types:
     prices](../examples/features/flatly_report.html)
     (simple pricing evolution datasets, showcasing the theming options)
 -   [USA Air
-    Quality](https://github.com/ydataai/ydata-profiling/tree/master/examples/usaairquality)
+    Quality](https://github.com/Data-Centric-AI-Community/data-profiling/tree/master/examples/usaairquality)
     (Time-series air quality dataset EDA example)
--   [HCC](https://github.com/ydataai/ydata-profiling/tree/master/examples/hcc)
+-   [HCC](https://github.com/Data-Centric-AI-Community/data-profiling/tree/master/examples/hcc)
     (Open dataset from healthcare, showcasing compare between two sets
     of data, before and after preprocessing)
 

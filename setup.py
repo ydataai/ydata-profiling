@@ -10,7 +10,7 @@ try:
 except FileNotFoundError:
     version = "0.0.dev0"
 
-with open(source_root / "src/ydata_profiling/version.py", "w") as version_file:
+with open(source_root / "src/data_profiling/version.py", "w") as version_file:
     version_file.write(f"__version__ = '{version}'")
 
 setup(

@@ -1,5 +1,5 @@
-from ydata_profiling.report.presentation.flavours.html import HTMLHTML
-from ydata_profiling.report.presentation.flavours.html.templates import template
+from data_profiling.report.presentation.flavours.html import HTMLHTML
+from data_profiling.report.presentation.flavours.html.templates import template
 
 
 def test_report_title_strip_tags():

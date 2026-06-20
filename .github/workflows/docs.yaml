@@ -16,7 +16,8 @@ on:
     types:
     - released
 
-
+permissions:
+  contents: read
 
 jobs:
   prepare:
@@ -28,8 +29,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.ACCESS_TOKEN }}
 
     - name: Find Latest Tag
       id: latest_tag
@@ -55,7 +54,6 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
-        token: ${{ secrets.ACCESS_TOKEN }}
 
     - name: Configurating Git
       run: |

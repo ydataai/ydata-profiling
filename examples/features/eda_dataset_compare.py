@@ -1,7 +1,7 @@
 import pandas as pd
 
-from ydata_profiling import ProfileReport
-from ydata_profiling.utils.cache import cache_file
+from data_profiling import ProfileReport
+from data_profiling.utils.cache import cache_file
 
 if __name__ == "__main__":
     # Read the Titanic Dataset

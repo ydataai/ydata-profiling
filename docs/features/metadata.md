@@ -4,7 +4,7 @@
 
 When sharing reports with coworkers or publishing online, it might be
 important to include metadata of the dataset, such as author, copyright
-holder or descriptions. `ydata-profiling` allows complementing a report
+holder or descriptions. `data-profiling` allows complementing a report
 with that information. Inspired by [schema.org\'s
 Dataset](https://schema.org/Dataset), the currently supported properties
 are *description*, *creator*, *author*, *url*, *copyright_year* and
@@ -33,7 +33,7 @@ report.to_file(Path("stata_auto_report.html"))
 
 In addition to providing dataset details, often users want to include
 column-specific descriptions when sharing reports with team members and
-stakeholders. `ydata-profiling` supports creating these descriptions, so
+stakeholders. `data-profiling` supports creating these descriptions, so
 that the report includes a built-in data dictionary. By default, the
 descriptions are presented in the *Overview* section of the report, next
 to each variable.
@@ -64,7 +64,7 @@ Alternatively, column descriptions can be loaded from a JSON file:
 ``` python linenums="1" title="Generate a report with descriptions per variable from a JSON definitions file"
 import json
 import pandas as pd
-import ydata_profiling
+import data_profiling
 
 definition_file = dataset_column_definition.json
 
@@ -87,8 +87,8 @@ report.to_file("report.html")
 
 In addition to providing dataset details, users often want to include
 set type schemas. This is particularly important when integrating
-`ydata-profiling` generation with the information already in a data
-catalog. When using `ydata-profiling` ProfileReport, users can set the
+`data-profiling` generation with the information already in a data
+catalog. When using `data-profiling` ProfileReport, users can set the
 type_schema property to control the generated profiling data types. By
 default, the `type_schema` is automatically inferred with [visions](https://github.com/dylan-profiler/visions).
 
@@ -96,8 +96,8 @@ default, the `type_schema` is automatically inferred with [visions](https://gith
 import json
 import pandas as pd
 
-from ydata_profiling import ProfileReport
-from ydata_profiling.utils.cache import cache_file
+from data_profiling import ProfileReport
+from data_profiling.utils.cache import cache_file
 
 file_name = cache_file(
     "titanic.csv",

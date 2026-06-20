@@ -4,14 +4,14 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from ydata_profiling import ProfileReport
+from data_profiling import ProfileReport
 
 
 @pytest.fixture
 def tdf(get_data_file):
     file_name = get_data_file(
         "meteorites.csv",
-        "https://data.nasa.gov/api/views/gh4g-9sfh/rows.csv?accessType=DOWNLOAD",
+        "https://data.nasa.gov/docs/legacy/meteorite_landings/Meteorite_Landings.csv",
     )
 
     df = pd.read_csv(file_name)

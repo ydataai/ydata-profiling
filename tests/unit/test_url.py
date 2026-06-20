@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from ydata_profiling import ProfileReport
+from data_profiling import ProfileReport
 
 
 def test_urls(get_data_file):
@@ -25,4 +25,4 @@ def test_urls(get_data_file):
     )
 
     assert "URL</span>" in profile.to_html(), "URL not detected"
-    assert "URL</th>" in profile.to_html(), "URL not detected"
+    assert "<th>URL<td" in profile.to_html(), "URL not detected"

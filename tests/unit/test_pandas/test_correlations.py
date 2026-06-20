@@ -2,14 +2,14 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from ydata_profiling.config import Settings
-from ydata_profiling.model.pandas.correlations_pandas import (
+from data_profiling.config import Settings
+from data_profiling.model.pandas.correlations_pandas import (
     auto_compute as pandas_auto_compute,
 )
-from ydata_profiling.model.pandas.correlations_pandas import (
+from data_profiling.model.pandas.correlations_pandas import (
     cramers_compute as pandas_cramers_compute,
 )
-from ydata_profiling.model.pandas.correlations_pandas import (
+from data_profiling.model.pandas.correlations_pandas import (
     spearman_compute as pandas_spearman_compute,
 )
 

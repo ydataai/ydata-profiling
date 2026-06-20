@@ -5,7 +5,7 @@ Error for series with large integers.
 """
 import pandas as pd
 
-from pandas_profiling import ProfileReport
+from data_profiling import ProfileReport
 
 
 def test_issue915():

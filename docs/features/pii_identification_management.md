@@ -12,7 +12,7 @@ This includes but is not limited to, names, addresses, phone numbers, social sec
 and financial information. PII is crucial in today's digital age, where data is extensively collected, stored, 
 and processed.
 
-[YData Fabric Data Catalog](https://ydata.ai/products/data_catalog), a scalable and interactive version of ydata-profiling, 
+[YData Fabric Data Catalog](https://ydata.ai/products/data_catalog), a scalable and interactive version of data-profiling, 
 integrates into the data profiling experience, an advanced machine learning solutions based on a Named Entity Recognition (NER) model
 combine with traditional rule-based patterns identification, allowing to efficiently detect PII. 
 

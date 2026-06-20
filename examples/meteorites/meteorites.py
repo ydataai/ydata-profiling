@@ -3,13 +3,13 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from ydata_profiling import ProfileReport
-from ydata_profiling.utils.cache import cache_file
+from data_profiling import ProfileReport
+from data_profiling.utils.cache import cache_file
 
 if __name__ == "__main__":
     file_name = cache_file(
         "meteorites.csv",
-        "https://data.nasa.gov/api/views/gh4g-9sfh/rows.csv?accessType=DOWNLOAD",
+        "https://data.nasa.gov/docs/legacy/meteorite_landings/Meteorite_Landings.csv",
     )
 
     # Set a seed for reproducibility

@@ -1,6 +1,6 @@
 # Interactive applications
 
-The `ydata-profiling` report, through several of its interfaces, can be
+The `data-profiling` report, through several of its interfaces, can be
 integrated in interactive data applications such as those developed with
 [Streamlit](https://streamlit.io) or [Panel](https://panel.holoviz.org).
 
@@ -11,14 +11,14 @@ made to build web-apps for machine learning and data science.
 
 !!! note
 
-    This feature is only available for versions previous to ydata-profiling
+    This feature is only available for versions previous to data-profiling
     (<=3.6.2).
 
 ![image](https://user-images.githubusercontent.com/9756388/140196751-69b0a361-99ed-4fc3-8282-cb0cd1fb0d59.gif)
 
-``` python linenums="1" title="Creating a simple Streamlit app with ydata-profiling"
+``` python linenums="1" title="Creating a simple Streamlit app with data-profiling"
 import pandas as pd
-import ydata_profiling
+import data_profiling
 import streamlit as st
 from streamlit_pandas_profiling import st_profile_report
 df = pd.read_csv(
@@ -31,7 +31,7 @@ st.write(df)
 st_profile_report(pr)
 ```
 
-You can install the [ydata-profiling
+You can install the [data-profiling
 component](https://github.com/Ghasel/streamlit-pandas-profiling) for
 Streamlit with pip.
 
@@ -44,8 +44,8 @@ pip install streamlit-pandas-profiling
 [Dash](hhttps://github.com/plotly/dash) is a Python framework for
 building machine learning & data science web apps, built on top of
 Plotly.js, React and Flask. It is commonly used for interactive data
-exploration, precisely where `ydata-profiling` also focuses. Inline
-access to the insights provided by `ydata-profiling` can help guide the
+exploration, precisely where `data-profiling` also focuses. Inline
+access to the insights provided by `data-profiling` can help guide the
 exploratory work allowed by Dash. To integrate a Profiling Report inside
 a Dash app, two options exist:
 
@@ -55,7 +55,7 @@ Assuming the HTML version of the report is in `report.html`, move it to
 a folder called `assets`. The snippet below shows a simple Dash app,
 `app.py`, embedding this report:
 
-``` python linenums="1" title="Create a Dash dashboard with ydata-profiling integrated"
+``` python linenums="1" title="Create a Dash dashboard with data-profiling integrated"
 import dash
 from dash import html
 
@@ -92,7 +92,7 @@ And configure the Dash app as in the following snippet:
 
 ``` python linenums="1" title="Embed the raw html into Dash"
 import pandas as pd
-from ydata_profiling import ProfileReport
+from data_profiling import ProfileReport
 import dash
 from dash import html
 import dash_dangerously_set_inner_html
@@ -122,9 +122,9 @@ if __name__ == "__main__":
 
 When running `python app.py`, a Dash app with the report embedded will
 be available on
-`` <http://127.0.0.1:8050>`_. While this option is somewhat more direct, **the embedded report will not be fully interactive, with some buttons unclickable**.    Panel -----  For more information on how to use ``ydata-profiling\`[
+`` <http://127.0.0.1:8050>`_. While this option is somewhat more direct, **the embedded report will not be fully interactive, with some buttons unclickable**.    Panel -----  For more information on how to use ``data-profiling\`[
 in Panel, see \`this GitHub issue
-\<https://github.com/ydataai/ydata-profiling/issues/491\>]{.title-ref}\_
+\<https://github.com/Data-Centric-AI-Community/data-profiling/issues/491\>]{.title-ref}\_
 and [this integration
 example](https://awesome-panel.org/pandas_profiling_app).
 

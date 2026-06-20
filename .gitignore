@@ -24,6 +24,7 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+uv.lock
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -85,3 +86,6 @@ docsrc/source/pages/api/_autosummary/
 # User created
 VERSION
 version.py
+
+# local java/spark sdk environment files
+.sdkmanrc

@@ -16,9 +16,9 @@ previously identified common issue.
 ## Reporting a bug
 
 To ensure the bug was not already reported by searching on Github under
-[Issues](https://github.com/ydataai/ydata-profiling/issues). If you\'re
+[Issues](https://github.com/Data-Centric-AI-Community/data-profiling/issues). If you\'re
 unable to find an open issue addressing the problem, [open a new
-one](https://github.com/ydataai/ydata-profiling/issues/new/choose). If
+one](https://github.com/Data-Centric-AI-Community/data-profiling/issues/new/choose). If
 possible, use the relevant bug report templates to create the issue.
 
 You should provide the **minimal information to reproduce this bug**.
@@ -68,20 +68,20 @@ recommended:
 
 ## Using Stack Overflow
 
-Users with a request for help on how to use `ydata-profiling` should
+Users with a request for help on how to use `data-profiling` should
 consider asking their question on Stack Overflow, under the dedicated
-`ydata-profiling` tag:
+`data-profiling` tag:
 
-[![Questions: Stackoverflow \"ydata-profiling\"](https://img.shields.io/badge/stackoverflow%20tag-ydata%20profiling-yellow)](https://stackoverflow.com/questions/tagged/ydata-profiling) or, 
-[![Questions: Stackoverflow \"ydata-profiling\"](https://img.shields.io/badge/stackoverflow%20tag-pandas%20profiling-yellow)](https://stackoverflow.com/questions/tagged/pandas-profiling)
+[![Questions: Stackoverflow \"data-profiling\"](https://img.shields.io/badge/stackoverflow%20tag-data%20profiling-yellow)](https://stackoverflow.com/questions/tagged/data-profiling) or, 
+[![Questions: Stackoverflow \"data-profiling\"](https://img.shields.io/badge/stackoverflow%20tag-pandas%20profiling-yellow)](https://stackoverflow.com/questions/tagged/pandas-profiling)
 
-for questions about `ydata-profiling` older versions.
+for questions about `data-profiling` older versions.
 
 ## :fontawesome-brands-discord: Discord community
 
 [Join the Discord community](https://discord.com/invite/mw7xjJ7b7s) to
 connect with both other users and developers that might be able to
-answer your questions. The **#ydata-profiling** and **#need-help**
+answer your questions. The **#data-profiling** and **#need-help**
 channels are recommended for questions and issues.
 
 <img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=baa0e45f-0c03-4190-9646-9d8ea2640ba2" />

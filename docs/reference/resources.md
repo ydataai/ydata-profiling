@@ -68,7 +68,7 @@ Feel free to contribute it via a pull request on GitHub.
 
 ## Videos
 
-- [How to install ydata-profiling with conda and Python 3.11](https://www.youtube.com/watch?v=fvXZcpTwbtA)
+- [How to install data-profiling with conda and Python 3.11](https://www.youtube.com/watch?v=fvXZcpTwbtA)
   (Fabiana Clemente, June 2023, 2023)
 -   [Installing Anaconda, Creating a virtual environment and installing
     pandas-profiling in it](https://www.youtube.com/watch?v=q2E8RLsznaA)

@@ -2,8 +2,8 @@ import pandas as pd
 import pytest
 from pyspark.sql.types import IntegerType, StringType, StructField, StructType
 
-from ydata_profiling.config import Settings
-from ydata_profiling.model.spark.sample_spark import get_sample_spark
+from data_profiling.config import Settings
+from data_profiling.model.spark.sample_spark import get_sample_spark
 
 
 # FIXME: Move to data

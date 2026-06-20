@@ -1,6 +1,6 @@
 # Time-Series data
 
-`ydata-profiling` can be used for a quick Exploratory Data Analysis on
+`data-profiling` can be used for a quick Exploratory Data Analysis on
 time-series data. This is useful for a quick understanding on the
 behaviour of time dependent variables regarding behaviours such as time
 plots, seasonality, trends, stationary and data gaps.
@@ -17,7 +17,7 @@ values or by entries missing in the time index.
     check out [blog content here](https://ydata.ai/resources/how-to-do-an-eda-for-time-series). 
 
     You can find the a [otebook with the
-    [full code in our examples folder](https://github.com/ydataai/ydata-profiling/tree/develop/examples/usaairquality).
+    [full code in our examples folder](https://github.com/Data-Centric-AI-Community/data-profiling/tree/develop/examples/usaairquality).
 
 <figure markdown>     
    ![Time-series profiling](../_static/img/time-series_profiling.gif){width="800"}
@@ -32,8 +32,8 @@ assumption that the dataset includes time dependent features:
 ``` python linenums="1" title="Setting the configurations for time-series profiling"
 import pandas as pd
 
-from ydata_profiling.utils.cache import cache_file
-from ydata_profiling import ProfileReport
+from data_profiling.utils.cache import cache_file
+from data_profiling import ProfileReport
 
 file_name = cache_file(
     "pollution_us_2000_2016.csv",
@@ -63,7 +63,7 @@ validation by setting the x configuration.
 
 ### Warnings and validations
 
-Specific to time-series analysis, 2 new warnings were added to the `ydata-profiling`
+Specific to time-series analysis, 2 new warnings were added to the `data-profiling`
 warnings family: **NON_STATIONARY** and **SEASONAL**.
 
 #### Stationarity
@@ -74,7 +74,7 @@ forecasting and modeling techniques because they often assume that the underlyin
 data is stationary. Stationarity simplifies the modeling process by making
 it easier to detect patterns and trends.
 
-`ydata-profiling` stationary warning is based on an **Augmented Dickey-Fuller(ADF)** test.
+`data-profiling` stationary warning is based on an **Augmented Dickey-Fuller(ADF)** test.
 Nevertheless, you should always combine the output of this warning with a visual
 inspection to your time-series behaviour and search for variance of the 
 rolling statistics analysis. 
@@ -87,7 +87,7 @@ are known as seasonality and are often observed in data associated with yearly,
 monthly, weekly, or daily cycles. Seasonal time-series data can be challenging
 to model accurately without addressing the underlying seasonality.
 
-`ydata-profiling` seasonality warning is based on an **Augmented Dickey-Fuller(ADF)** test.
+`data-profiling` seasonality warning is based on an **Augmented Dickey-Fuller(ADF)** test.
 Nevertheless, you should always combine the output of this warning with a seasonal decomposition
 PACF and ACF plots (also computed in your time-series profiling).
 
@@ -104,7 +104,7 @@ intervals within your time-series data where observations are missing or incompl
 While these gaps might seem like inconveniences, they hold valuable information and
 can significantly impact the quality and reliability of your analyses and predictions. 
 
-`ydata-profiling` automated identification of potential time-series gaps is based
+`data-profiling` automated identification of potential time-series gaps is based
 on time intervals analysis. By analyzing the time intervals between data points,
 the gaps are expected to be reflected as larger intervals in the distribution. 
 
@@ -119,8 +119,8 @@ variables that you want to analyze as time-series are profiled as such:
 ``` python linenums="1" title="Setting what variables are time-series"
 import pandas as pd
 
-from ydata_profiling.utils.cache import cache_file
-from ydata_profiling import ProfileReport
+from data_profiling.utils.cache import cache_file
+from data_profiling import ProfileReport
 
 file_name = cache_file(
     "pollution_us_2000_2016.csv",

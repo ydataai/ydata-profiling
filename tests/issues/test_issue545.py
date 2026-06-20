@@ -1,6 +1,6 @@
 """
 Test for issue 545:
-https://github.com/ydataai/ydata-profiling/issues/545
+https://github.com/Data-Centric-AI-Community/data-profiling/issues/545
 """
 
 from pathlib import Path
@@ -8,8 +8,8 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from ydata_profiling import ProfileReport
-from ydata_profiling.utils.compat import pandas_version_info
+from data_profiling import ProfileReport
+from data_profiling.utils.compat import pandas_version_info
 
 
 @pytest.mark.skipif(

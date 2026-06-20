@@ -4,8 +4,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from ydata_profiling.config import Settings
-from ydata_profiling.model.spark.missing_spark import missing_bar
+from data_profiling.config import Settings
+from data_profiling.model.spark.missing_spark import missing_bar
 
 
 @pytest.fixture

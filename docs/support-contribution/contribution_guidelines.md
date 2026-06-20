@@ -84,6 +84,6 @@ community](https://discord.com/invite/mw7xjJ7b7s).
 ## More information
 
 Read more on getting involved in the [Contribution Guide available on
-GitHub](https://github.com/ydataai/ydata-profiling/blob/master/CONTRIBUTING.md).
+GitHub](https://github.com/Data-Centric-AI-Community/data-profiling/blob/master/CONTRIBUTING.md).
 
 <img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=baa0e45f-0c03-4190-9646-9d8ea2640ba2" />

@@ -2,8 +2,8 @@ from pathlib import Path
 
 import pandas as pd
 
-from ydata_profiling import ProfileReport
-from ydata_profiling.utils.cache import cache_file
+from data_profiling import ProfileReport
+from data_profiling.utils.cache import cache_file
 
 if __name__ == "__main__":
     file_name = cache_file("auto2.dta", "http://www.stata-press.com/data/r15/auto2.dta")

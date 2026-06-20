@@ -2,7 +2,7 @@
 
 In some situations, a user might want to customize the appearance
 of the report to match personal preferences or a corporate brand.
-``ydata-profiling`` offers two major customization dimensions: 
+``data-profiling`` offers two major customization dimensions: 
 the **styling of the HTML report** and the **styling of the visualizations
 and plots** contained within. 
 
@@ -64,7 +64,7 @@ values overview can also be customized via the ``plot`` argument. To customize
 the palette used by the correlation matrix, use the ``correlation`` key:
 
 ``` python linenums="1" title="Changing visualizations color palettes"
-  from ydata_profiling import ProfileReport
+  from data_profiling import ProfileReport
 
   profile = ProfileReport(
       df,
@@ -77,7 +77,7 @@ Similarly, the palette for *Missing values* can be changed using ``missing`` arg
 
 ``` python linenums="1" python
 
-  from ydata_profiling import ProfileReport
+  from data_profiling import ProfileReport
 
   profile = ProfileReport(
       df,
@@ -87,7 +87,7 @@ Similarly, the palette for *Missing values* can be changed using ``missing`` arg
   )
 ```
 
-``ydata-profiling`` accepts all ``cmap`` values (colormaps) accepted by ``matplotlib``.
+``data-profiling`` accepts all ``cmap`` values (colormaps) accepted by ``matplotlib``.
 The list of available colour maps can [be accessed here](https://matplotlib.org/stable/tutorials/colors/colormaps.html>).
 Alternatively, it is possible to create [custom palettes](https://matplotlib.org/stable/gallery/color/custom_cmap.html>).
 

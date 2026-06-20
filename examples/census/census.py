@@ -4,9 +4,9 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from ydata_profiling import ProfileReport
-from ydata_profiling.config import Dataset
-from ydata_profiling.utils.cache import cache_file
+from data_profiling import ProfileReport
+from data_profiling.config import Dataset
+from data_profiling.utils.cache import cache_file
 
 if __name__ == "__main__":
     file_name = cache_file(

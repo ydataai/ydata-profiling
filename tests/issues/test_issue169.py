@@ -1,13 +1,13 @@
 """
 Test for issue 169:
-https://github.com/ydataai/ydata-profiling/issues/169
+https://github.com/Data-Centric-AI-Community/data-profiling/issues/169
 """
 from io import StringIO
 
 import pandas as pd
 import pytest
 
-from ydata_profiling import ProfileReport
+from data_profiling import ProfileReport
 
 
 @pytest.fixture
@@ -32,7 +32,7 @@ def test_issue_169_column(issue_169_data):
     )
     html = report.to_html()
     assert type(html) == str
-    assert "Dataset statistics</p>" in html
+    assert "Dataset statistics" in html
 
 
 def test_issue_169_index(issue_169_data):
@@ -45,4 +45,4 @@ def test_issue_169_index(issue_169_data):
     )
     html = report.to_html()
     assert type(html) == str
-    assert "Dataset statistics</p>" in html
+    assert "Dataset statistics" in html

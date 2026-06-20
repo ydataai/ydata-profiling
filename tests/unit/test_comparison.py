@@ -2,8 +2,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from ydata_profiling import ProfileReport, compare
-from ydata_profiling.compare_reports import _compare_title
+from data_profiling import ProfileReport, compare
+from data_profiling.compare_reports import _compare_title
 
 
 @pytest.fixture()

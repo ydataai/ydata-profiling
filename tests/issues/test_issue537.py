@@ -8,7 +8,7 @@ import pandas as pd
 import pytest
 import requests
 
-from ydata_profiling.model.summary import describe_1d
+from data_profiling.model.summary import describe_1d
 
 
 def mock_multiprocess_1d(args, config, summarizer, typeset) -> Tuple[str, dict]:

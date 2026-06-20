@@ -9,7 +9,7 @@ applications with capabilities similar to Flink, Spark, and Kafka
 Streams, while providing a friendly and familiar interface and 100%
 compatibility with the Python ecosystem.
 
-## Stream processing with Bytewax and ydata-profiling      
+## Stream processing with Bytewax and data-profiling      
 
 Data Profiling is key to a successful start of any machine learning
 task, and refers to the step of [thoroughly understanding our data](https://ydata.ai/resources/advanced-eda-made-simple-using-pandas-profiling): its structure, behavior, and quality.                               
@@ -22,7 +22,7 @@ collection or processing (e.g., erroneous values or inconsistent
 features).                                                          
 
 !!! note "Package versions"
-    The integration with bytewax is available for ydata-profiling with  
+    The integration with bytewax is available for data-profiling with  
     any version >=3.0.0                                                
 
 ### Simulating a streaming                                              
@@ -65,10 +65,10 @@ flow.map(lambda reading_data: (reading_data["device"], reading_data))
 
 Now we will take advantage of the stateful capabilities of bytewax to
 gather data for each device over a duration of time that we have
-defined. ydata-profiling expects a snapshot of the data over time, which
+defined. data-profiling expects a snapshot of the data over time, which
 makes the window operator the perfect method to use to do this.
 
-In ydata-profiling, we are able to produce summarizing statistics for a
+In data-profiling, we are able to produce summarizing statistics for a
 dataframe which is specified for a particular context. For instance, in
 this example, we can produce snapshots of data referring to each IoT
 device or to particular time frames:
@@ -101,13 +101,13 @@ flow.fold_window("running_average", cc, wc, list, acc_values)
 flow.inspect(print)
 ```
 
-After the snapshots are defined, leveraging ydata-profiling is as simple
+After the snapshots are defined, leveraging data-profiling is as simple
 as calling the ProfileReport for each of the dataframes we would like to
 analyze:
 
 ``` python
 import pandas as pd
-from ydata_profiling import ProfileReport
+from data_profiling import ProfileReport
 
 
 def profile(device_id__readings):
@@ -158,7 +158,7 @@ Assuming we are in the same directory as the file with the dataflow
 definition, we can run it using:
 
 ``` linenums="1"
-python -m bytewax.run ydata-profiling-streaming:flow
+python -m bytewax.run data-profiling-streaming:flow
 ```
 
 We can then use the profiling reports to validate the data quality,
@@ -185,6 +185,6 @@ comparison_report.to_file("comparison_report.html")
 Now you're all set to start exploring your data streams! Bytewax takes
 care of all the processes necessary to handle and structure data streams
 into snapshots, which can then be summarized and compared with
-ydata-profiling through a comprehensive report of data characteristics.
+data-profiling through a comprehensive report of data characteristics.
 
 <img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=baa0e45f-0c03-4190-9646-9d8ea2640ba2" />

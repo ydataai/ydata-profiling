@@ -12,10 +12,10 @@ try:
 except ImportError:
     has_spark = False
 
-from ydata_profiling.config import Settings
-from ydata_profiling.model.summarizer import ProfilingSummarizer
-from ydata_profiling.model.typeset import ProfilingTypeSet
-from ydata_profiling.utils.cache import cache_file
+from data_profiling.config import Settings
+from data_profiling.model.summarizer import ProfilingSummarizer
+from data_profiling.model.typeset import ProfilingTypeSet
+from data_profiling.utils.cache import cache_file
 
 
 def pytest_configure(config):
@@ -83,7 +83,16 @@ def spark_context():
     if not has_spark:
         pytest.skip("Skipping Spark tests because PySpark is not installed.")
 
-    conf = SparkConf().setAppName("pytest-pyspark-tests").setMaster("local[*]")
+    conf = (
+        SparkConf()
+        .setAppName("pytest-pyspark-tests")
+        .setMaster("local[*]")
+        .set("spark.sql.ansi.enabled", "false")
+        .set("spark.driver.host", "127.0.0.1")
+        .set("spark.driver.bindAddress", "127.0.0.1")
+        .set("spark.driver.port", "4040")
+        .set("spark.blockManager.port", "4041")
+    )
 
     # Check if SparkContext exists before creating a new one
     if SparkContext._active_spark_context:
@@ -105,7 +114,14 @@ def spark_session(spark_context):
     """
     if not has_spark:
         pytest.skip("Skipping Spark tests because PySpark is not installed.")
-    spark = SparkSession.builder.config(conf=spark_context.getConf()).getOrCreate()
+    spark = (
+        SparkSession.builder.master("local[*]")
+        .config("spark.driver.host", "127.0.0.1")
+        .config("spark.driver.bindAddress", "127.0.0.1")
+        .appName("pytest")
+        .config("spark.sql.ansi.enabled", "false")  # <-- restore permissive casts
+        .getOrCreate()
+    )
 
     yield spark
 
