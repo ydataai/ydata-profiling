@@ -17,7 +17,7 @@
   <a href="https://ydata-profiling.ydata.ai/docs/master/">Documentation</a>
   |
   <a href="https://tiny.ydata.ai/dcai-data-profiling">Discord</a>
-  | 
+  |
   <a href="https://stackoverflow.com/questions/tagged/pandas-profiling+or+data-profiling">Stack Overflow</a>
   |
   <a href="https://ydata-profiling.ydata.ai/docs/master/pages/reference/changelog.html#changelog">Latest changelog</a>
@@ -36,23 +36,23 @@ The package outputs a simple and digested analysis of a dataset, including **tim
 > Leverage YData Fabric Data Catalog to connect to different databases and storages (Oracle, snowflake, PostGreSQL, GCS, S3, etc.) and leverage an interactive and guided profiling experience in Fabric. Check out the [Community Version](http://ydata.ai/register?utm_source=data-profiling&utm_medium=documentation&utm_campaign=YData%20Fabric%20Community).
 
 ## Migration Guide
- 
+
 ### 1. Uninstall the old package
- 
+
 ```bash
 pip uninstall ydata-profiling
 ```
- 
+
 ### 2. Install the new package
- 
+
 ```bash
 pip install fg-data-profiling
 ```
- 
+
 ### 3. Update your imports
- 
+
 Find and replace all occurrences of the old import in your codebase:
- 
+
 ```python
 # Before
 import ydata_profiling
@@ -62,9 +62,9 @@ from ydata_profiling import ProfileReport
 import data_profiling
 from data_profiling import ProfileReport
 ```
- 
+
 You can use this one-liner to find all affected files:
- 
+
 ```bash
 grep -r "ydata_profiling" . --include="*.py"
 ```
@@ -117,7 +117,7 @@ The report contains three additional sections:
 
 ### 🎁 Latest features
 
-- Want to scale? Check the latest release with ⭐⚡[Spark support](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/pypspark.html)! 
+- Want to scale? Check the latest release with ⭐⚡[Spark support](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/pypspark.html)!
 - Looking for how you can do an EDA for Time-Series 🕛 ? Check [this blogpost](https://towardsdatascience.com/how-to-do-an-eda-for-time-series-cbb92b3b1913).
 - You want to compare 2 datasets and get a report? Check [this blogpost](https://medium.com/towards-artificial-intelligence/how-to-compare-2-dataset-with-pandas-profiling-2ae3a9d7695e)
 
@@ -200,7 +200,7 @@ The following example reports showcase the potentialities of the package across 
 * [UCI Bank Dataset](https://ydata-profiling.ydata.ai/examples/master/bank_marketing_data/uci_bank_marketing_report.html) (marketing dataset from a bank)
 * [Russian Vocabulary](https://ydata-profiling.ydata.ai/examples/master/features/russian_vocabulary.html) (100 most common Russian words, showcasing unicode text analysis)
 * [Website Inaccessibility](https://ydata-profiling.ydata.ai/examples/master/features/website_inaccessibility_report.html) (website accessibility analysis, showcasing support for URL data)
-* [Orange prices](https://ydata-profiling.ydata.ai/examples/master/features/united_report.html) and 
+* [Orange prices](https://ydata-profiling.ydata.ai/examples/master/features/united_report.html) and
 * [Coal prices](https://ydata-profiling.ydata.ai/examples/master/features/flatly_report.html) (simple pricing evolution datasets, showcasing the theming options)
 * [USA Air Quality](https://github.com/Data-Centric-AI-Community/fg-data-profiling/tree/master/examples/usaairquality) (Time-series air quality dataset EDA example)
 * [HCC](https://github.com/Data-Centric-AI-Community/fg-data-profiling/tree/master/examples/hcc) (Open dataset from healthcare, showcasing compare between two sets of data, before and after preprocessing)
@@ -236,7 +236,7 @@ pip install -U fg-data-profiling[notebook,unicode,pyspark]
 
 ### Using conda
 [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/pandas-profiling.svg)](https://anaconda.org/conda-forge/pandas-profiling)
-[![Conda Version](https://img.shields.io/conda/vn/conda-forge/pandas-profiling.svg)](https://anaconda.org/conda-forge/pandas-profiling) 
+[![Conda Version](https://img.shields.io/conda/vn/conda-forge/pandas-profiling.svg)](https://anaconda.org/conda-forge/pandas-profiling)
 
 
 You can install using the `conda` package manager by running:
@@ -255,7 +255,7 @@ Install it by navigating to the proper directory and running:
 pip install -e .
 ```
 
-The profiling report is written in HTML and CSS, which means a modern browser is required. 
+The profiling report is written in HTML and CSS, which means a modern browser is required.
 
 You need [Python 3](https://python3statement.github.io/) to run the package. Other dependencies can be found in the requirements files:
 
@@ -268,7 +268,7 @@ You need [Python 3](https://python3statement.github.io/) to run the package. Oth
 
 ## 🔗 Integrations
 
-To maximize its usefulness in real world contexts, `fg-data-profiling` has a set of implicit and explicit integrations with a variety of other actors in the Data Science ecosystem: 
+To maximize its usefulness in real world contexts, `fg-data-profiling` has a set of implicit and explicit integrations with a variety of other actors in the Data Science ecosystem:
 
 | Integration type | Description |
 |---|---|
@@ -297,7 +297,7 @@ Learn how to get involved in the [Contribution Guide](https://ydata-profiling.yd
 A low-threshold place to ask questions or start contributing is the [Data Centric AI Community's Discord](https://tiny.ydata.ai/dcai-data-profiling).
 
 
-A big thank you to all our amazing contributors! 
+A big thank you to all our amazing contributors!
 
 <a href="https://github.com/Data-Centric-AI-Community/fg-data-profiling/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=Data-Centric-AI-Community/fg-data-profiling" />

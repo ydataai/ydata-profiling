@@ -4,13 +4,13 @@ A set of options is available in order to customize the behaviour of ``data-prof
 
 ## General settings
 
-Global report settings: 
+Global report settings:
 
 {{ read_csv('./tables/config_general.csv') }}
 
 ## Variable summary settings
 
-Settings related with the information displayed for each variable. 
+Settings related with the information displayed for each variable.
 
 {{ read_csv('./tables/config_variables.csv') }}
 
@@ -64,7 +64,7 @@ Configure the schema type for a given dataset.
 ```
 ## Missing data overview plots
 
-Settings related with the missing data section and the visualizations it can include. 
+Settings related with the missing data section and the visualizations it can include.
 
 {{ read_csv('./tables/config_missing.csv') }}
 
@@ -79,7 +79,7 @@ Settings related with the missing data section and the visualizations it can inc
 
 ## Correlations
 
-Settings regarding correlation metrics and thresholds.    
+Settings regarding correlation metrics and thresholds.
 The default value is `auto`, but the following correlation matrices are available:
 
 {{ read_csv('./tables/corr_matrices.csv') }}
@@ -112,7 +112,7 @@ For instance, to disable all correlation computations (might be relevant for lar
 
 ## Interactions
 
-Settings related with the interactions section.  
+Settings related with the interactions section.
 
 {{ read_csv('./tables/config_interactions.csv') }}
 

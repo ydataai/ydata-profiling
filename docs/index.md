@@ -1,19 +1,19 @@
 # Welcome
 
 <img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=baa0e45f-0c03-4190-9646-9d8ea2640ba2" />
-Data quality profiling and exploratory data analysis are crucial steps in the process of Data Science and Machine Learning development. 
-Data-profiling is a leading tool in the data understanding step of the data science workflow as a pioneering Python package. 
+Data quality profiling and exploratory data analysis are crucial steps in the process of Data Science and Machine Learning development.
+Data-profiling is a leading tool in the data understanding step of the data science workflow as a pioneering Python package.
 
-`data-profiling` is a leading package for data profiling, that automates and standardizes the generation of detailed reports, 
+`data-profiling` is a leading package for data profiling, that automates and standardizes the generation of detailed reports,
 complete with statistics and visualizations. The significance of the package lies in how it streamlines the process of
 understanding and preparing data for analysis in a single line of code! If you're ready to get started see the [quickstart](getting-started/quickstart.md)!
 
 !!! tip "Profiling and scale and for databases"
-    
-    Take your data profiling to the next level - try data-profiling at scale and for databases! 
-    
-    Experience enterprise-level scalability and database support while enjoying the familiar open-source features you love. 
-    Dive into large datasets with ease and ensure data quality like never before. Try [Data Fabric community version](https://ydata.ai/register)! 
+
+    Take your data profiling to the next level - try data-profiling at scale and for databases!
+
+    Experience enterprise-level scalability and database support while enjoying the familiar open-source features you love.
+    Dive into large datasets with ease and ensure data quality like never before. Try [Data Fabric community version](https://ydata.ai/register)!
 
 ![data-profiling report](_static/img/data-profiling.gif)
 
@@ -30,8 +30,8 @@ from data_profiling import ProfileReport
 df = pd.read_csv('data.csv')
 profile = ProfileReport(df, title="Profiling Report")
 ```
-- **Comprehensive insights in a report**: a report including a wide range of statistics and visualizations, 
-providing a holistic view of your data. The report is shareable as a html file or while integrate as a widget in a Jupyter Notebook. 
+- **Comprehensive insights in a report**: a report including a wide range of statistics and visualizations,
+providing a holistic view of your data. The report is shareable as a html file or while integrate as a widget in a Jupyter Notebook.
 - **Data quality assessment**: excel at the identification of missing data, duplicate entries and outliers. These insights are essential
 for data cleaning and preparation, ensuring the reliability of your analysis and leading to early problems' identification.
 -  **Ease of integration with other flows**: all metrics of the data profiling can be consumed in a standard JSON format.
@@ -46,7 +46,7 @@ Data-profiling can be used to deliver a variety of different applications. The d
 !!! question "Data Catalog with data profiling for databases & storages"
 
     Need to profile directly from databases and data storages **(Oracle, snowflake, PostGreSQL, GCS, S3, etc.)**?
-    
+
     Try [YData Fabric Data Catalog](https://ydata.ai/products/data_catalog) for interactive and scalable data profiling
 
     Check out the [free Community Version](http://ydata.ai/register?utm_source=ydata-profiling&utm_medium=documentation&utm_campaign=YData%20Fabric%20Community).
@@ -65,10 +65,10 @@ Data-profiling can be used to deliver a variety of different applications. The d
 ### Tutorials
 
 Looking for how to use certain features or how to integrate `data-profiling` in your currect stack and workflows,
-check our step-by-step tutorials. 
+check our step-by-step tutorials.
 
 - **How to master exploratory data analysis with data-profiling?** Check this [step-by-step tutorial](https://medium.com/ydata-ai/auditing-data-quality-with-pandas-profiling-b1bf1919f856).
-- **Looking on how to do exploratory data analysis for Time-series 🕛?** Check how to in this 
+- **Looking on how to do exploratory data analysis for Time-series 🕛?** Check how to in this
 [blogpost](https://towardsdatascience.com/how-to-do-an-eda-for-time-series-cbb92b3b1913).
 To learn more about this feature [check the documentation](features/time_series_datasets.md).
 - **How to compare 2 datasets? We got you covered with this [step-by-step tutorial](https://medium.com/towards-artificial-intelligence/how-to-compare-2-dataset-with-pandas-profiling-2ae3a9d7695e)**
@@ -84,7 +84,7 @@ Need help? Want to share a perspective? Report a bug? Ideas for collaborations? 
 - [Discord](https://tiny.ydata.ai/dcai-ydata-profiling): ideal for projects discussions, ask questions, collaborations, general chat
 
 !!! tip "Help us prioritizing - before reporting, double check, it is always better to upvote!"
-    
+
     Before reporting an issue on GitHub, check out [Common Issues](https://docs.profiling.ydata.ai/latest/support-contribution/common_issues/).
 
     If you want to validate if your request was prioritized check the [project pipeline details]()
@@ -95,7 +95,7 @@ Learn how to get involved in the [Contribution Guide](support-contribution/contr
 
 A low-threshold place to ask questions or start contributing is the [Data Centric AI Community's Discord](https://tiny.ydata.ai/dcai-ydata-profiling).
 
-A big thank you to all our amazing contributors! 
+A big thank you to all our amazing contributors!
 
 ### ⚡ We need your help - Spark!
 

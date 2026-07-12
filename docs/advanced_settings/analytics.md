@@ -2,8 +2,8 @@
 
 ## Overview
 
-`data-profiling` is a powerful library designed to generate profile reports from pandas and Spark Dataframe objects. 
-As part of our ongoing efforts to improve user experience and functionality, `data-profiling` 
+`data-profiling` is a powerful library designed to generate profile reports from pandas and Spark Dataframe objects.
+As part of our ongoing efforts to improve user experience and functionality, `data-profiling`
 includes a telemetry feature. This feature collects anonymous usage data, helping us understand how the
 library is used and identify areas for improvement.
 
@@ -25,7 +25,7 @@ The telemetry system collects non-personal, anonymous information such as:
 ## Disabling usage analytics
 
 We respect your choice to not participate in our telemetry collection. If you prefer to disable telemetry, you can do so
-by setting an environment variable on your system. Disabling telemetry will not affect the functionality 
+by setting an environment variable on your system. Disabling telemetry will not affect the functionality
 of the data-profiling library, except for the ability to contribute to its usage analytics.
 
 
@@ -34,8 +34,8 @@ of the data-profiling library, except for the ability to contribute to its usage
 Open your terminal or command prompt and set the YDATA_PROFILING_NO_ANALYTICS environment variable to false.
 
 ````python
-    import os 
-    
+    import os
+
     os.environ['YDATA_PROFILING_NO_ANALYTICS'] = 'True'
 ````
 
