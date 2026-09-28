@@ -172,8 +172,32 @@ def describe(
         table_stats.update(metrics)
 
         alerts = progress(get_alerts, pbar, "Get alerts")(
-            config, table_stats, series_description, correlations
+            config, table_stats, series_description, correlations, df=df
         )
+
+        smart_insights = None
+        if isinstance(df, pd.DataFrame) and getattr(config.smart_insights, "active", True):
+            from data_profiling.model.smart_insights.missingness import (
+                analyze_missingness_patterns,
+            )
+            from data_profiling.model.smart_insights.outliers import (
+                detect_outliers,
+            )
+
+            missingness_findings = analyze_missingness_patterns(
+                df,
+                min_effect=getattr(config.smart_insights, "min_effect", 0.2),
+                min_support=getattr(config.smart_insights, "min_support", 10),
+            )
+            outlier_reports = detect_outliers(
+                df,
+                method=getattr(config.smart_insights, "outlier_method", "iqr"),
+                z_thresh=getattr(config.smart_insights, "z_thresh", 3.0),
+            )
+            smart_insights = {
+                "missingness": missingness_findings,
+                "outliers": outlier_reports,
+            }
 
         if config.vars.timeseries.active:
             tsindex_description = get_time_index_description(config, df, table_stats)
@@ -207,4 +231,7 @@ def describe(
         sample=samples,
         duplicates=duplicates,
     )
+    description.smart_insights = smart_insights
     return description
+
+

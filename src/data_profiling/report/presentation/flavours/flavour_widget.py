@@ -14,6 +14,7 @@ from data_profiling.report.presentation.core import (
     Image,
     Root,
     Sample,
+    SmartInsights,
     Table,
     ToggleButton,
     Variable,
@@ -33,6 +34,7 @@ from data_profiling.report.presentation.flavours.widget import (
     WidgetImage,
     WidgetRoot,
     WidgetSample,
+    WidgetSmartInsights,
     WidgetTable,
     WidgetToggleButton,
     WidgetVariable,
@@ -56,6 +58,8 @@ widget_mapping = {
     ToggleButton: WidgetToggleButton,
     Collapse: WidgetCollapse,
     CorrelationTable: WidgetCorrelationTable,
+    SmartInsights: WidgetSmartInsights,
 }
 
 register_flavour("widget", widget_mapping)
+

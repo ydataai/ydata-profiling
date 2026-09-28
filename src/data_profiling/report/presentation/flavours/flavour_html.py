@@ -15,6 +15,7 @@ from data_profiling.report.presentation.core import (
     Root,
     Sample,
     Scores,
+    SmartInsights,
     Table,
     ToggleButton,
     Variable,
@@ -35,6 +36,7 @@ from data_profiling.report.presentation.flavours.html import (
     HTMLRoot,
     HTMLSample,
     HTMLScores,
+    HTMLSmartInsights,
     HTMLTable,
     HTMLToggleButton,
     HTMLVariable,
@@ -59,6 +61,8 @@ html_mapping = {
     Collapse: HTMLCollapse,
     CorrelationTable: HTMLCorrelationTable,
     Scores: HTMLScores,
+    SmartInsights: HTMLSmartInsights,
 }
 
 register_flavour("html", html_mapping)
+

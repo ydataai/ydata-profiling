@@ -2,7 +2,7 @@
 values, high correlations)."""
 
 from enum import Enum, auto, unique
-from typing import Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set
 
 import numpy as np
 import pandas as pd
@@ -93,6 +93,12 @@ class AlertType(Enum):
 
     EMPTY = auto()
     """The DataFrame is empty."""
+
+    MISSINGNESS_PATTERN = auto()
+    """A variable exhibits a missingness pattern correlated with another variable."""
+
+    OUTLIER = auto()
+    """A numeric variable contains flagged outliers."""
 
 
 class Alert:
@@ -564,6 +570,58 @@ class RejectedAlert(Alert):
         return f"[{self.column_name}] was rejected"
 
 
+class SmartInsightsAlert(Alert):
+    """Base class for smart insights alerts."""
+    pass
+
+
+class MissingnessPatternAlert(SmartInsightsAlert):
+    def __init__(
+        self,
+        values: Optional[Dict] = None,
+        column_name: Optional[str] = None,
+        is_empty: bool = False,
+    ):
+        super().__init__(
+            alert_type=AlertType.MISSINGNESS_PATTERN,
+            values=values or {},
+            column_name=column_name,
+            fields={"missingness_pattern"},
+            is_empty=is_empty,
+        )
+
+    def _get_description(self) -> str:
+        if self.values:
+            predictor = self.values.get("predictor_column", "")
+            pred_val = self.values.get("predictor_value", "")
+            return f"[{self.column_name}] missingness pattern associated with {predictor}={pred_val}"
+        return f"[{self.column_name}] has an associated missingness pattern"
+
+
+class OutlierAlert(SmartInsightsAlert):
+    def __init__(
+        self,
+        values: Optional[Dict] = None,
+        column_name: Optional[str] = None,
+        is_empty: bool = False,
+    ):
+        super().__init__(
+            alert_type=AlertType.OUTLIER,
+            values=values or {},
+            column_name=column_name,
+            fields={"outliers"},
+            is_empty=is_empty,
+        )
+
+    def _get_description(self) -> str:
+        if self.values:
+            n_outliers = self.values.get("n_outliers", 0)
+            method = self.values.get("method", "IQR")
+            return f"[{self.column_name}] has {n_outliers} outliers detected ({method})"
+        return f"[{self.column_name}] has outliers detected"
+
+
+
 def check_table_alerts(table: dict) -> List[Alert]:
     """Checks the overall dataset for alerts.
 
@@ -750,15 +808,87 @@ def check_correlation_alerts(config: Settings, correlations: dict) -> List[Alert
     return alerts
 
 
+def check_smart_insights_alerts(
+    config: Settings,
+    df: pd.DataFrame,
+) -> List[Alert]:
+    """Generate alerts for missingness root-cause patterns and numeric outliers."""
+    if not getattr(config.smart_insights, "active", True):
+        return []
+
+    from data_profiling.model.smart_insights.missingness import analyze_missingness_patterns
+    from data_profiling.model.smart_insights.outliers import detect_outliers
+
+    alerts: List[Alert] = []
+
+    # 1. Missingness pattern alerts
+    min_effect = getattr(config.smart_insights, "min_effect", 0.2)
+    min_support = getattr(config.smart_insights, "min_support", 10)
+    findings = analyze_missingness_patterns(
+        df,
+        min_effect=min_effect,
+        min_support=min_support,
+    )
+    for f in findings:
+        alerts.append(
+            MissingnessPatternAlert(
+                column_name=f.target_column,
+                values={
+                    "predictor_column": f.predictor_column,
+                    "predictor_value": f.predictor_value,
+                    "group_missing_rate": f.group_missing_rate,
+                    "overall_missing_rate": f.overall_missing_rate,
+                    "effect_size": f.effect_size,
+                    "support": f.support,
+                    "sentence": f.to_sentence(),
+                },
+            )
+        )
+
+    # 2. Outlier alerts
+    outlier_method = getattr(config.smart_insights, "outlier_method", "iqr")
+    z_thresh = getattr(config.smart_insights, "z_thresh", 3.0)
+    outlier_reports = detect_outliers(
+        df,
+        method=outlier_method,
+        z_thresh=z_thresh,
+    )
+    for col, report in outlier_reports.items():
+        if report.n_outliers > 0:
+            alerts.append(
+                OutlierAlert(
+                    column_name=col,
+                    values={
+                        "method": report.method,
+                        "lower_bound": report.lower_bound,
+                        "upper_bound": report.upper_bound,
+                        "n_outliers": report.n_outliers,
+                        "pct_outliers": report.pct_outliers,
+                        "outlier_indices": report.outlier_indices,
+                        "sentence": report.to_sentence(),
+                    },
+                )
+            )
+
+    return alerts
+
+
 def get_alerts(
-    config: Settings, table_stats: dict, series_description: dict, correlations: dict
+    config: Settings,
+    table_stats: dict,
+    series_description: dict,
+    correlations: dict,
+    df: Optional[Any] = None,
 ) -> List[Alert]:
     alerts: List[Alert] = check_table_alerts(table_stats)
     for col, description in series_description.items():
         alerts += check_variable_alerts(config, col, description)
     alerts += check_correlation_alerts(config, correlations)
+    if df is not None and isinstance(df, pd.DataFrame):
+        alerts += check_smart_insights_alerts(config, df)
     alerts.sort(key=lambda alert: str(alert.alert_type))
     return alerts
+
 
 
 def alert_value(value: float) -> bool:

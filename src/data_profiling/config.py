@@ -43,6 +43,9 @@ class NumVars(BaseModel):
     low_categorical_threshold: int = 5
     # Set to zero to disable
     chi_squared_threshold: float = 0.999
+    outlier_method: str = "iqr"
+    z_thresh: float = 3.0
+
 
 
 class TextVars(BaseModel):
@@ -290,6 +293,14 @@ class Report(BaseModel):
     precision: int = 8
 
 
+class SmartInsights(BaseModel):
+    active: bool = True
+    min_effect: float = 0.2
+    min_support: int = 10
+    outlier_method: str = "iqr"
+    z_thresh: float = 3.0
+
+
 class Settings(BaseSettings):
     # Default prefix to avoid collisions with environment variables
     class Config:
@@ -300,6 +311,7 @@ class Settings(BaseSettings):
 
     dataset: Dataset = Dataset()
     variables: Variables = Variables()
+    smart_insights: SmartInsights = SmartInsights()
     infer_dtypes: bool = True
 
     # Show the description at each variable (in addition to the overview tab)

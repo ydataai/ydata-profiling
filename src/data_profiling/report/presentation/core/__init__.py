@@ -13,6 +13,7 @@ from data_profiling.report.presentation.core.image import Image
 from data_profiling.report.presentation.core.root import Root
 from data_profiling.report.presentation.core.sample import Sample
 from data_profiling.report.presentation.core.scores import Scores
+from data_profiling.report.presentation.core.smart_insights import SmartInsights
 from data_profiling.report.presentation.core.table import Table
 from data_profiling.report.presentation.core.toggle_button import ToggleButton
 from data_profiling.report.presentation.core.variable import Variable
@@ -29,6 +30,7 @@ __all__ = [
     "Image",
     "Root",
     "Sample",
+    "SmartInsights",
     "Table",
     "ToggleButton",
     "Variable",
@@ -37,3 +39,4 @@ __all__ = [
     "CorrelationTable",
     "Scores",
 ]
+

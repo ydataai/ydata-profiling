@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, List
+from typing import Any, List, Optional
 from urllib.parse import quote
 
 from data_profiling.config import Settings
@@ -16,10 +16,11 @@ from data_profiling.report.formatters import (
     fmt_timespan_timedelta,
     list_args,
 )
-from data_profiling.report.presentation.core import Alerts, Container
+from data_profiling.report.presentation.core import Alerts, Container, SmartInsights
 from data_profiling.report.presentation.core import Image as ImageWidget
 from data_profiling.report.presentation.core import Table
 from data_profiling.report.presentation.core.renderable import Renderable
+
 from data_profiling.visualisation.plot import plot_overview_timeseries
 
 
@@ -338,6 +339,103 @@ def get_timeseries_items(config: Settings, summary: BaseDescription) -> Containe
     )
 
 
+def _normalize_finding(f: Any) -> dict:
+    if isinstance(f, dict):
+        return f
+    return {
+        "target_column": getattr(f, "target_column", ""),
+        "predictor_column": getattr(f, "predictor_column", ""),
+        "predictor_value": getattr(f, "predictor_value", ""),
+        "group_missing_rate": getattr(f, "group_missing_rate", 0.0),
+        "overall_missing_rate": getattr(f, "overall_missing_rate", 0.0),
+        "effect_size": getattr(f, "effect_size", 0.0),
+        "support": getattr(f, "support", 0),
+        "sentence": f.to_sentence() if hasattr(f, "to_sentence") else "",
+    }
+
+
+def get_dataset_smart_insights(
+    config: Settings, summary: BaseDescription
+) -> Optional[Renderable]:
+    """Obtain the Smart Insights section for the report overview.
+
+    Args:
+        config: Report settings object.
+        summary: The calculated dataset summary description.
+
+    Returns:
+        Renderable SmartInsights presentation item or None if no insights exist.
+    """
+    if not getattr(config.smart_insights, "active", True):
+        return None
+
+    if not summary.smart_insights:
+        return None
+
+    raw_missingness = summary.smart_insights.get("missingness", [])
+    raw_outliers = summary.smart_insights.get("outliers", {})
+
+    # Normalize missingness findings (handle comparison tuple of lists)
+    findings = []
+    if isinstance(raw_missingness, tuple):
+        for rep_list in raw_missingness:
+            if isinstance(rep_list, list):
+                for item in rep_list:
+                    if item:
+                        findings.append(_normalize_finding(item))
+            elif rep_list:
+                findings.append(_normalize_finding(rep_list))
+    elif isinstance(raw_missingness, list):
+        for item in raw_missingness:
+            if item:
+                findings.append(_normalize_finding(item))
+
+    # Normalize outlier reports (handle comparison merged dicts)
+    outliers = {}
+    if isinstance(raw_outliers, dict):
+        for col, rep in raw_outliers.items():
+            if isinstance(rep, dict) and isinstance(rep.get("n_outliers"), list):
+                n_list = rep.get("n_outliers", [0])
+                total_n = sum(n_list)
+                pct_list = rep.get("pct_outliers", [0.0])
+                lower_list = rep.get("lower_bound", [0.0])
+                upper_list = rep.get("upper_bound", [0.0])
+                method_list = rep.get("method", ["iqr"])
+                outliers[col] = {
+                    "column": col,
+                    "method": "/".join(str(m).upper() for m in method_list),
+                    "lower_bound": lower_list[0] if lower_list else 0.0,
+                    "upper_bound": upper_list[0] if upper_list else 0.0,
+                    "n_outliers": total_n,
+                    "pct_outliers": max(pct_list) if pct_list else 0.0,
+                    "sentence": f"Column '{col}' has {n_list} outliers across compared datasets.",
+                }
+            elif isinstance(rep, dict):
+                outliers[col] = rep
+            else:
+                outliers[col] = {
+                    "column": getattr(rep, "column", col),
+                    "method": getattr(rep, "method", "iqr"),
+                    "lower_bound": getattr(rep, "lower_bound", 0.0),
+                    "upper_bound": getattr(rep, "upper_bound", 0.0),
+                    "n_outliers": getattr(rep, "n_outliers", 0),
+                    "pct_outliers": getattr(rep, "pct_outliers", 0.0),
+                    "sentence": rep.to_sentence() if hasattr(rep, "to_sentence") else "",
+                }
+
+    total_count = len(findings) + sum(
+        1 for r in outliers.values() if (r.get("n_outliers", 0) if isinstance(r, dict) else getattr(r, "n_outliers", 0)) > 0
+    )
+
+    return SmartInsights(
+        missingness_findings=findings,
+        outlier_reports=outliers,
+        name=f"Smart Insights ({total_count})",
+        anchor_id="smart_insights",
+    )
+
+
+
 def get_dataset_items(config: Settings, summary: BaseDescription, alerts: list) -> list:
     """Returns the dataset overview (at the top of the report)
 
@@ -371,6 +469,11 @@ def get_dataset_items(config: Settings, summary: BaseDescription, alerts: list) 
     if alerts:
         items.append(get_dataset_alerts(config, alerts))
 
+    smart_insights_item = get_dataset_smart_insights(config, summary)
+    if smart_insights_item is not None:
+        items.append(smart_insights_item)
+
     items.append(get_dataset_reproduction(config, summary))
 
     return items
+
