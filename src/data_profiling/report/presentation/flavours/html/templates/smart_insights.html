@@ -1,0 +1,94 @@
+<div class="col-sm-12">
+    <div class="mb-4">
+        <p class="h4 item-header" style="color: var(--bs-primary);">Smart Insights</p>
+        <p class="text-muted">Automated root-cause missingness pattern detection and per-numeric outlier flagging.</p>
+    </div>
+
+    <div class="mb-4">
+        <p class="h5 item-header">Missingness Root-Cause Patterns ({{ missingness_findings | length }})</p>
+        {% if missingness_findings | length > 0 %}
+        <div class="table-responsive">
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>Target Column</th>
+                        <th>Predictor Column</th>
+                        <th>Predictor Value</th>
+                        <th>Group Missing Rate</th>
+                        <th>Overall Missing Rate</th>
+                        <th>Effect Size</th>
+                        <th>Support</th>
+                        <th>Explanation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for f in missingness_findings %}
+                    <tr>
+                        <td><code>{{ f.target_column }}</code></td>
+                        <td><code>{{ f.predictor_column }}</code></td>
+                        <td><span class="badge text-bg-light border">{{ f.predictor_value }}</span></td>
+                        <td>{{ f.group_missing_rate | fmt_percent }}</td>
+                        <td>{{ f.overall_missing_rate | fmt_percent }}</td>
+                        <td>
+                            {% if f.effect_size >= 0 %}
+                                <span class="badge text-bg-warning">+{{ "%.2f"|format(f.effect_size) }}</span>
+                            {% else %}
+                                <span class="badge text-bg-info">{{ "%.2f"|format(f.effect_size) }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ f.support }}</td>
+                        <td><small>{{ f.sentence if f.sentence is defined and f.sentence else (f.to_sentence() if f.to_sentence is defined else '') }}</small></td>
+                    </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted"><em>No significant missingness root-cause patterns detected above threshold.</em></p>
+        {% endif %}
+    </div>
+
+    <div class="mb-4">
+        {% set outlier_cols = [] %}
+        {% for col, rep in outlier_reports.items() %}
+            {% if rep.n_outliers > 0 %}
+                {% set _ = outlier_cols.append(rep) %}
+            {% endif %}
+        {% endfor %}
+        <p class="h5 item-header">Outlier Analysis ({{ outlier_cols | length }} columns with outliers)</p>
+        {% if outlier_cols | length > 0 %}
+        <div class="table-responsive">
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>Column</th>
+                        <th>Method</th>
+                        <th>Lower Bound</th>
+                        <th>Upper Bound</th>
+                        <th>Outliers Count</th>
+                        <th>Outliers (%)</th>
+                        <th>Summary</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rep in outlier_cols %}
+                    <tr>
+                        <td><code>{{ rep.column }}</code></td>
+                        <td><span class="badge text-bg-secondary">{{ rep.method | upper }}</span></td>
+                        <td>{{ "%.2f"|format(rep.lower_bound) }}</td>
+                        <td>{{ "%.2f"|format(rep.upper_bound) }}</td>
+                        <td><strong>{{ rep.n_outliers }}</strong></td>
+                        <td>{{ rep.pct_outliers | fmt_percent }}</td>
+                        <td><small>{{ rep.sentence if rep.sentence is defined and rep.sentence else (rep.to_sentence() if rep.to_sentence is defined else '') }}</small></td>
+                    </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted"><em>No numeric outliers detected across analyzed columns.</em></p>
+        {% endif %}
+    </div>
+</div>

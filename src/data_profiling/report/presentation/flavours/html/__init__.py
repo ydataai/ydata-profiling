@@ -17,6 +17,9 @@ from data_profiling.report.presentation.flavours.html.image import HTMLImage
 from data_profiling.report.presentation.flavours.html.root import HTMLRoot
 from data_profiling.report.presentation.flavours.html.sample import HTMLSample
 from data_profiling.report.presentation.flavours.html.scores import HTMLScores
+from data_profiling.report.presentation.flavours.html.smart_insights import (
+    HTMLSmartInsights,
+)
 from data_profiling.report.presentation.flavours.html.table import HTMLTable
 from data_profiling.report.presentation.flavours.html.toggle_button import (
     HTMLToggleButton,
@@ -37,6 +40,7 @@ __all__ = [
     "HTMLImage",
     "HTMLRoot",
     "HTMLSample",
+    "HTMLSmartInsights",
     "HTMLTable",
     "HTMLToggleButton",
     "HTMLVariable",
@@ -45,3 +49,4 @@ __all__ = [
     "HTMLCorrelationTable",
     "HTMLScores",
 ]
+

@@ -1,0 +1,2 @@
+<a href="#pp_var_{{ alert.anchor_id }}"><code>{{ alert.column_name }}</code></a>
+missingness is strongly associated with <code>{{ alert.values['predictor_column'] }}</code> = <code>{{ alert.values['predictor_value'] }}</code> ({{ alert.values['group_missing_rate'] | fmt_percent }} vs {{ alert.values['overall_missing_rate'] | fmt_percent }} overall, effect: {{ "%+.2f"|format(alert.values['effect_size']) }})

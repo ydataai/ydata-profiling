@@ -221,3 +221,10 @@ html:
       - "#198754"
 
   full_width: false
+
+smart_insights:
+  active: true
+  min_effect: 0.2
+  min_support: 10
+  outlier_method: "iqr"
+  z_thresh: 3.0

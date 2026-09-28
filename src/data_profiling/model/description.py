@@ -106,3 +106,12 @@ class BaseDescription:
     package: Dict[str, Any]
     sample: Any
     duplicates: Any
+
+    @property
+    def smart_insights(self) -> Optional[Dict[str, Any]]:
+        return getattr(self, "_smart_insights", None)
+
+    @smart_insights.setter
+    def smart_insights(self, value: Optional[Dict[str, Any]]) -> None:
+        self._smart_insights = value
+

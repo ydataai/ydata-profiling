@@ -1,0 +1,2 @@
+<a href="#pp_var_{{ alert.anchor_id }}"><code>{{ alert.column_name }}</code></a>
+has {{ alert.values['n_outliers'] }} ({{ alert.values['pct_outliers'] | fmt_percent }}) outliers detected via {{ alert.values['method'] | upper }} outside [{{ "%.2f"|format(alert.values['lower_bound']) }}, {{ "%.2f"|format(alert.values['upper_bound']) }}]

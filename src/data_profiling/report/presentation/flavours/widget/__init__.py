@@ -16,6 +16,9 @@ from data_profiling.report.presentation.flavours.widget.html import WidgetHTML
 from data_profiling.report.presentation.flavours.widget.image import WidgetImage
 from data_profiling.report.presentation.flavours.widget.root import WidgetRoot
 from data_profiling.report.presentation.flavours.widget.sample import WidgetSample
+from data_profiling.report.presentation.flavours.widget.smart_insights import (
+    WidgetSmartInsights,
+)
 from data_profiling.report.presentation.flavours.widget.table import WidgetTable
 from data_profiling.report.presentation.flavours.widget.toggle_button import (
     WidgetToggleButton,
@@ -36,6 +39,7 @@ __all__ = [
     "WidgetImage",
     "WidgetRoot",
     "WidgetSample",
+    "WidgetSmartInsights",
     "WidgetTable",
     "WidgetToggleButton",
     "WidgetVariable",
@@ -43,3 +47,4 @@ __all__ = [
     "WidgetAlerts",
     "WidgetCorrelationTable",
 ]
+
